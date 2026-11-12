@@ -19,10 +19,12 @@ import { AnyTag } from '@/Controllers/Navigation/AnyTagType'
 import { PreferenceMode } from './PreferenceMode'
 import { EditorOption, getDropdownItemsForAllEditors } from '@/Utils/DropdownItemsForEditors'
 import { classNames } from '@standardnotes/utils'
-import { NoteTitleFormatOptions } from './NoteTitleFormatOptions'
+import { NOTE_TITLE_FORMAT_PATTERN_EXAMPLE, getNoteTitleFormatOptions } from './NoteTitleFormatOptions'
 import { usePremiumModal } from '@/Hooks/usePremiumModal'
 import { getDayjsFormattedString } from '@/Utils/GetDayjsFormattedString'
 import { ErrorBoundary } from '@/Utils/ErrorBoundary'
+import { jtString } from '@standardnotes/features'
+import { c } from 'ttag'
 
 const PrefChangeDebounceTimeInMs = 25
 
@@ -172,15 +174,40 @@ const NewNotePreferences: FunctionComponent<Props> = ({
     }, PrefChangeDebounceTimeInMs)
   }
 
+  const titleFormatOptionsLink = (
+    <a
+      className="underline"
+      href={HelpPageUrl}
+      rel="noreferrer"
+      target="_blank"
+      onClick={(event) => {
+        if (application.isNativeMobileWeb()) {
+          event.preventDefault()
+          application.mobileDevice.openUrl(HelpPageUrl)
+        }
+      }}
+    >
+      {c('B3.Notes.NoteList.Action').t`Options`}
+    </a>
+  )
+
+  const bracketsLiteral = <code>[]</code>
+
+  const titleFormatPreview = (
+    <ErrorBoundary>
+      <CustomNoteTitleFormatPreview format={customNoteTitleFormat} />
+    </ErrorBoundary>
+  )
+
   return (
     <div className="px-3 py-3">
       <div>
-        <div className="text-mobile-menu-item md:text-menu-item">Note Type</div>
+        <div className="text-mobile-menu-item md:text-menu-item">{c('B3.Notes.NoteList.Label').t`Note Type`}</div>
         <div className="mt-2">
           <Dropdown
             disabled={disabled}
             fullWidth={true}
-            label="Select the default note type"
+            label={c('B3.Notes.NoteList.Label').t`Select the default note type`}
             items={editorItems}
             value={defaultEditorIdentifier}
             onChange={(value) => selectEditorForNewNoteDefault(value as EditorOption['value'])}
@@ -188,13 +215,14 @@ const NewNotePreferences: FunctionComponent<Props> = ({
         </div>
       </div>
       <div>
-        <div className="mt-3 text-mobile-menu-item md:text-menu-item">Title Format</div>
+        <div className="mt-3 text-mobile-menu-item md:text-menu-item">{c('B3.Notes.NoteList.Label')
+          .t`Title Format`}</div>
         <div className="mt-2">
           <Dropdown
             disabled={disabled}
             fullWidth={true}
-            label="Select the format for the note title"
-            items={NoteTitleFormatOptions}
+            label={c('B3.Notes.NoteList.Label').t`Select the format for the note title`}
+            items={getNoteTitleFormatOptions()}
             value={newNoteTitleFormat}
             onChange={setNewNoteTitleFormatChange}
           />
@@ -209,34 +237,15 @@ const NewNotePreferences: FunctionComponent<Props> = ({
                 'w-full min-w-55 rounded border border-solid border-passive-3 bg-default px-2 py-1.5 text-sm md:translucent-ui:bg-transparent',
                 'focus-within:ring-2 focus-within:ring-info',
               )}
-              placeholder="e.g. YYYY-MM-DD"
+              placeholder={jtString(c('B3.Notes.NoteList.Label').jt`e.g. ${NOTE_TITLE_FORMAT_PATTERN_EXAMPLE}`)}
               value={customNoteTitleFormat}
               onChange={handleCustomFormatInputChange}
               spellCheck={false}
             />
           </div>
-          <div className="mt-3 text-neutral">
-            <span className="font-bold">Preview: </span>
-            <ErrorBoundary>
-              <CustomNoteTitleFormatPreview format={customNoteTitleFormat} />
-            </ErrorBoundary>
-          </div>
+          <div className="mt-3 text-neutral">{c('B3.Notes.NoteList.Info').jt`Preview: ${titleFormatPreview}`}</div>
           <div className="mt-2 text-neutral">
-            <a
-              className="underline"
-              href={HelpPageUrl}
-              rel="noreferrer"
-              target="_blank"
-              onClick={(event) => {
-                if (application.isNativeMobileWeb()) {
-                  event.preventDefault()
-                  application.mobileDevice.openUrl(HelpPageUrl)
-                }
-              }}
-            >
-              Options
-            </a>
-            . Use <code>[]</code> to escape formatting.
+            {c('B3.Notes.NoteList.Info').jt`${titleFormatOptionsLink}. Use ${bracketsLiteral} to escape formatting.`}
           </div>
         </div>
       )}

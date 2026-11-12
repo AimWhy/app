@@ -25,7 +25,7 @@ export class SettingsGateway {
   private get userUuid() {
     const user = this.getUser()
     if (user == undefined || user.uuid == undefined) {
-      throw new Error(API_MESSAGE_INVALID_SESSION)
+      throw new Error(API_MESSAGE_INVALID_SESSION())
     }
     return user.uuid
   }
@@ -45,8 +45,8 @@ export class SettingsGateway {
     return settings
   }
 
-  async getSetting(name: SettingName): Promise<string | undefined> {
-    const response = await this.settingsApi.getSetting(this.userUuid, name.value)
+  async getSetting(name: SettingName, serverPassword?: string): Promise<string | undefined> {
+    const response = await this.settingsApi.getSetting(this.userUuid, name.value, serverPassword)
 
     if (response.status === HttpStatusCode.BadRequest) {
       return undefined
@@ -102,18 +102,26 @@ export class SettingsGateway {
     return response.data?.success ?? false
   }
 
-  async updateSetting(name: SettingName, payload: string, sensitive: boolean): Promise<void> {
-    const response = await this.settingsApi.updateSetting(this.userUuid, name.value, payload, sensitive)
+  async updateSetting(name: SettingName, payload: string, sensitive: boolean, totpToken?: string): Promise<void> {
+    const response = await this.settingsApi.updateSetting(this.userUuid, name.value, payload, sensitive, totpToken)
     if (isErrorResponse(response)) {
       throw new Error(getErrorFromErrorResponse(response).message)
     }
   }
 
-  async deleteSetting(name: SettingName): Promise<void> {
-    const response = await this.settingsApi.deleteSetting(this.userUuid, name.value)
+  async deleteSetting(name: SettingName, serverPassword?: string): Promise<void> {
+    const response = await this.settingsApi.deleteSetting(this.userUuid, name.value, serverPassword)
     if (isErrorResponse(response)) {
       throw new Error(getErrorFromErrorResponse(response).message)
     }
+  }
+
+  async getMfaSecret(): Promise<string> {
+    const response = await this.settingsApi.getMfaSecret(this.userUuid)
+    if (isErrorResponse(response)) {
+      throw new Error(getErrorFromErrorResponse(response).message)
+    }
+    return response.data.secret
   }
 
   deinit() {

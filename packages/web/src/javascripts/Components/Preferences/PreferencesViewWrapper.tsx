@@ -1,8 +1,8 @@
 import { FunctionComponent, useEffect } from 'react'
+import { c } from 'ttag'
 import { observer } from 'mobx-react-lite'
 import PreferencesView from './PreferencesView'
 import { PreferencesViewWrapperProps } from './PreferencesViewWrapperProps'
-import { useCommandService } from '../CommandProvider'
 import { OPEN_PREFERENCES_COMMAND } from '@standardnotes/ui-services'
 import ModalOverlay from '../Modal/ModalOverlay'
 import { usePaneSwipeGesture } from '../Panes/usePaneGesture'
@@ -10,16 +10,15 @@ import { performSafariAnimationFix } from '../Panes/PaneAnimator'
 import { IosModalAnimationEasing } from '../Modal/useModalAnimation'
 
 const PreferencesViewWrapper: FunctionComponent<PreferencesViewWrapperProps> = ({ application }) => {
-  const commandService = useCommandService()
-
   useEffect(() => {
-    return commandService.addCommandHandler({
-      command: OPEN_PREFERENCES_COMMAND,
-      category: 'General',
-      description: 'Open preferences',
-      onKeyDown: () => application.preferencesController.openPreferences(),
-    })
-  }, [commandService, application])
+    return application.commands.addWithShortcut(
+      OPEN_PREFERENCES_COMMAND,
+      'General',
+      c('B6.Preferences.Other.Action').t`Open preferences`,
+      () => application.preferencesController.openPreferences(),
+      'tune',
+    )
+  }, [application.commands, application.preferencesController])
 
   const [setElement] = usePaneSwipeGesture('right', async (element) => {
     const animation = element.animate(

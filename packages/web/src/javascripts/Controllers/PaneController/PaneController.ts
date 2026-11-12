@@ -1,7 +1,10 @@
 import { PanesForLayout } from './../../Application/UseCase/PanesForLayout'
+import { c } from 'ttag'
 import {
   InternalEventHandlerInterface,
   InternalEventInterface,
+  LocalPrefDefaults,
+  LocalPrefKey,
   PreferenceServiceInterface,
 } from '@standardnotes/services'
 import {
@@ -26,6 +29,7 @@ import { AbstractViewController } from '../Abstract/AbstractViewController'
 import { log, LoggingDomain } from '@/Logging'
 import { PaneLayout } from './PaneLayout'
 import { IsTabletOrMobileScreen } from '@/Application/UseCase/IsTabletOrMobileScreen'
+import { CommandService } from '../../Components/CommandPalette/CommandService'
 
 const MinimumNavPanelWidth = PrefDefaults[PrefKey.TagsPanelWidth]
 const MinimumNotesPanelWidth = PrefDefaults[PrefKey.NotesPanelWidth]
@@ -41,13 +45,21 @@ export class PaneController extends AbstractViewController implements InternalEv
   currentNavPanelWidth = 0
   currentItemsPanelWidth = 0
   focusModeEnabled = false
+  hasPaneInitializationLogicRun = false
 
-  listPaneExplicitelyCollapsed = false
-  navigationPaneExplicitelyCollapsed = false
+  listPaneExplicitelyCollapsed = this.preferences.getLocalValue(
+    LocalPrefKey.ListPaneCollapsed,
+    LocalPrefDefaults[LocalPrefKey.ListPaneCollapsed],
+  )
+  navigationPaneExplicitelyCollapsed = this.preferences.getLocalValue(
+    LocalPrefKey.NavigationPaneCollapsed,
+    LocalPrefDefaults[LocalPrefKey.NavigationPaneCollapsed],
+  )
 
   constructor(
     private preferences: PreferenceServiceInterface,
-    private keyboardService: KeyboardService,
+    keyboardService: KeyboardService,
+    commands: CommandService,
     private _isTabletOrMobileScreen: IsTabletOrMobileScreen,
     private _panesForLayout: PanesForLayout,
     eventBus: InternalEventBusInterface,
@@ -84,12 +96,6 @@ export class PaneController extends AbstractViewController implements InternalEv
     this.setCurrentNavPanelWidth(preferences.getValue(PrefKey.TagsPanelWidth, MinimumNavPanelWidth))
     this.setCurrentItemsPanelWidth(preferences.getValue(PrefKey.NotesPanelWidth, MinimumNotesPanelWidth))
 
-    const screen = this._isTabletOrMobileScreen.execute().getValue()
-
-    this.panes = screen.isTabletOrMobile
-      ? [AppPaneId.Navigation, AppPaneId.Items]
-      : [AppPaneId.Navigation, AppPaneId.Items, AppPaneId.Editor]
-
     const mediaQuery = window.matchMedia(MediaQueryBreakpoints.md)
     if (mediaQuery?.addEventListener != undefined) {
       mediaQuery.addEventListener('change', this.mediumScreenMQHandler)
@@ -98,36 +104,36 @@ export class PaneController extends AbstractViewController implements InternalEv
     }
 
     eventBus.addEventHandler(this, ApplicationEvent.PreferencesChanged)
+    eventBus.addEventHandler(this, ApplicationEvent.LocalPreferencesChanged)
 
     this.disposers.push(
-      keyboardService.addCommandHandler({
-        command: TOGGLE_FOCUS_MODE_COMMAND,
-        category: 'General',
-        description: 'Toggle focus mode',
-        onKeyDown: (event) => {
-          event.preventDefault()
-          this.setFocusModeEnabled(!this.focusModeEnabled)
-          return true
+      commands.addWithShortcut(
+        TOGGLE_FOCUS_MODE_COMMAND,
+        'General',
+        c('B2.NavSharedUI.Action').t`Toggle focus mode`,
+        (event) => {
+          event?.preventDefault()
+          this.toggleFocusMode()
         },
-      }),
-      keyboardService.addCommandHandler({
-        command: TOGGLE_LIST_PANE_KEYBOARD_COMMAND,
-        category: 'General',
-        description: 'Toggle notes panel',
-        onKeyDown: (event) => {
-          event.preventDefault()
+      ),
+      commands.addWithShortcut(
+        TOGGLE_LIST_PANE_KEYBOARD_COMMAND,
+        'General',
+        c('B2.NavSharedUI.Action').t`Toggle notes panel`,
+        (event) => {
+          event?.preventDefault()
           this.toggleListPane()
         },
-      }),
-      keyboardService.addCommandHandler({
-        command: TOGGLE_NAVIGATION_PANE_KEYBOARD_COMMAND,
-        category: 'General',
-        description: 'Toggle tags panel',
-        onKeyDown: (event) => {
-          event.preventDefault()
+      ),
+      commands.addWithShortcut(
+        TOGGLE_NAVIGATION_PANE_KEYBOARD_COMMAND,
+        'General',
+        c('B2.NavSharedUI.Action').t`Toggle tags panel`,
+        (event) => {
+          event?.preventDefault()
           this.toggleNavigationPane()
         },
-      }),
+      ),
     )
   }
 
@@ -135,6 +141,34 @@ export class PaneController extends AbstractViewController implements InternalEv
     if (event.type === ApplicationEvent.PreferencesChanged) {
       this.setCurrentNavPanelWidth(this.preferences.getValue(PrefKey.TagsPanelWidth, MinimumNavPanelWidth))
       this.setCurrentItemsPanelWidth(this.preferences.getValue(PrefKey.NotesPanelWidth, MinimumNotesPanelWidth))
+    }
+    if (event.type === ApplicationEvent.LocalPreferencesChanged) {
+      this.listPaneExplicitelyCollapsed = this.preferences.getLocalValue(
+        LocalPrefKey.ListPaneCollapsed,
+        LocalPrefDefaults[LocalPrefKey.ListPaneCollapsed],
+      )
+      this.navigationPaneExplicitelyCollapsed = this.preferences.getLocalValue(
+        LocalPrefKey.NavigationPaneCollapsed,
+        LocalPrefDefaults[LocalPrefKey.NavigationPaneCollapsed],
+      )
+
+      if (!this.hasPaneInitializationLogicRun) {
+        const screen = this._isTabletOrMobileScreen.execute().getValue()
+        if (screen.isTabletOrMobile) {
+          this.panes = [AppPaneId.Navigation, AppPaneId.Items]
+        } else {
+          if (!this.listPaneExplicitelyCollapsed && !this.navigationPaneExplicitelyCollapsed) {
+            this.panes = [AppPaneId.Navigation, AppPaneId.Items, AppPaneId.Editor]
+          } else if (this.listPaneExplicitelyCollapsed && this.navigationPaneExplicitelyCollapsed) {
+            this.panes = [AppPaneId.Editor]
+          } else if (this.listPaneExplicitelyCollapsed) {
+            this.panes = [AppPaneId.Navigation, AppPaneId.Editor]
+          } else {
+            this.panes = [AppPaneId.Items, AppPaneId.Editor]
+          }
+        }
+        this.hasPaneInitializationLogicRun = true
+      }
     }
   }
 
@@ -181,11 +215,15 @@ export class PaneController extends AbstractViewController implements InternalEv
 
     const panes = this._panesForLayout.execute(layout).getValue()
 
-    if (panes.includes(AppPaneId.Items) && this.listPaneExplicitelyCollapsed) {
+    if (panes.includes(AppPaneId.Items) && this.listPaneExplicitelyCollapsed && layout !== PaneLayout.ItemSelection) {
       removeFromArray(panes, AppPaneId.Items)
     }
 
-    if (panes.includes(AppPaneId.Navigation) && this.navigationPaneExplicitelyCollapsed) {
+    if (
+      panes.includes(AppPaneId.Navigation) &&
+      this.navigationPaneExplicitelyCollapsed &&
+      layout !== PaneLayout.TagSelection
+    ) {
       removeFromArray(panes, AppPaneId.Navigation)
     }
 
@@ -250,24 +288,24 @@ export class PaneController extends AbstractViewController implements InternalEv
   toggleListPane = () => {
     if (this.panes.includes(AppPaneId.Items)) {
       this.removePane(AppPaneId.Items)
-      this.listPaneExplicitelyCollapsed = true
+      this.preferences.setLocalValue(LocalPrefKey.ListPaneCollapsed, true)
     } else {
       if (this.panes.includes(AppPaneId.Navigation)) {
         this.insertPaneAtIndex(AppPaneId.Items, 1)
       } else {
         this.insertPaneAtIndex(AppPaneId.Items, 0)
       }
-      this.listPaneExplicitelyCollapsed = false
+      this.preferences.setLocalValue(LocalPrefKey.ListPaneCollapsed, false)
     }
   }
 
   toggleNavigationPane = () => {
     if (this.panes.includes(AppPaneId.Navigation)) {
       this.removePane(AppPaneId.Navigation)
-      this.navigationPaneExplicitelyCollapsed = true
+      this.preferences.setLocalValue(LocalPrefKey.NavigationPaneCollapsed, true)
     } else {
       this.insertPaneAtIndex(AppPaneId.Navigation, 0)
-      this.navigationPaneExplicitelyCollapsed = false
+      this.preferences.setLocalValue(LocalPrefKey.NavigationPaneCollapsed, false)
     }
   }
 
@@ -295,5 +333,9 @@ export class PaneController extends AbstractViewController implements InternalEv
         document.body.classList.remove(DISABLING_FOCUS_MODE_CLASS_NAME)
       }, FOCUS_MODE_ANIMATION_DURATION)
     }
+  }
+
+  toggleFocusMode = () => {
+    this.setFocusModeEnabled(!this.focusModeEnabled)
   }
 }

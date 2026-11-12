@@ -1,13 +1,20 @@
 import { destroyAllObjectProperties } from '@/Utils'
+import { c } from 'ttag'
 import {
   confirmDialog,
   GetItemTags,
   IsGlobalSpellcheckEnabled,
-  KeyboardService,
   PIN_NOTE_COMMAND,
   STAR_NOTE_COMMAND,
 } from '@standardnotes/ui-services'
-import { StringEmptyTrash, Strings, StringUtils } from '@/Constants/Strings'
+import {
+  StringArchiveLockedNotesAttempt,
+  StringDeleteItemsPermanentlyTitle,
+  StringDeleteLockedNotesAttempt,
+  StringDeleteNotes,
+  StringEmptyTrash,
+  StringTrashItemsTitle,
+} from '@/Constants/Strings'
 import {
   SNNote,
   NoteMutator,
@@ -16,26 +23,27 @@ import {
   PrefKey,
   ApplicationEvent,
   EditorLineWidth,
-  InternalEventBusInterface,
   MutationType,
   PrefDefaults,
-  PreferenceServiceInterface,
   InternalEventHandlerInterface,
   InternalEventInterface,
-  ItemManagerInterface,
-  MutatorClientInterface,
-  SyncServiceInterface,
-  AlertService,
-  ProtectionsClientInterface,
   LocalPrefKey,
+  NoteContent,
+  noteTypeForEditorIdentifier,
+  ContentReference,
+  pluralize,
+  NoteType,
 } from '@standardnotes/snjs'
-import { makeObservable, observable, action, computed, runInAction } from 'mobx'
+import { makeObservable, observable, action, computed, runInAction, reaction } from 'mobx'
 import { AbstractViewController } from '../Abstract/AbstractViewController'
-import { NavigationController } from '../Navigation/NavigationController'
 import { NotesControllerInterface } from './NotesControllerInterface'
-import { ItemGroupController } from '@/Components/NoteView/Controller/ItemGroupController'
 import { CrossControllerEvent } from '../CrossControllerEvent'
-import { ItemListController } from '../ItemList/ItemListController'
+import { addToast, dismissToast, ToastType } from '@standardnotes/toast'
+import { createNoteExport } from '../../Utils/NoteExportUtils'
+import { WebApplication } from '../../Application/WebApplication'
+import { downloadOrShareBlobBasedOnPlatform } from '../../Utils/DownloadOrShareBasedOnPlatform'
+
+const jtString = (value: unknown): string => (Array.isArray(value) ? value.join('') : String(value))
 
 export class NotesController
   extends AbstractViewController
@@ -47,27 +55,21 @@ export class NotesController
   contextMenuClickLocation: { x: number; y: number } = { x: 0, y: 0 }
   contextMenuMaxHeight: number | 'auto' = 'auto'
   showProtectedWarning = false
+  shouldShowSuperExportModal = false
+
+  commandRegisterDisposers: (() => void)[] = []
 
   constructor(
-    private itemListController: ItemListController,
-    private navigationController: NavigationController,
-    private itemControllerGroup: ItemGroupController,
-    private keyboardService: KeyboardService,
-    private preferences: PreferenceServiceInterface,
-    private items: ItemManagerInterface,
-    private mutator: MutatorClientInterface,
-    private sync: SyncServiceInterface,
-    private protections: ProtectionsClientInterface,
-    private alerts: AlertService,
+    private application: WebApplication,
     private _isGlobalSpellcheckEnabled: IsGlobalSpellcheckEnabled,
     private _getItemTags: GetItemTags,
-    eventBus: InternalEventBusInterface,
   ) {
-    super(eventBus)
+    super(application.events)
 
     makeObservable(this, {
       contextMenuOpen: observable,
       showProtectedWarning: observable,
+      shouldShowSuperExportModal: observable,
 
       selectedNotes: computed,
       firstSelectedNote: computed,
@@ -78,38 +80,119 @@ export class NotesController
       setContextMenuClickLocation: action,
       setShowProtectedWarning: action,
       unselectNotes: action,
+      showSuperExportModal: action,
+      closeSuperExportModal: action,
     })
 
-    this.shouldLinkToParentFolders = preferences.getValue(
+    this.shouldLinkToParentFolders = application.preferences.getValue(
       PrefKey.NoteAddToParentFolders,
       PrefDefaults[PrefKey.NoteAddToParentFolders],
     )
 
-    eventBus.addEventHandler(this, ApplicationEvent.PreferencesChanged)
-    eventBus.addEventHandler(this, CrossControllerEvent.UnselectAllNotes)
+    application.events.addEventHandler(this, ApplicationEvent.PreferencesChanged)
+    application.events.addEventHandler(this, CrossControllerEvent.UnselectAllNotes)
 
     this.disposers.push(
-      this.keyboardService.addCommandHandler({
+      reaction(
+        () => this.selectedNotesCount,
+        (notes_count) => {
+          this.disposeCommandRegisters()
+
+          const noteCommandTarget =
+            notes_count === 1
+              ? c('B3.Notes.NoteActions.Label').t`current note`
+              : c('B3.Notes.NoteActions.Label').t`selected note(s)`
+
+          this.commandRegisterDisposers.push(
+            application.commands.add(
+              'pin-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Pin ${noteCommandTarget}`),
+              () => this.setPinSelectedNotes(true),
+              'unpin',
+            ),
+            application.commands.add(
+              'unpin-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Unpin ${noteCommandTarget}`),
+              () => this.setPinSelectedNotes(false),
+              'pin',
+            ),
+            application.commands.add(
+              'star-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Star ${noteCommandTarget}`),
+              () => this.setStarSelectedNotes(true),
+              'star',
+            ),
+            application.commands.add(
+              'unstar-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Unstar ${noteCommandTarget}`),
+              () => this.setStarSelectedNotes(false),
+              'star',
+            ),
+            application.commands.add(
+              'archive-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Archive ${noteCommandTarget}`),
+              () => this.setArchiveSelectedNotes(true),
+              'archive',
+            ),
+            application.commands.add(
+              'unarchive-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Unarchive ${noteCommandTarget}`),
+              () => this.setArchiveSelectedNotes(false),
+              'unarchive',
+            ),
+            application.commands.add(
+              'restore-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Restore ${noteCommandTarget}`),
+              () => this.setTrashSelectedNotes(false),
+              'restore',
+            ),
+            application.commands.add(
+              'trash-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Trash ${noteCommandTarget}`),
+              () => this.setTrashSelectedNotes(true),
+              'trash',
+            ),
+            application.commands.add(
+              'delete-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Delete ${noteCommandTarget} permanently`),
+              () => this.deleteNotesPermanently(),
+              'trash',
+            ),
+            application.commands.add(
+              'export-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Export ${noteCommandTarget}`),
+              this.exportSelectedNotes,
+              'download',
+            ),
+            application.commands.add(
+              'duplicate-current',
+              jtString(c('B3.Notes.NoteActions.Action').jt`Duplicate ${noteCommandTarget}`),
+              this.duplicateSelectedNotes,
+              'copy',
+            ),
+          )
+        },
+      ),
+    )
+
+    this.disposers.push(
+      application.keyboardService.addCommandHandler({
         command: PIN_NOTE_COMMAND,
         category: 'Current note',
-        description: 'Pin current note',
-        onKeyDown: () => {
-          this.togglePinSelectedNotes()
-        },
+        description: c('B3.Notes.NoteActions.Action').t`Pin/unpin selected note(s)`,
+        onKeyDown: this.togglePinSelectedNotes,
       }),
-      this.keyboardService.addCommandHandler({
+      application.keyboardService.addCommandHandler({
         command: STAR_NOTE_COMMAND,
         category: 'Current note',
-        description: 'Star current note',
-        onKeyDown: () => {
-          this.toggleStarSelectedNotes()
-        },
+        description: c('B3.Notes.NoteActions.Action').t`Star/unstar selected note(s)`,
+        onKeyDown: this.toggleStarSelectedNotes,
       }),
     )
 
     this.disposers.push(
-      this.itemControllerGroup.addActiveControllerChangeObserver(() => {
-        const controllers = this.itemControllerGroup.itemControllers
+      application.itemControllerGroup.addActiveControllerChangeObserver(() => {
+        const controllers = application.itemControllerGroup.itemControllers
 
         const activeNoteUuids = controllers.map((controller) => controller.item.uuid)
 
@@ -117,7 +200,7 @@ export class NotesController
 
         for (const selectedId of selectedUuids) {
           if (!activeNoteUuids.includes(selectedId)) {
-            this.itemListController.deselectItem({ uuid: selectedId })
+            application.itemListController.deselectItem({ uuid: selectedId })
           }
         }
       }),
@@ -126,7 +209,7 @@ export class NotesController
 
   async handleEvent(event: InternalEventInterface): Promise<void> {
     if (event.type === ApplicationEvent.PreferencesChanged) {
-      this.shouldLinkToParentFolders = this.preferences.getValue(
+      this.shouldLinkToParentFolders = this.application.preferences.getValue(
         PrefKey.NoteAddToParentFolders,
         PrefDefaults[PrefKey.NoteAddToParentFolders],
       )
@@ -135,17 +218,23 @@ export class NotesController
     }
   }
 
+  private disposeCommandRegisters() {
+    if (this.commandRegisterDisposers.length > 0) {
+      for (const dispose of this.commandRegisterDisposers) {
+        dispose()
+      }
+    }
+  }
+
   override deinit() {
     super.deinit()
     ;(this.lastSelectedNote as unknown) = undefined
-    ;(this.itemListController as unknown) = undefined
-    ;(this.navigationController as unknown) = undefined
 
     destroyAllObjectProperties(this)
   }
 
   public get selectedNotes(): SNNote[] {
-    return this.itemListController.getFilteredSelectedItems<SNNote>(ContentType.TYPES.Note)
+    return this.application.itemListController.getFilteredSelectedItems<SNNote>(ContentType.TYPES.Note)
   }
 
   get firstSelectedNote(): SNNote | undefined {
@@ -161,7 +250,7 @@ export class NotesController
   }
 
   get trashedNotesCount(): number {
-    return this.items.trashedItems.length
+    return this.application.items.trashedItems.length
   }
 
   setContextMenuOpen = (open: boolean) => {
@@ -173,8 +262,8 @@ export class NotesController
   }
 
   async changeSelectedNotes(mutate: (mutator: NoteMutator) => void): Promise<void> {
-    await this.mutator.changeItems(this.getSelectedNotesList(), mutate, MutationType.NoUpdateUserTimestamps)
-    this.sync.sync().catch(console.error)
+    await this.application.mutator.changeItems(this.getSelectedNotesList(), mutate, MutationType.NoUpdateUserTimestamps)
+    this.application.sync.sync().catch(console.error)
   }
 
   setHideSelectedNotePreviews(hide: boolean): void {
@@ -213,18 +302,18 @@ export class NotesController
 
   async deleteNotes(permanently: boolean): Promise<boolean> {
     if (this.getSelectedNotesList().some((note) => note.locked)) {
-      const text = StringUtils.deleteLockedNotesAttempt(this.selectedNotesCount)
-      this.alerts.alert(text).catch(console.error)
+      const text = StringDeleteLockedNotesAttempt(this.selectedNotesCount)
+      this.application.alerts.alert(text).catch(console.error)
       return false
     }
 
-    const title = permanently ? Strings.deleteItemsPermanentlyTitle : Strings.trashItemsTitle
+    const title = permanently ? StringDeleteItemsPermanentlyTitle() : StringTrashItemsTitle()
     let noteTitle = undefined
     if (this.selectedNotesCount === 1) {
       const selectedNote = this.getSelectedNotesList()[0]
-      noteTitle = selectedNote.title.length ? `'${selectedNote.title}'` : 'this note'
+      noteTitle = selectedNote.title.length ? `'${selectedNote.title}'` : c('B3.Notes.NoteActions.Label').t`this note`
     }
-    const text = StringUtils.deleteNotes(permanently, this.selectedNotesCount, noteTitle)
+    const text = StringDeleteNotes(permanently, this.selectedNotesCount, noteTitle)
 
     if (
       await confirmDialog({
@@ -233,10 +322,10 @@ export class NotesController
         confirmButtonStyle: 'danger',
       })
     ) {
-      this.itemListController.selectNextItem()
+      this.application.itemListController.selectNextItem()
       if (permanently) {
-        await this.mutator.deleteItems(this.getSelectedNotesList())
-        void this.sync.sync()
+        await this.application.mutator.deleteItems(this.getSelectedNotesList())
+        void this.application.sync.sync()
       } else {
         await this.changeSelectedNotes((mutator) => {
           mutator.trashed = true
@@ -248,7 +337,7 @@ export class NotesController
     return false
   }
 
-  togglePinSelectedNotes(): void {
+  togglePinSelectedNotes = () => {
     const notes = this.selectedNotes
     const pinned = notes.some((note) => note.pinned)
 
@@ -259,7 +348,7 @@ export class NotesController
     }
   }
 
-  toggleStarSelectedNotes(): void {
+  toggleStarSelectedNotes = () => {
     const notes = this.selectedNotes
     const starred = notes.some((note) => note.starred)
 
@@ -284,7 +373,9 @@ export class NotesController
 
   async setArchiveSelectedNotes(archived: boolean): Promise<void> {
     if (this.getSelectedNotesList().some((note) => note.locked)) {
-      this.alerts.alert(StringUtils.archiveLockedNotesAttempt(archived, this.selectedNotesCount)).catch(console.error)
+      this.application.alerts
+        .alert(StringArchiveLockedNotesAttempt(archived, this.selectedNotesCount))
+        .catch(console.error)
       return
     }
 
@@ -293,7 +384,7 @@ export class NotesController
     })
 
     runInAction(() => {
-      this.itemListController.deselectAll()
+      this.application.itemListController.deselectAll()
       this.contextMenuOpen = false
     })
   }
@@ -312,18 +403,18 @@ export class NotesController
   async setProtectSelectedNotes(protect: boolean): Promise<void> {
     const selectedNotes = this.getSelectedNotesList()
     if (protect) {
-      await this.protections.protectNotes(selectedNotes)
+      await this.application.protections.protectNotes(selectedNotes)
       this.setShowProtectedWarning(true)
     } else {
-      await this.protections.unprotectNotes(selectedNotes)
+      await this.application.protections.unprotectNotes(selectedNotes)
       this.setShowProtectedWarning(false)
     }
 
-    void this.sync.sync()
+    void this.application.sync.sync()
   }
 
   unselectNotes(): void {
-    this.itemListController.deselectAll()
+    this.application.itemListController.deselectAll()
   }
 
   getSpellcheckStateForNote(note: SNNote) {
@@ -331,52 +422,55 @@ export class NotesController
   }
 
   async toggleGlobalSpellcheckForNote(note: SNNote) {
-    await this.mutator.changeItem<NoteMutator>(
+    await this.application.mutator.changeItem<NoteMutator>(
       note,
       (mutator) => {
         mutator.toggleSpellcheck()
       },
       MutationType.NoUpdateUserTimestamps,
     )
-    this.sync.sync().catch(console.error)
+    this.application.sync.sync().catch(console.error)
   }
 
   getEditorWidthForNote(note: SNNote) {
     return (
       note.editorWidth ??
-      this.preferences.getLocalValue(LocalPrefKey.EditorLineWidth, PrefDefaults[LocalPrefKey.EditorLineWidth])
+      this.application.preferences.getLocalValue(
+        LocalPrefKey.EditorLineWidth,
+        PrefDefaults[LocalPrefKey.EditorLineWidth],
+      )
     )
   }
 
   async setNoteEditorWidth(note: SNNote, editorWidth: EditorLineWidth) {
-    await this.mutator.changeItem<NoteMutator>(
+    await this.application.mutator.changeItem<NoteMutator>(
       note,
       (mutator) => {
         mutator.editorWidth = editorWidth
       },
       MutationType.NoUpdateUserTimestamps,
     )
-    this.sync.sync().catch(console.error)
+    this.application.sync.sync().catch(console.error)
   }
 
   async addTagToSelectedNotes(tag: SNTag): Promise<void> {
     const selectedNotes = this.getSelectedNotesList()
     await Promise.all(
       selectedNotes.map(async (note) => {
-        await this.mutator.addTagToNote(note, tag, this.shouldLinkToParentFolders)
+        await this.application.mutator.addTagToNote(note, tag, this.shouldLinkToParentFolders)
       }),
     )
-    this.sync.sync().catch(console.error)
+    this.application.sync.sync().catch(console.error)
   }
 
   async removeTagFromSelectedNotes(tag: SNTag): Promise<void> {
     const selectedNotes = this.getSelectedNotesList()
-    await this.mutator.changeItem(tag, (mutator) => {
+    await this.application.mutator.changeItem(tag, (mutator) => {
       for (const note of selectedNotes) {
         mutator.removeItemAsRelationship(note)
       }
     })
-    this.sync.sync().catch(console.error)
+    this.application.sync.sync().catch(console.error)
   }
 
   isTagInSelectedNotes(tag: SNTag): boolean {
@@ -400,12 +494,195 @@ export class NotesController
         confirmButtonStyle: 'danger',
       })
     ) {
-      await this.mutator.emptyTrash()
-      this.sync.sync().catch(console.error)
+      await this.application.mutator.emptyTrash()
+      this.application.sync.sync().catch(console.error)
     }
   }
 
   private getSelectedNotesList(): SNNote[] {
     return Object.values(this.selectedNotes)
+  }
+
+  async createNoteWithContent(
+    editorIdentifier: string,
+    title: string,
+    text: string,
+    references: ContentReference[] = [],
+  ): Promise<SNNote> {
+    const noteType = noteTypeForEditorIdentifier(editorIdentifier)
+    const selectedTag = this.application.navigationController.selected
+    const templateNote = this.application.items.createTemplateItem<NoteContent, SNNote>(ContentType.TYPES.Note, {
+      title,
+      text,
+      references,
+      noteType,
+      editorIdentifier,
+    })
+    const note = await this.application.mutator.insertItem<SNNote>(templateNote)
+    if (selectedTag instanceof SNTag) {
+      const shouldAddTagHierarchy = this.application.preferences.getValue(PrefKey.NoteAddToParentFolders, true)
+      await this.application.mutator.addTagToNote(templateNote, selectedTag, shouldAddTagHierarchy)
+    }
+    return note
+  }
+
+  showSuperExportModal = () => {
+    this.shouldShowSuperExportModal = true
+  }
+  closeSuperExportModal = () => {
+    this.shouldShowSuperExportModal = false
+  }
+
+  // gets attribute info about the given notes in a single loop
+  getNotesInfo = (notes: SNNote[]) => {
+    let pinned = false,
+      unpinned = false,
+      starred = false,
+      unstarred = false,
+      trashed = false,
+      notTrashed = false,
+      archived = false,
+      unarchived = false,
+      hiddenPreviews = 0,
+      unhiddenPreviews = 0,
+      locked = 0,
+      unlocked = 0,
+      protecteds = 0,
+      unprotected = 0
+
+    for (let i = 0; i < notes.length; i++) {
+      const note = notes[i]
+      if (!note) {
+        continue
+      }
+      if (note.pinned) {
+        pinned = true
+      } else {
+        unpinned = true
+      }
+      if (note.starred) {
+        starred = true
+      } else {
+        unstarred = true
+      }
+      if (note.trashed) {
+        trashed = true
+      } else {
+        notTrashed = true
+      }
+      if (note.archived) {
+        archived = true
+      } else {
+        unarchived = true
+      }
+      if (note.hidePreview) {
+        hiddenPreviews++
+      } else {
+        unhiddenPreviews++
+      }
+      if (note.locked) {
+        locked++
+      } else {
+        unlocked++
+      }
+      if (note.protected) {
+        protecteds++
+      } else {
+        unprotected++
+      }
+    }
+
+    return {
+      pinned,
+      unpinned,
+      starred,
+      unstarred,
+      trashed,
+      notTrashed,
+      archived,
+      unarchived,
+      hidePreviews: hiddenPreviews > unhiddenPreviews,
+      locked: locked > unlocked,
+      protect: protecteds > unprotected,
+    }
+  }
+
+  downloadSelectedNotes = async () => {
+    const notes = this.selectedNotes
+    if (notes.length === 0) {
+      return
+    }
+    const noteWord = pluralize(
+      notes.length,
+      c('B3.Notes.NoteActions.Label').t`note`,
+      c('B3.Notes.NoteActions.Label').t`notes`,
+    )
+    const toast = addToast({
+      type: ToastType.Progress,
+      message: jtString(c('B3.Notes.NoteActions.Info').jt`Exporting ${notes.length} ${noteWord}...`),
+    })
+    try {
+      const result = await createNoteExport(this.application, notes)
+      if (!result) {
+        return
+      }
+      const { blob, fileName } = result
+      void downloadOrShareBlobBasedOnPlatform({
+        archiveService: this.application.archiveService,
+        platform: this.application.platform,
+        mobileDevice: this.application.mobileDevice,
+        blob: blob,
+        filename: fileName,
+        isNativeMobileWeb: this.application.isNativeMobileWeb(),
+      })
+      dismissToast(toast)
+    } catch (error) {
+      console.error(error)
+      addToast({
+        type: ToastType.Error,
+        message: c('B3.Notes.NoteActions.Error').t`Could not export notes`,
+      })
+      dismissToast(toast)
+    }
+  }
+
+  exportSelectedNotes = () => {
+    const notes = this.selectedNotes
+    const hasSuperNote = notes.some((note) => note.noteType === NoteType.Super)
+
+    if (hasSuperNote) {
+      this.showSuperExportModal()
+      return
+    }
+
+    this.downloadSelectedNotes().catch(console.error)
+  }
+
+  duplicateSelectedNotes = async () => {
+    const notes = this.selectedNotes
+    await Promise.all(
+      notes.map((note) =>
+        this.application.mutator
+          .duplicateItem(note)
+          .then((duplicated) =>
+            addToast({
+              type: ToastType.Regular,
+              message: jtString(c('B3.Notes.NoteActions.Info').jt`Duplicated note "${duplicated.title}"`),
+              actions: [
+                {
+                  label: c('B3.Notes.NoteActions.Action').t`Open`,
+                  handler: (toastId) => {
+                    this.application.itemListController.selectUuids([duplicated.uuid], true).catch(console.error)
+                    dismissToast(toastId)
+                  },
+                },
+              ],
+              autoClose: true,
+            }),
+          )
+          .catch(console.error),
+      ),
+    )
+    void this.application.sync.sync()
   }
 }

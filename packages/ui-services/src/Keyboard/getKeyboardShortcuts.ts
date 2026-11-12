@@ -28,9 +28,15 @@ import {
   SUPER_SEARCH_NEXT_RESULT,
   SUPER_SEARCH_PREVIOUS_RESULT,
   SUPER_SEARCH_TOGGLE_REPLACE_MODE,
+  UNIVERSAL_TOGGLE_SEARCH,
+  UNIVERSAL_SEARCH_TOGGLE_CASE_SENSITIVE,
+  UNIVERSAL_SEARCH_NEXT_RESULT,
+  UNIVERSAL_SEARCH_PREVIOUS_RESULT,
+  UNIVERSAL_SEARCH_TOGGLE_REPLACE_MODE,
   CHANGE_EDITOR_WIDTH_COMMAND,
   SUPER_TOGGLE_TOOLBAR,
   TOGGLE_KEYBOARD_SHORTCUTS_MODAL,
+  TOGGLE_COMMAND_PALETTE,
 } from './KeyboardCommands'
 import { KeyboardKey } from './KeyboardKey'
 import { KeyboardModifier, getPrimaryModifier } from './KeyboardModifier'
@@ -108,7 +114,7 @@ export function getKeyboardShortcuts(platform: Platform, _environment: Environme
     },
     {
       command: CHANGE_EDITOR_COMMAND,
-      key: '/',
+      key: '?',
       modifiers: [primaryModifier, KeyboardModifier.Shift],
       preventDefault: true,
     },
@@ -178,6 +184,31 @@ export function getKeyboardShortcuts(platform: Platform, _environment: Environme
       modifiers: [KeyboardModifier.Shift],
     },
     {
+      command: UNIVERSAL_TOGGLE_SEARCH,
+      key: 'f',
+      modifiers: [primaryModifier],
+    },
+    {
+      command: UNIVERSAL_SEARCH_TOGGLE_REPLACE_MODE,
+      key: isMacPlatform(platform) ? undefined : 'h',
+      code: isMacPlatform(platform) ? 'KeyF' : undefined,
+      modifiers: isMacPlatform(platform) ? [KeyboardModifier.Alt, primaryModifier] : [primaryModifier],
+    },
+    {
+      command: UNIVERSAL_SEARCH_TOGGLE_CASE_SENSITIVE,
+      key: 'c',
+      modifiers: [KeyboardModifier.Alt],
+    },
+    {
+      command: UNIVERSAL_SEARCH_NEXT_RESULT,
+      key: 'F3',
+    },
+    {
+      command: UNIVERSAL_SEARCH_PREVIOUS_RESULT,
+      key: 'F3',
+      modifiers: [KeyboardModifier.Shift],
+    },
+    {
       command: SUPER_SHOW_MARKDOWN_PREVIEW,
       key: 'm',
       modifiers: [primaryModifier, KeyboardModifier.Shift],
@@ -199,6 +230,12 @@ export function getKeyboardShortcuts(platform: Platform, _environment: Environme
       command: TOGGLE_KEYBOARD_SHORTCUTS_MODAL,
       key: '/',
       modifiers: [primaryModifier],
+    },
+    {
+      command: TOGGLE_COMMAND_PALETTE,
+      code: 'Semicolon',
+      modifiers: [primaryModifier, KeyboardModifier.Shift],
+      preventDefault: true,
     },
   ]
 }

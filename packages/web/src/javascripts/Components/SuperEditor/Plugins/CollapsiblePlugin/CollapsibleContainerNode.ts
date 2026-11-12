@@ -21,8 +21,6 @@ import {
 
 type SerializedCollapsibleContainerNode = Spread<
   {
-    type: 'collapsible-container'
-    version: 1
     open: boolean
   },
   SerializedElementNode
@@ -44,12 +42,12 @@ export class CollapsibleContainerNode extends ElementNode {
     this.__open = open ?? false
   }
 
-  static override getType(): string {
-    return 'collapsible-container'
-  }
-
   static override clone(node: CollapsibleContainerNode): CollapsibleContainerNode {
     return new CollapsibleContainerNode(node.__open, node.__key)
+  }
+
+  static override getType(): string {
+    return 'collapsible-container'
   }
 
   override createDOM(_: EditorConfig, editor: LexicalEditor): HTMLElement {
@@ -85,8 +83,7 @@ export class CollapsibleContainerNode extends ElementNode {
   }
 
   static override importJSON(serializedNode: SerializedCollapsibleContainerNode): CollapsibleContainerNode {
-    const node = $createCollapsibleContainerNode(serializedNode.open)
-    return node
+    return $createCollapsibleContainerNode(serializedNode.open).updateFromJSON(serializedNode)
   }
 
   exportDOM(): DOMExportOutput {
@@ -100,8 +97,6 @@ export class CollapsibleContainerNode extends ElementNode {
   override exportJSON(): SerializedCollapsibleContainerNode {
     return {
       ...super.exportJSON(),
-      type: 'collapsible-container',
-      version: 1,
       open: this.__open,
     }
   }

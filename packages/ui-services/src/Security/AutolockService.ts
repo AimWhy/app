@@ -4,6 +4,7 @@ import {
   ApplicationInterface,
   InternalEventBusInterface,
 } from '@standardnotes/services'
+import { c } from 'ttag'
 
 const MILLISECONDS_PER_SECOND = 1000
 const POLL_INTERVAL = 50
@@ -13,6 +14,7 @@ const LockInterval = {
   Immediate: 1,
   OneMinute: 60 * MILLISECONDS_PER_SECOND,
   FiveMinutes: 300 * MILLISECONDS_PER_SECOND,
+  TenMinutes: 600 * MILLISECONDS_PER_SECOND,
   OneHour: 3600 * MILLISECONDS_PER_SECOND,
 }
 
@@ -119,23 +121,27 @@ export class AutolockService extends AbstractService {
     return [
       {
         value: LockInterval.None,
-        label: 'Off',
+        label: c('B5.SecuritySync.Autolock.Label').t`Off`,
       },
       {
         value: LockInterval.Immediate,
-        label: 'Immediately',
+        label: c('B5.SecuritySync.Autolock.Label').t`Immediately`,
       },
       {
         value: LockInterval.OneMinute,
-        label: '1m',
+        label: c('B5.SecuritySync.Autolock.Label').t`1m`,
       },
       {
         value: LockInterval.FiveMinutes,
-        label: '5m',
+        label: c('B5.SecuritySync.Autolock.Label').t`5m`,
+      },
+      {
+        value: LockInterval.TenMinutes,
+        label: c('B5.SecuritySync.Autolock.Label').t`10m`,
       },
       {
         value: LockInterval.OneHour,
-        label: '1h',
+        label: c('B5.SecuritySync.Autolock.Label').t`1h`,
       },
     ]
   }

@@ -19,8 +19,6 @@ import {
   ApplicationOptionsDefaults,
   InternalFeatureService,
   InternalFeatureServiceInterface,
-  NoteContent,
-  SNNote,
   DesktopManagerInterface,
   FileItem,
   ApiVersion,
@@ -29,6 +27,7 @@ import { action, computed, makeObservable, observable } from 'mobx'
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 import { PanelResizedData } from '@/Types/PanelResizedData'
 import { getBlobFromBase64, isDesktopApplication, isDev } from '@/Utils'
+import { prepareWebAuthnRegistrationOptions } from '@/Utils/prepareWebAuthnRegistrationOptions'
 import {
   ArchiveManager,
   AutolockService,
@@ -37,6 +36,7 @@ import {
   IsGlobalSpellcheckEnabled,
   IsMobileDevice,
   IsNativeIOS,
+  IsAndroid,
   IsNativeMobileWeb,
   KeyboardService,
   PluginsServiceInterface,
@@ -50,9 +50,12 @@ import { PreferencePaneId } from '@standardnotes/services'
 import { MobileWebReceiver, NativeMobileEventListener } from '../NativeMobileWeb/MobileWebReceiver'
 import { setCustomViewportHeight } from '@/setViewportHeightWithFallback'
 import { FeatureName } from '@/Controllers/FeatureName'
+import { NoteType, noteTypeForEditorIdentifier } from '@standardnotes/features'
+import { HeadlessSuperConverter } from '@/Components/SuperEditor/Tools/HeadlessSuperConverter'
 import { VisibilityObserver } from './VisibilityObserver'
 import { DevMode } from './DevMode'
 import { ToastType, addToast, dismissToast } from '@standardnotes/toast'
+import { c } from 'ttag'
 import { WebDependencies } from './Dependencies/WebDependencies'
 import { Web_TYPES } from './Dependencies/Types'
 import { ApplicationEventObserver } from '@/Event/ApplicationEventObserver'
@@ -76,10 +79,13 @@ import { FilePreviewModalController } from '@/Controllers/FilePreviewModalContro
 import { OpenSubscriptionDashboard } from './UseCase/OpenSubscriptionDashboard'
 import { ItemGroupController } from '@/Components/NoteView/Controller/ItemGroupController'
 import { NoAccountWarningController } from '@/Controllers/NoAccountWarningController'
+import { LocalizationController } from '@/Controllers/Localization/LocalizationController'
 import { SearchOptionsController } from '@/Controllers/SearchOptionsController'
 import { PersistenceService } from '@/Controllers/Abstract/PersistenceService'
 import { removeFromArray } from '@standardnotes/utils'
 import { FileItemActionType } from '@/Components/AttachedFilesPopover/PopoverFileItemAction'
+import { RecentActionsState } from './Recents'
+import { CommandService } from '../Components/CommandPalette/CommandService'
 
 export type WebEventObserver = (event: WebAppEvent, data?: unknown) => void
 
@@ -95,6 +101,7 @@ export class WebApplication extends SNApplication implements WebApplicationInter
   public isSessionsModalVisible = false
 
   public devMode?: DevMode
+  public recents = new RecentActionsState()
 
   constructor(
     deviceInterface: WebOrDesktopDevice,
@@ -123,9 +130,10 @@ export class WebApplication extends SNApplication implements WebApplicationInter
         deviceInterface.environment === Environment.Mobile ? 250 : ApplicationOptionsDefaults.sleepBetweenBatches,
       allowMultipleSelection: deviceInterface.environment !== Environment.Mobile,
       allowNoteSelectionStatePersistence: deviceInterface.environment !== Environment.Mobile,
-      u2fAuthenticatorRegistrationPromptFunction: startRegistration as unknown as (
-        registrationOptions: Record<string, unknown>,
-      ) => Promise<Record<string, unknown>>,
+      u2fAuthenticatorRegistrationPromptFunction: ((registrationOptions: Record<string, unknown>) =>
+        startRegistration(
+          prepareWebAuthnRegistrationOptions(registrationOptions) as unknown as Parameters<typeof startRegistration>[0],
+        )) as unknown as (registrationOptions: Record<string, unknown>) => Promise<Record<string, unknown>>,
       u2fAuthenticatorVerificationPromptFunction: startAuthentication as unknown as (
         authenticationOptions: Record<string, unknown>,
       ) => Promise<Record<string, unknown>>,
@@ -153,6 +161,7 @@ export class WebApplication extends SNApplication implements WebApplicationInter
       void this.themeManager
     }
     void this.momentsService
+    void this.localizationController
     void this.routeService
 
     if (isDev) {
@@ -254,12 +263,20 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     return this.deps.get<IsNativeIOS>(Web_TYPES.IsNativeIOS).execute().getValue()
   }
 
+  isAndroid(): boolean {
+    return this.deps.get<IsAndroid>(Web_TYPES.IsAndroid).execute().getValue()
+  }
+
+  canShowPurchaseFlow(): boolean {
+    return !this.isAndroid()
+  }
+
   get isMobileDevice(): boolean {
     return this.deps.get<IsMobileDevice>(Web_TYPES.IsMobileDevice).execute().getValue()
   }
 
   get hideOutboundSubscriptionLinks() {
-    return this.isNativeIOS()
+    return this.isNativeIOS() || this.isAndroid()
   }
 
   get mobileDevice(): MobileDeviceInterface {
@@ -357,8 +374,8 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     this.notifyWebEvent(WebAppEvent.MobileKeyboardWillChangeFrame, frame)
   }
 
-  handleMobileKeyboardDidChangeFrameEvent(frame: { height: number; contentHeight: number }): void {
-    this.notifyWebEvent(WebAppEvent.MobileKeyboardDidChangeFrame, frame)
+  handleMobileKeyboardDidHideEvent(): void {
+    setCustomViewportHeight(100, 'vh', true)
   }
 
   handleOpenFilePreviewEvent({ id }: { id: string }): void {
@@ -383,22 +400,35 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     filesController.uploadNewFile(mappedFile).catch(console.error)
   }
 
+  private noteTextForSharedContent(editorIdentifier: string, text: string): string {
+    const noteType = noteTypeForEditorIdentifier(editorIdentifier)
+    if (noteType !== NoteType.Super || text.length === 0) {
+      return text
+    }
+
+    const converter = new HeadlessSuperConverter()
+    if (converter.isValidSuperString(text)) {
+      return text
+    }
+
+    return converter.convertOtherFormatToSuperString(text, 'md')
+  }
+
   async handleReceivedTextEvent({ text, title }: { text: string; title?: string | undefined }) {
     const titleForNote = title || this.itemListController.titleForNewNote()
 
-    const note = this.items.createTemplateItem<NoteContent, SNNote>(ContentType.TYPES.Note, {
-      title: titleForNote,
-      text: text,
-      references: [],
-    })
+    const selectedTag = this.navigationController.selected
+    const tagForDefaults = selectedTag instanceof SNTag ? selectedTag : undefined
+    const editorIdentifier = this.componentManager.getDefaultEditorIdentifier(tagForDefaults)
+    const noteText = this.noteTextForSharedContent(editorIdentifier, text)
 
-    const insertedNote = await this.mutator.insertItem(note)
+    const insertedNote = await this.notesController.createNoteWithContent(editorIdentifier, titleForNote, noteText)
 
     this.itemListController.selectItem(insertedNote.uuid, true).catch(console.error)
 
     addToast({
       type: ToastType.Success,
-      message: 'Successfully created note from shared text',
+      message: c('B8.MobileDesktopShared.Mobile.Info').t`Successfully created note from shared text`,
     })
   }
 
@@ -411,12 +441,12 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     if (isImagePath) {
       const fetchToastUuid = addToast({
         type: ToastType.Loading,
-        message: 'Fetching image from link...',
+        message: c('B8.MobileDesktopShared.Mobile.Info').t`Fetching image from link...`,
       })
       try {
         const imgResponse = await fetch(link)
         if (!imgResponse.ok) {
-          throw new Error(`${imgResponse.status}: Could not fetch image`)
+          throw new Error(c('B4.Notes.EditingUI.Error').t`${imgResponse.status}: Could not fetch image`)
         }
         const imgBlob = await imgResponse.blob()
         const file = new File([imgBlob], finalPath, {
@@ -501,8 +531,8 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     return this.subscriptionController.hasFirstPartyOnlineOrOfflineSubscription()
   }
 
-  async openPurchaseFlow() {
-    await this.purchaseFlowController.openPurchaseFlow()
+  async openPurchaseFlow(options?: { continueToCheckoutAfterSignIn?: boolean }) {
+    await this.purchaseFlowController.openPurchaseFlow(options)
   }
 
   addNativeMobileEventListener = (listener: NativeMobileEventListener) => {
@@ -597,6 +627,10 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     return this.deps.get<KeyboardService>(Web_TYPES.KeyboardService)
   }
 
+  get commands(): CommandService {
+    return this.deps.get<CommandService>(Web_TYPES.CommandService)
+  }
+
   get featuresController(): FeaturesController {
     return this.deps.get<FeaturesController>(Web_TYPES.FeaturesController)
   }
@@ -655,6 +689,10 @@ export class WebApplication extends SNApplication implements WebApplicationInter
 
   get noAccountWarningController(): NoAccountWarningController {
     return this.deps.get<NoAccountWarningController>(Web_TYPES.NoAccountWarningController)
+  }
+
+  get localizationController(): LocalizationController {
+    return this.deps.get<LocalizationController>(Web_TYPES.LocalizationController)
   }
 
   get searchOptionsController(): SearchOptionsController {

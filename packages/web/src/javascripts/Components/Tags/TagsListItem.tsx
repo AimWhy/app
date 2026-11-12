@@ -1,5 +1,5 @@
 import Icon from '@/Components/Icon/Icon'
-import { FOCUSABLE_BUT_NOT_TABBABLE, TAG_FOLDERS_FEATURE_NAME } from '@/Constants/Constants'
+import { FOCUSABLE_BUT_NOT_TABBABLE, getTagFoldersFeatureName } from '@/Constants/Constants'
 import { KeyboardKey } from '@standardnotes/ui-services'
 import { FeaturesController } from '@/Controllers/FeaturesController'
 import { NavigationController } from '@/Controllers/Navigation/NavigationController'
@@ -26,6 +26,9 @@ import { log, LoggingDomain } from '@/Logging'
 import { NoteDragDataFormat, TagDragDataFormat } from './DragNDrop'
 import { usePremiumModal } from '@/Hooks/usePremiumModal'
 import { useApplication } from '../ApplicationProvider'
+import { mergeRefs } from '../../Hooks/mergeRefs'
+import { getTitleForLinkedTag } from '../../Utils/Items/Display/getTitleForLinkedTag'
+import { c } from 'ttag'
 
 type Props = {
   tag: SNTag
@@ -46,6 +49,8 @@ export const TagsListItem: FunctionComponent<Props> = observer(
 
     const [title, setTitle] = useState(tag.title || '')
     const [subtagTitle, setSubtagTitle] = useState('')
+
+    const tagRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const subtagInputRef = useRef<HTMLInputElement>(null)
     const menuButtonRef = useRef<HTMLAnchorElement>(null)
@@ -74,6 +79,8 @@ export const TagsListItem: FunctionComponent<Props> = observer(
     const [hadChildren, setHadChildren] = useState(hasChildren)
 
     const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false)
+
+    const tagHierarchyPrefix = navigationController.isSearching && getTitleForLinkedTag(tag, application)?.titlePrefix
 
     useEffect(() => {
       if (!hadChildren && hasChildren) {
@@ -117,6 +124,18 @@ export const TagsListItem: FunctionComponent<Props> = observer(
     const selectCurrentTag = useCallback(async () => {
       await navigationController.setSelectedTag(tag, type, {
         userTriggered: true,
+        scrollIntoView: false,
+      })
+    }, [navigationController, tag, type])
+
+    const clearSearchAndSelectCurrentTag = useCallback(async () => {
+      if (!navigationController.isSearching) {
+        return
+      }
+      navigationController.setSearchQuery('')
+      await navigationController.setSelectedTag(tag, type, {
+        userTriggered: true,
+        scrollIntoView: true,
       })
     }, [navigationController, tag, type])
 
@@ -196,8 +215,6 @@ export const TagsListItem: FunctionComponent<Props> = observer(
       [navigationController, onContextMenu, tag, type],
     )
 
-    const tagRef = useRef<HTMLDivElement>(null)
-
     const { addDragTarget, removeDragTarget } = useFileDragNDrop()
 
     useEffect(() => {
@@ -205,7 +222,8 @@ export const TagsListItem: FunctionComponent<Props> = observer(
 
       if (target) {
         addDragTarget(target, {
-          tooltipText: `Drop your files to upload and link them to tag "${tag.title}"`,
+          tooltipText: c('B4.Notes.TagsLinkedItems.Info')
+            .jt`Drop your files to upload and link them to tag "${tag.title}"` as unknown as string,
           async callback(file) {
             await linkingController.linkItems(file, tag)
           },
@@ -261,7 +279,7 @@ export const TagsListItem: FunctionComponent<Props> = observer(
             return
           }
           if (!hasFolders) {
-            premiumModal.activate(TAG_FOLDERS_FEATURE_NAME)
+            premiumModal.activate(getTagFoldersFeatureName())
             return
           }
 
@@ -292,6 +310,7 @@ export const TagsListItem: FunctionComponent<Props> = observer(
             isBeingDraggedOver && 'is-drag-over',
           )}
           onClick={selectCurrentTag}
+          onDoubleClick={clearSearchAndSelectCurrentTag}
           onKeyDown={(event) => {
             if (event.key === KeyboardKey.Enter || event.key === KeyboardKey.Space) {
               selectCurrentTag().catch(console.error)
@@ -301,7 +320,18 @@ export const TagsListItem: FunctionComponent<Props> = observer(
               setTagExpanded(true)
             }
           }}
-          ref={tagRef}
+          ref={mergeRefs([
+            tagRef,
+            function scrollIntoViewIfNeeded(el) {
+              if (!el || navigationController.tagToScrollIntoView !== tag) {
+                return
+              }
+              el.scrollIntoView({
+                block: 'center',
+              })
+              navigationController.tagToScrollIntoView = undefined
+            },
+          ])}
           style={{
             paddingLeft: `${level * PADDING_PER_LEVEL_PX + PADDING_BASE_PX}px`,
           }}
@@ -330,9 +360,7 @@ export const TagsListItem: FunctionComponent<Props> = observer(
 
             {isEditing && (
               <input
-                className={
-                  'title editing overflow-hidden text-mobile-navigation-list-item focus:shadow-none focus:outline-none lg:text-navigation-list-item'
-                }
+                className="title editing min-w-0 overflow-hidden text-mobile-navigation-list-item focus:shadow-none focus:outline-none lg:text-navigation-list-item"
                 id={`react-tag-${tag.uuid}-${type}`}
                 onBlur={onBlur}
                 onInput={onInput}
@@ -346,11 +374,10 @@ export const TagsListItem: FunctionComponent<Props> = observer(
             {!isEditing && (
               <>
                 <div
-                  className={
-                    'title overflow-hidden text-left text-mobile-navigation-list-item focus:shadow-none focus:outline-none lg:text-navigation-list-item'
-                  }
+                  className="title overflow-hidden text-left text-mobile-navigation-list-item focus:shadow-none focus:outline-none lg:text-navigation-list-item"
                   id={`react-tag-${tag.uuid}-${type}`}
                 >
+                  {tagHierarchyPrefix && <span className="opacity-50">{tagHierarchyPrefix}</span>}
                   {title}
                 </div>
               </>
@@ -398,7 +425,11 @@ export const TagsListItem: FunctionComponent<Props> = observer(
             </div>
           </div>
 
-          {tag.conflictOf && <div className="-mt-1 text-[0.625rem] font-bold text-danger">Conflicted Copy</div>}
+          {tag.conflictOf && (
+            <div className="-mt-1 text-[0.625rem] font-bold text-danger">
+              {c('B4.Notes.TagsLinkedItems.Label').t`Conflicted Copy`}
+            </div>
+          )}
         </div>
         {isAddingSubtag && (
           <div

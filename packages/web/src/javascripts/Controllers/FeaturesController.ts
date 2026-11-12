@@ -1,5 +1,5 @@
 import { FeaturesClientInterface, InternalEventHandlerInterface } from '@standardnotes/services'
-import { FeatureName } from './FeatureName'
+import { FeatureName, getFeatureNameLabel } from './FeatureName'
 import { PremiumFeatureModalType } from '@/Components/PremiumFeaturesModal/PremiumFeatureModalType'
 import { destroyAllObjectProperties } from '@/Utils'
 import {
@@ -93,7 +93,11 @@ export class FeaturesController extends AbstractViewController implements Intern
   }
 
   public async showPremiumAlert(featureName?: FeatureName | string): Promise<void> {
-    this.premiumAlertFeatureName = featureName
+    if (featureName === FeatureName.Files || featureName === FeatureName.Super) {
+      this.premiumAlertFeatureName = getFeatureNameLabel(featureName)
+    } else {
+      this.premiumAlertFeatureName = featureName
+    }
     this.premiumAlertType = PremiumFeatureModalType.UpgradePrompt
 
     return when(() => this.premiumAlertType === undefined)
@@ -144,6 +148,14 @@ export class FeaturesController extends AbstractViewController implements Intern
     )
   }
 
+  toggleLocalization(): void {
+    this.features.toggleExperimentalFeature(NativeFeatureIdentifier.TYPES.Localization)
+  }
+
+  isLocalizationEnabled(): boolean {
+    return this.features.isExperimentalFeatureEnabled(NativeFeatureIdentifier.TYPES.Localization)
+  }
+
   isEntitledToSharedVaults(): boolean {
     const status = this.features.getFeatureStatus(
       NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.SharedVaults).getValue(),
@@ -151,5 +163,13 @@ export class FeaturesController extends AbstractViewController implements Intern
     const isEntitledToFeature = status === FeatureStatus.Entitled
 
     return featureTrunkVaultsEnabled() || isEntitledToFeature
+  }
+
+  isSearchEnhancementsEnabled(): boolean {
+    return true
+  }
+
+  isUniversalSearchEnabled(): boolean {
+    return true
   }
 }

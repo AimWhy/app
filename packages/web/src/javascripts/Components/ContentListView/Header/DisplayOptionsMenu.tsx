@@ -27,6 +27,8 @@ import { Pill } from '@/Components/Preferences/PreferencesComponents/Content'
 import { MutuallyExclusiveMediaQueryBreakpoints, useMediaQuery } from '@/Hooks/useMediaQuery'
 import { PaneLayout } from '@/Controllers/PaneController/PaneLayout'
 import MenuSection from '@/Components/Menu/MenuSection'
+import { getSmartViewDisplayTitle } from '@/Utils/LocalizedSystemViewTitle'
+import { c } from 'ttag'
 
 const DailyEntryModeEnabled = true
 
@@ -89,6 +91,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
 }) => {
   const isRegularTag = isTag(selectedTag)
   const isSystemTag = isSmartView(selectedTag) && isSystemView(selectedTag)
+  const selectedTagLabel = isSmartView(selectedTag) ? getSmartViewDisplayTitle(selectedTag) : selectedTag.title
   const selectedTagPreferences = isSystemTag
     ? application.getPreference(PrefKey.SystemViewPreferences)?.[selectedTag.uuid as SystemViewId]
     : selectedTag.preferences
@@ -286,13 +289,20 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
   const shouldHideNonApplicableOptions = isTableViewEnabled && !isMobileScreen
 
   return (
-    <Menu className="text-sm" a11yLabel="Notes list options menu">
-      <div className="my-1 px-3 text-base font-semibold uppercase text-text lg:text-xs">Preferences for</div>
+    <Menu className="text-sm" a11yLabel={c('B3.Notes.NoteList.Label').t`Notes list options menu`}>
+      <div className="my-1 px-3 text-base font-semibold uppercase text-text lg:text-xs">
+        {c('B3.Notes.NoteList.Label').t`Preferences for`}
+      </div>
       <div className={classNames('mt-1.5 flex w-full justify-between px-3', !controlsDisabled && 'mb-3')}>
         <div className="flex items-center gap-1.5">
-          <TabButton label="Global" mode="global" currentMode={currentMode} setCurrentMode={setCurrentMode} />
           <TabButton
-            label={selectedTag.title}
+            label={c('B3.Notes.NoteList.Label').t`Global`}
+            mode="global"
+            currentMode={currentMode}
+            setCurrentMode={setCurrentMode}
+          />
+          <TabButton
+            label={selectedTagLabel}
             icon={selectedTag.iconString}
             mode="tag"
             currentMode={currentMode}
@@ -301,7 +311,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
         </div>
         {currentMode === 'tag' && (
           <button className="text-base lg:text-sm" onClick={resetTagPreferences}>
-            Reset
+            {c('B3.Notes.NoteList.Action').t`Reset`}
           </button>
         )}
       </div>
@@ -310,16 +320,18 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
         <NoSubscriptionBanner
           className="m-2 mb-3 mt-2"
           application={application}
-          title="Upgrade for per-tag preferences"
+          title={c('B3.Notes.NoteList.Info').t`Upgrade for per-tag preferences`}
           message={
             DailyEntryModeEnabled
-              ? 'Create powerful workflows and organizational layouts with per-tag display preferences and the all-new Daily Notebook calendar layout.'
-              : 'Create powerful workflows and organizational layouts with per-tag display preferences.'
+              ? c('B3.Notes.NoteList.Label')
+                  .t`Create powerful workflows and organizational layouts with per-tag display preferences and the all-new Daily Notebook calendar layout.`
+              : c('B3.Notes.NoteList.Label')
+                  .t`Create powerful workflows and organizational layouts with per-tag display preferences.`
           }
         />
       )}
 
-      <MenuSection title="Sort by">
+      <MenuSection title={c('B3.Notes.NoteList.Label').t`Sort by`}>
         <MenuRadioButtonItem
           disabled={controlsDisabled || isDailyEntry}
           className="py-2"
@@ -327,7 +339,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={preferences.sortBy === CollectionSort.UpdatedAt}
         >
           <div className="ml-1 flex flex-grow items-center justify-between md:ml-2">
-            <span>Date modified</span>
+            <span>{c('B3.Notes.NoteList.Label').t`Date modified`}</span>
             <SortIcon enabled={preferences.sortBy === CollectionSort.UpdatedAt} reverse={preferences.sortReverse} />
           </div>
         </MenuRadioButtonItem>
@@ -338,7 +350,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={preferences.sortBy === CollectionSort.CreatedAt}
         >
           <div className="ml-1 flex flex-grow items-center justify-between md:ml-2">
-            <span>Creation date</span>
+            <span>{c('B3.Notes.NoteList.Label').t`Creation date`}</span>
             <SortIcon enabled={preferences.sortBy === CollectionSort.CreatedAt} reverse={preferences.sortReverse} />
           </div>
         </MenuRadioButtonItem>
@@ -349,13 +361,13 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={preferences.sortBy === CollectionSort.Title}
         >
           <div className="ml-1 flex flex-grow items-center justify-between md:ml-2">
-            <span>Title</span>
+            <span>{c('B3.Notes.NoteList.Label').t`Title`}</span>
             <SortIcon enabled={preferences.sortBy === CollectionSort.Title} reverse={preferences.sortReverse} />
           </div>
         </MenuRadioButtonItem>
       </MenuSection>
 
-      <MenuSection title="View">
+      <MenuSection title={c('B3.Notes.NoteList.Label').t`View`}>
         {!shouldHideNonApplicableOptions && !isFilesSmartView && (
           <MenuSwitchButtonItem
             disabled={controlsDisabled}
@@ -363,7 +375,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
             checked={!preferences.hideNotePreview}
             onChange={toggleHidePreview}
           >
-            <div className="max-w-3/4 flex flex-col">Show note preview</div>
+            <div className="max-w-3/4 flex flex-col">{c('B3.Notes.NoteList.Label').t`Show note preview`}</div>
           </MenuSwitchButtonItem>
         )}
         <MenuSwitchButtonItem
@@ -372,7 +384,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={!preferences.hideDate}
           onChange={toggleHideDate}
         >
-          Show date
+          {c('B3.Notes.NoteList.Action').t`Show date`}
         </MenuSwitchButtonItem>
         <MenuSwitchButtonItem
           disabled={controlsDisabled}
@@ -380,7 +392,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={!preferences.hideTags}
           onChange={toggleHideTags}
         >
-          Show tags
+          {c('B3.Notes.NoteList.Action').t`Show tags`}
         </MenuSwitchButtonItem>
         <MenuSwitchButtonItem
           disabled={controlsDisabled}
@@ -388,19 +400,19 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           checked={!preferences.hideEditorIcon}
           onChange={toggleEditorIcon}
         >
-          Show icon
+          {c('B3.Notes.NoteList.Action').t`Show icon`}
         </MenuSwitchButtonItem>
       </MenuSection>
 
       {!shouldHideNonApplicableOptions && (
-        <MenuSection title="Other">
+        <MenuSection title={c('B3.Notes.NoteList.Label').t`Other`}>
           <MenuSwitchButtonItem
             disabled={controlsDisabled}
             className="py-1 hover:bg-contrast focus:bg-info-backdrop"
             checked={!preferences.hidePinned}
             onChange={toggleHidePinned}
           >
-            Show pinned
+            {c('B3.Notes.NoteList.Action').t`Show pinned`}
           </MenuSwitchButtonItem>
           <MenuSwitchButtonItem
             disabled={controlsDisabled}
@@ -408,7 +420,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
             checked={!preferences.hideProtected}
             onChange={toggleHideProtected}
           >
-            Show protected
+            {c('B3.Notes.NoteList.Action').t`Show protected`}
           </MenuSwitchButtonItem>
           <MenuSwitchButtonItem
             disabled={controlsDisabled}
@@ -416,7 +428,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
             checked={Boolean(preferences.showArchived)}
             onChange={toggleShowArchived}
           >
-            Show archived
+            {c('B3.Notes.NoteList.Action').t`Show archived`}
           </MenuSwitchButtonItem>
           <MenuSwitchButtonItem
             disabled={controlsDisabled}
@@ -424,7 +436,7 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
             checked={Boolean(preferences.showTrashed)}
             onChange={toggleShowTrashed}
           >
-            Show trashed
+            {c('B3.Notes.NoteList.Action').t`Show trashed`}
           </MenuSwitchButtonItem>
         </MenuSection>
       )}
@@ -439,12 +451,16 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           >
             <div className="flex flex-col pr-5">
               <div className="flex flex-row items-center">
-                <div className="text-base font-semibold uppercase text-text lg:text-xs">Daily Notebook</div>
+                <div className="text-base font-semibold uppercase text-text lg:text-xs">
+                  {c('B3.Notes.NoteList.Label').t`Daily Notebook`}
+                </div>
                 <Pill className="!py-0.5 px-1.5" style="success">
-                  Labs
+                  {c('B3.Notes.NoteList.Label').t`Labs`}
                 </Pill>
               </div>
-              <div className="mt-1">Capture new notes daily with a calendar-based layout</div>
+              <div className="mt-1">
+                {c('B3.Notes.NoteList.Label').t`Capture new notes daily with a calendar-based layout`}
+              </div>
             </div>
           </MenuSwitchButtonItem>
         </MenuSection>
@@ -460,19 +476,23 @@ const DisplayOptionsMenu: FunctionComponent<DisplayOptionsMenuProps> = ({
           >
             <div className="flex flex-col pr-5">
               <div className="flex flex-row items-center">
-                <div className="text-base font-semibold uppercase text-text lg:text-xs">Table view</div>
+                <div className="text-base font-semibold uppercase text-text lg:text-xs">
+                  {c('B3.Notes.NoteList.Label').t`Table view`}
+                </div>
                 <Pill className="!py-0.5 px-1.5" style="success">
-                  Labs
+                  {c('B3.Notes.NoteList.Label').t`Labs`}
                 </Pill>
               </div>
-              <div className="mt-1">Display the notes and files in the current tag in a table layout</div>
+              <div className="mt-1">
+                {c('B3.Notes.NoteList.Label').t`Display the notes and files in the current tag in a table layout`}
+              </div>
             </div>
           </MenuSwitchButtonItem>
         </MenuSection>
       )}
 
       {!shouldHideNonApplicableOptions && (!isSystemTag || currentMode === 'global') && (
-        <MenuSection title="New note defaults">
+        <MenuSection title={c('B3.Notes.NoteList.Label').t`New note defaults`}>
           <NewNotePreferences
             disabled={controlsDisabled}
             application={application}

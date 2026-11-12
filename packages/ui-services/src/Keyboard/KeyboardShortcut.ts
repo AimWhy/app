@@ -19,10 +19,17 @@ export type PlatformedKeyboardShortcut = KeyboardShortcut & {
   platform: Platform
 }
 
-export type KeyboardShortcutCategory = 'General' | 'Notes list' | 'Current note' | 'Super notes' | 'Formatting'
+export type KeyboardShortcutCategory =
+  | 'General'
+  | 'Notes list'
+  | 'Current note'
+  | 'Super notes'
+  | 'Formatting'
+  | 'Search'
 
-export type KeyboardShortcutHelpItem = Omit<PlatformedKeyboardShortcut, 'command'> & {
+export interface KeyboardShortcutHelpItem extends Omit<PlatformedKeyboardShortcut, 'command'> {
   command?: KeyboardCommand
   category: KeyboardShortcutCategory
   description: string
+  id: string
 }

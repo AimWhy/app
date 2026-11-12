@@ -3,6 +3,120 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.73.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.73.0...@standardnotes/services@1.73.1) (2026-11-12)
+
+### Bug Fixes
+
+* Improves errors on file attachments for expired subscriptions ([#3076](https://github.com/standardnotes/app/issues/3076)) ([cdb1b42](https://github.com/standardnotes/app/commit/cdb1b42cd9ce29abab07a735bf4137e5206f41ff))
+
+# [1.73.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.12...@standardnotes/services@1.73.0) (2026-11-02)
+
+### Features
+
+* Introduces localization with support for multiple languages ([#3073](https://github.com/standardnotes/app/issues/3073)) ([b2f812b](https://github.com/standardnotes/app/commit/b2f812bcac226d12c0217d6b92938e60ecc3f392))
+
+## [1.72.12](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.11...@standardnotes/services@1.72.12) (2026-10-30)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.11](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.10...@standardnotes/services@1.72.11) (2026-10-23)
+
+### Bug Fixes
+
+* Improves errors on file attachments for expired subs ([#3069](https://github.com/standardnotes/app/issues/3069)) ([7f9b07f](https://github.com/standardnotes/app/commit/7f9b07f9f88ae8885874fdb77425c883e4a41132))
+
+## [1.72.10](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.9...@standardnotes/services@1.72.10) (2026-10-17)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.9](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.8...@standardnotes/services@1.72.9) (2026-10-08)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.8](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.7...@standardnotes/services@1.72.8) (2026-09-15)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.7](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.6...@standardnotes/services@1.72.7) (2026-09-03)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.6](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.5...@standardnotes/services@1.72.6) (2026-08-25)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.5](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.4...@standardnotes/services@1.72.5) (2026-08-17)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.4](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.3...@standardnotes/services@1.72.4) (2026-07-18)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.3](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.2...@standardnotes/services@1.72.3) (2026-04-24)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.72.2](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.1...@standardnotes/services@1.72.2) (2025-12-18)
+
+### Bug Fixes
+
+* Shows informative error on UI when file upload limit is reached ([#2961](https://github.com/standardnotes/app/issues/2961)) ([844b7a7](https://github.com/standardnotes/app/commit/844b7a7a2b26bd4e74c2d8d36ddfa9e28b47f589))
+
+## [1.72.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.72.0...@standardnotes/services@1.72.1) (2025-11-06)
+
+### Bug Fixes
+
+* Fix native themes not working on external editors ([#2957](https://github.com/standardnotes/app/issues/2957)) [skip e2e] ([60e92c7](https://github.com/standardnotes/app/commit/60e92c7035a54fd60e88034ca5ee120ae23e7c1d))
+
+# [1.72.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.11...@standardnotes/services@1.72.0) (2025-09-25)
+
+### Features
+
+* Added command palette for quick actions and switching between items ([#2933](https://github.com/standardnotes/app/issues/2933)) [skip e2e] ([efba7c6](https://github.com/standardnotes/app/commit/efba7c682d81d518d02ea52aea8c022f190679eb))
+
+## [1.71.11](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.10...@standardnotes/services@1.71.11) (2025-09-12)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.10](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.9...@standardnotes/services@1.71.10) (2025-08-26)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.9](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.8...@standardnotes/services@1.71.9) (2025-07-15)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.8](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.7...@standardnotes/services@1.71.8) (2025-06-24)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.7](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.6...@standardnotes/services@1.71.7) (2025-06-18)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.6](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.5...@standardnotes/services@1.71.6) (2025-06-16)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.71.5](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.4...@standardnotes/services@1.71.5) (2025-05-02)
+
+### Bug Fixes
+
+* Fixed issue with keyboard on Android covering content ([#2899](https://github.com/standardnotes/app/issues/2899)) ([c4e0138](https://github.com/standardnotes/app/commit/c4e0138ce3ef9bc0adb75dae08aec2203473552d))
+
+## [1.71.4](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.3...@standardnotes/services@1.71.4) (2024-11-22)
+
+### Bug Fixes
+
+* Pane visibility settings will be persisted locally ([#2888](https://github.com/standardnotes/app/issues/2888)) ([f179631](https://github.com/standardnotes/app/commit/f1796312deccf78f58a46af900e9f37f2c751aba))
+
+## [1.71.3](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.2...@standardnotes/services@1.71.3) (2024-09-20)
+
+### Bug Fixes
+
+* trim/lowercase email on email change ([#2886](https://github.com/standardnotes/app/issues/2886)) ([98304cc](https://github.com/standardnotes/app/commit/98304cc57df59f3d18061f97427f811f336b268f))
+
 ## [1.71.2](https://github.com/standardnotes/app/compare/@standardnotes/services@1.71.1...@standardnotes/services@1.71.2) (2024-05-07)
 
 **Note:** Version bump only for package @standardnotes/services

@@ -1,20 +1,22 @@
 import { observer } from 'mobx-react-lite'
 import Icon from '@/Components/Icon/Icon'
 import { SyncQueueStrategy } from '@standardnotes/snjs'
-import { STRING_GENERIC_SYNC_ERROR } from '@/Constants/Strings'
+import { StringGenericSyncError } from '@/Constants/Strings'
 import { useCallback, useMemo, useState, FunctionComponent } from 'react'
 import { AccountMenuPane } from './AccountMenuPane'
 import Menu from '@/Components/Menu/Menu'
 import MenuItem from '@/Components/Menu/MenuItem'
 import WorkspaceSwitcherOption from './WorkspaceSwitcher/WorkspaceSwitcherOption'
 import { WebApplicationGroup } from '@/Application/WebApplicationGroup'
-import { formatLastSyncDate } from '@/Utils/DateUtils'
+import { formatItemDate } from '@/Utils/LocalizedDateFormat'
 import Spinner from '@/Components/Spinner/Spinner'
 import { MenuItemIconSize } from '@/Constants/TailwindClassNames'
 import { useApplication } from '../ApplicationProvider'
 import MenuSection from '../Menu/MenuSection'
-import { TOGGLE_KEYBOARD_SHORTCUTS_MODAL, isMobilePlatform } from '@standardnotes/ui-services'
+import { TOGGLE_COMMAND_PALETTE, TOGGLE_KEYBOARD_SHORTCUTS_MODAL, isMobilePlatform } from '@standardnotes/ui-services'
 import { KeyboardShortcutIndicator } from '../KeyboardShortcutIndicator/KeyboardShortcutIndicator'
+import { AppName, jtString, SupportMailtoUrl } from '@standardnotes/features'
+import { c } from 'ttag'
 
 type Props = {
   mainApplicationGroup: WebApplicationGroup
@@ -28,7 +30,8 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
   const application = useApplication()
 
   const [isSyncingInProgress, setIsSyncingInProgress] = useState(false)
-  const [lastSyncDate, setLastSyncDate] = useState(formatLastSyncDate(application.sync.getLastSyncDate() as Date))
+
+  const lastSyncDate = formatItemDate(application.sync.getLastSyncDate() as Date)
 
   const doSynchronization = useCallback(async () => {
     setIsSyncingInProgress(true)
@@ -41,12 +44,10 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
       .then((res) => {
         if (res && (res as any).error) {
           throw new Error()
-        } else {
-          setLastSyncDate(formatLastSyncDate(application.sync.getLastSyncDate() as Date))
         }
       })
       .catch(() => {
-        application.alerts.alert(STRING_GENERIC_SYNC_ERROR).catch(console.error)
+        application.alerts.alert(StringGenericSyncError()).catch(console.error)
       })
       .finally(() => {
         setIsSyncingInProgress(false)
@@ -68,12 +69,12 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
   }, [application])
 
   const openEmail = useCallback(() => {
-    const subject = 'Standard Notes Feedback'
+    const subject = jtString(c('B1.Account.Session.MailtoSubject').jt`${AppName} Feedback`)
 
-    const body = `App Version: ${application.version}`
+    const body = c('B1.Account.Session.MailtoBody').t`App Version: ${application.version}`
 
     application.device.openUrl(
-      `mailto:help@standardnotes.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
+      `${SupportMailtoUrl}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
     )
   }, [application.device, application.version])
 
@@ -95,11 +96,14 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
   const keyboardShortcutsHelpShortcut = useMemo(() => {
     return application.keyboardService.keyboardShortcutForCommand(TOGGLE_KEYBOARD_SHORTCUTS_MODAL)
   }, [application.keyboardService])
+  const commandPaletteShortcut = useMemo(() => {
+    return application.keyboardService.keyboardShortcutForCommand(TOGGLE_COMMAND_PALETTE)
+  }, [application.keyboardService])
 
   return (
     <>
       <div className="mb-1 mt-1 hidden items-center justify-between px-4 md:flex md:px-3">
-        <div className="text-lg font-bold lg:text-base">Account</div>
+        <div className="text-lg font-bold lg:text-base">{c('B1.Account.Session.Title').t`Account`}</div>
         <div className="flex cursor-pointer" onClick={closeMenu}>
           <Icon type="close" className="text-neutral" />
         </div>
@@ -107,7 +111,7 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
       {user ? (
         <>
           <div className="mb-3 px-4 text-lg text-foreground md:px-3 lg:text-sm">
-            <div>You're signed in as:</div>
+            <div>{c('B1.Account.Session.Info').t`You're signed in as:`}</div>
             <div className="wrap my-0.5 font-bold">{user.email}</div>
             <span className="text-neutral">{application.getHost.execute().getValue()}</span>
           </div>
@@ -115,13 +119,13 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
             {isSyncingInProgress ? (
               <div className="flex items-center font-semibold text-info">
                 <Spinner className="mr-2 h-5 w-5" />
-                Syncing...
+                {c('B1.Account.Session.Status').t`Syncing...`}
               </div>
             ) : (
               <div className="flex items-start">
                 <Icon type="check-circle" className={`mr-2 text-success ${MenuItemIconSize}`} />
                 <div>
-                  <div className="font-semibold text-success">Last synced:</div>
+                  <div className="font-semibold text-success">{c('B1.Account.Session.Label').t`Last synced:`}</div>
                   <div className="text-text">{lastSyncDate}</div>
                 </div>
               </div>
@@ -135,18 +139,18 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
         <>
           <div className="mb-1 px-4 md:px-3">
             <div className="mb-3 text-base text-foreground lg:text-sm">
-              You’re offline. Sign in to sync your notes and preferences across all your devices and enable end-to-end
-              encryption.
+              {c('B1.Account.Session.Info')
+                .t`You’re offline. Sign in to sync your notes and preferences across all your devices and enable end-to-end encryption.`}
             </div>
             <div className="flex items-center text-passive-1">
               <Icon type="cloud-off" className={`mr-2 ${MenuItemIconSize}`} />
-              <span className="text-lg font-semibold lg:text-sm">Offline</span>
+              <span className="text-lg font-semibold lg:text-sm">{c('B1.Account.Session.Status').t`Offline`}</span>
             </div>
           </div>
         </>
       )}
       <Menu
-        a11yLabel="General account menu"
+        a11yLabel={c('B1.Account.Session.Label').t`General account menu`}
         closeMenu={closeMenu}
         initialFocus={!application.hasAccount() ? CREATE_ACCOUNT_INDEX : SWITCHER_INDEX}
       >
@@ -157,17 +161,17 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
           {user ? (
             <MenuItem onClick={openPreferences}>
               <Icon type="user" className={iconClassName} />
-              Account settings
+              {c('B1.Account.Session.Action').t`Account settings`}
             </MenuItem>
           ) : (
             <>
               <MenuItem onClick={activateRegisterPane}>
                 <Icon type="user" className={iconClassName} />
-                Create free account
+                {c('B1.Account.Session.Action').t`Create free account`}
               </MenuItem>
               <MenuItem onClick={activateSignInPane}>
                 <Icon type="signIn" className={iconClassName} />
-                Sign in
+                {c('B1.Account.Session.Action').t`Sign in`}
               </MenuItem>
             </>
           )}
@@ -178,40 +182,53 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
             }}
           >
             <Icon type="archive" className={iconClassName} />
-            Import
+            {c('B1.Account.Session.Action').t`Import`}
           </MenuItem>
           {application.isNativeMobileWeb() && (
             <MenuItem onClick={openEmail}>
               <Icon type="email-filled" className={iconClassName} />
-              Email us
+              {c('B1.Account.Session.Action').t`Email us`}
             </MenuItem>
           )}
           <MenuItem className="justify-between" onClick={openHelp}>
             <div className="flex items-center">
               <Icon type="help" className={iconClassName} />
-              Help &amp; feedback
+              {c('B1.Account.Session.Action').t`Help & feedback`}
             </div>
             <span className="text-neutral">v{application.version}</span>
           </MenuItem>
           {!isMobilePlatform(application.platform) && (
-            <MenuItem
-              onClick={() => {
-                application.keyboardService.triggerCommand(TOGGLE_KEYBOARD_SHORTCUTS_MODAL)
-              }}
-            >
-              <Icon type="keyboard" className={iconClassName} />
-              Keyboard shortcuts
-              {keyboardShortcutsHelpShortcut && (
-                <KeyboardShortcutIndicator shortcut={keyboardShortcutsHelpShortcut} className="ml-auto" />
-              )}
-            </MenuItem>
+            <>
+              <MenuItem
+                onClick={() => {
+                  application.keyboardService.triggerCommand(TOGGLE_KEYBOARD_SHORTCUTS_MODAL)
+                }}
+              >
+                <Icon type="keyboard" className={iconClassName} />
+                {c('B1.Account.Session.Action').t`Keyboard shortcuts`}
+                {keyboardShortcutsHelpShortcut && (
+                  <KeyboardShortcutIndicator shortcut={keyboardShortcutsHelpShortcut} className="ml-auto" />
+                )}
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  application.keyboardService.triggerCommand(TOGGLE_COMMAND_PALETTE)
+                }}
+              >
+                <Icon type="info" className={iconClassName} />
+                {c('B1.Account.Session.Action').t`Command palette`}
+                {commandPaletteShortcut && (
+                  <KeyboardShortcutIndicator shortcut={commandPaletteShortcut} className="ml-auto" />
+                )}
+              </MenuItem>
+            </>
           )}
         </MenuSection>
         {user ? (
           <MenuSection>
             <MenuItem onClick={signOut}>
               <Icon type="signOut" className={iconClassName} />
-              Sign out workspace
+              {c('B1.Account.Session.Action').t`Sign out workspace`}
             </MenuItem>
           </MenuSection>
         ) : null}

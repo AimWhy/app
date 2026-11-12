@@ -3,6 +3,601 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.110.218](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.217...@standardnotes/desktop@3.110.218) (2026-11-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.217](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.203.0...@standardnotes/desktop@3.110.217) (2026-11-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.216](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.12...@standardnotes/desktop@3.110.216) (2026-11-02)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.215](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.11...@standardnotes/desktop@3.110.215) (2026-10-30)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.214](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.10...@standardnotes/desktop@3.110.214) (2026-10-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.213](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.212...@standardnotes/desktop@3.110.213) (2026-10-17)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.212](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.9...@standardnotes/desktop@3.110.212) (2026-10-15)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.211](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.8...@standardnotes/desktop@3.110.211) (2026-10-08)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.210](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.209...@standardnotes/desktop@3.110.210) (2026-09-30)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.209](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.208...@standardnotes/desktop@3.110.209) (2026-09-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.208](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.7...@standardnotes/desktop@3.110.208) (2026-09-17)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.207](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.6...@standardnotes/desktop@3.110.207) (2026-09-17)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.206](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.5...@standardnotes/desktop@3.110.206) (2026-09-16)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.205](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.4...@standardnotes/desktop@3.110.205) (2026-09-15)
+
+### Bug Fixes
+
+* Fixes potential tag path transversal in plaintext backups ([#3048](https://github.com/standardnotes/app/issues/3048)) ([cd90a59](https://github.com/standardnotes/app/commit/cd90a59559d8257065d0e022f7afc02fc78beb41))
+
+## [3.110.204](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.3...@standardnotes/desktop@3.110.204) (2026-09-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.203](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.2...@standardnotes/desktop@3.110.203) (2026-09-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.202](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.1...@standardnotes/desktop@3.110.202) (2026-09-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.201](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.202.0...@standardnotes/desktop@3.110.201) (2026-08-25)
+
+### Bug Fixes
+
+* preferences sidebar unclickable when opened in focus mode ([#3034](https://github.com/standardnotes/app/issues/3034)) ([025ca51](https://github.com/standardnotes/app/commit/025ca517f61ed415760bdba2152d09f75a07f631))
+
+## [3.110.200](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.35...@standardnotes/desktop@3.110.200) (2026-08-17)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.199](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.34...@standardnotes/desktop@3.110.199) (2026-07-20)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.198](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.33...@standardnotes/desktop@3.110.198) (2026-07-18)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.197](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.32...@standardnotes/desktop@3.110.197) (2026-07-18)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.196](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.31...@standardnotes/desktop@3.110.196) (2026-07-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.195](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.30...@standardnotes/desktop@3.110.195) (2026-06-08)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.194](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.29...@standardnotes/desktop@3.110.194) (2026-06-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.193](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.28...@standardnotes/desktop@3.110.193) (2026-06-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.192](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.27...@standardnotes/desktop@3.110.192) (2026-05-27)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.191](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.26...@standardnotes/desktop@3.110.191) (2026-04-29)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.190](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.25...@standardnotes/desktop@3.110.190) (2026-04-24)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.189](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.24...@standardnotes/desktop@3.110.189) (2026-04-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.188](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.23...@standardnotes/desktop@3.110.188) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.187](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.22...@standardnotes/desktop@3.110.187) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.186](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.21...@standardnotes/desktop@3.110.186) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.185](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.20...@standardnotes/desktop@3.110.185) (2026-03-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.184](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.19...@standardnotes/desktop@3.110.184) (2026-03-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.183](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.18...@standardnotes/desktop@3.110.183) (2026-02-24)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.182](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.17...@standardnotes/desktop@3.110.182) (2026-02-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.181](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.16...@standardnotes/desktop@3.110.181) (2026-02-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.180](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.15...@standardnotes/desktop@3.110.180) (2026-02-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.179](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.14...@standardnotes/desktop@3.110.179) (2026-02-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.178](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.177...@standardnotes/desktop@3.110.178) (2026-02-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.177](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.12...@standardnotes/desktop@3.110.177) (2026-02-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.176](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.175...@standardnotes/desktop@3.110.176) (2026-02-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.175](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.10...@standardnotes/desktop@3.110.175) (2026-02-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.174](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.9...@standardnotes/desktop@3.110.174) (2026-01-27)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.173](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.8...@standardnotes/desktop@3.110.173) (2026-01-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.172](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.7...@standardnotes/desktop@3.110.172) (2026-01-16)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.171](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.6...@standardnotes/desktop@3.110.171) (2026-01-08)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.170](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.5...@standardnotes/desktop@3.110.170) (2026-01-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.169](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.4...@standardnotes/desktop@3.110.169) (2025-12-18)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.168](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.3...@standardnotes/desktop@3.110.168) (2025-12-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.167](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.2...@standardnotes/desktop@3.110.167) (2025-11-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.166](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.1...@standardnotes/desktop@3.110.166) (2025-11-07)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.165](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.201.0...@standardnotes/desktop@3.110.165) (2025-11-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.164](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.9...@standardnotes/desktop@3.110.164) (2025-11-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.163](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.8...@standardnotes/desktop@3.110.163) (2025-10-28)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.162](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.7...@standardnotes/desktop@3.110.162) (2025-10-28)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.161](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.6...@standardnotes/desktop@3.110.161) (2025-10-28)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.160](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.5...@standardnotes/desktop@3.110.160) (2025-10-27)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.159](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.4...@standardnotes/desktop@3.110.159) (2025-10-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.158](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.3...@standardnotes/desktop@3.110.158) (2025-10-13)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.157](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.2...@standardnotes/desktop@3.110.157) (2025-09-29)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.156](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.1...@standardnotes/desktop@3.110.156) (2025-09-29)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.155](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.200.0...@standardnotes/desktop@3.110.155) (2025-09-26)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.154](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.199.0...@standardnotes/desktop@3.110.154) (2025-09-25)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.153](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.20...@standardnotes/desktop@3.110.153) (2025-09-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.152](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.19...@standardnotes/desktop@3.110.152) (2025-09-15)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.151](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.18...@standardnotes/desktop@3.110.151) (2025-09-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.150](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.17...@standardnotes/desktop@3.110.150) (2025-09-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.149](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.16...@standardnotes/desktop@3.110.149) (2025-08-26)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.148](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.15...@standardnotes/desktop@3.110.148) (2025-08-25)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.147](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.14...@standardnotes/desktop@3.110.147) (2025-08-11)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.146](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.13...@standardnotes/desktop@3.110.146) (2025-08-05)
+
+### Bug Fixes
+
+* Fixes issue where plaintext backups would use invalid special characters for filenames ([#2924](https://github.com/standardnotes/app/issues/2924)) ([45bcc0e](https://github.com/standardnotes/app/commit/45bcc0e0b1541558ecf410e9a92bc2db192cfe93))
+* Fixes portions of window not being draggable on desktop ([#2925](https://github.com/standardnotes/app/issues/2925)) ([2b41c83](https://github.com/standardnotes/app/commit/2b41c8337b1408209dc4903cacbc701b73c590b0))
+
+## [3.110.145](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.12...@standardnotes/desktop@3.110.145) (2025-08-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.144](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.11...@standardnotes/desktop@3.110.144) (2025-07-29)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.143](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.10...@standardnotes/desktop@3.110.143) (2025-07-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.142](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.9...@standardnotes/desktop@3.110.142) (2025-07-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.141](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.8...@standardnotes/desktop@3.110.141) (2025-07-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.140](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.7...@standardnotes/desktop@3.110.140) (2025-07-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.139](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.6...@standardnotes/desktop@3.110.139) (2025-07-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.138](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.5...@standardnotes/desktop@3.110.138) (2025-07-19)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.137](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.4...@standardnotes/desktop@3.110.137) (2025-07-15)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.136](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.3...@standardnotes/desktop@3.110.136) (2025-07-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.135](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.2...@standardnotes/desktop@3.110.135) (2025-07-01)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.134](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.1...@standardnotes/desktop@3.110.134) (2025-06-26)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.133](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.198.0...@standardnotes/desktop@3.110.133) (2025-06-24)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.132](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.197.4...@standardnotes/desktop@3.110.132) (2025-06-24)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.131](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.197.3...@standardnotes/desktop@3.110.131) (2025-06-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.130](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.197.2...@standardnotes/desktop@3.110.130) (2025-06-19)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.129](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.197.1...@standardnotes/desktop@3.110.129) (2025-06-19)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.128](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.197.0...@standardnotes/desktop@3.110.128) (2025-06-18)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.127](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.9...@standardnotes/desktop@3.110.127) (2025-06-16)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.126](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.8...@standardnotes/desktop@3.110.126) (2025-06-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.125](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.7...@standardnotes/desktop@3.110.125) (2025-06-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.124](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.6...@standardnotes/desktop@3.110.124) (2025-05-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.123](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.5...@standardnotes/desktop@3.110.123) (2025-05-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.122](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.4...@standardnotes/desktop@3.110.122) (2025-05-12)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.121](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.3...@standardnotes/desktop@3.110.121) (2025-05-02)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.120](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.2...@standardnotes/desktop@3.110.120) (2025-05-02)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.119](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.1...@standardnotes/desktop@3.110.119) (2025-04-25)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.118](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.196.0...@standardnotes/desktop@3.110.118) (2025-04-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.117](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.33...@standardnotes/desktop@3.110.117) (2025-04-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.116](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.32...@standardnotes/desktop@3.110.116) (2025-04-23)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.115](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.31...@standardnotes/desktop@3.110.115) (2025-04-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.114](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.113...@standardnotes/desktop@3.110.114) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.113](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.30...@standardnotes/desktop@3.110.113) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.112](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.29...@standardnotes/desktop@3.110.112) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.111](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.28...@standardnotes/desktop@3.110.111) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.110](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.27...@standardnotes/desktop@3.110.110) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.110](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.26...@standardnotes/desktop@3.110.110) (2025-04-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.109](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.25...@standardnotes/desktop@3.110.109) (2025-02-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.108](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.24...@standardnotes/desktop@3.110.108) (2025-01-31)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.107](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.23...@standardnotes/desktop@3.110.107) (2025-01-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.106](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.22...@standardnotes/desktop@3.110.106) (2025-01-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.105](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.21...@standardnotes/desktop@3.110.105) (2025-01-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.104](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.103...@standardnotes/desktop@3.110.104) (2025-01-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.103](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.19...@standardnotes/desktop@3.110.103) (2025-01-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.102](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.101...@standardnotes/desktop@3.110.102) (2025-01-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.101](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.17...@standardnotes/desktop@3.110.101) (2025-01-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.100](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.16...@standardnotes/desktop@3.110.100) (2025-01-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.99](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.15...@standardnotes/desktop@3.110.99) (2025-01-06)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.98](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.14...@standardnotes/desktop@3.110.98) (2025-01-02)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.97](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.13...@standardnotes/desktop@3.110.97) (2024-11-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.96](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.12...@standardnotes/desktop@3.110.96) (2024-11-10)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.95](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.11...@standardnotes/desktop@3.110.95) (2024-10-14)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.94](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.10...@standardnotes/desktop@3.110.94) (2024-10-11)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.93](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.92...@standardnotes/desktop@3.110.93) (2024-10-11)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.92](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.9...@standardnotes/desktop@3.110.92) (2024-10-11)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.91](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.8...@standardnotes/desktop@3.110.91) (2024-10-11)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.90](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.7...@standardnotes/desktop@3.110.90) (2024-10-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.89](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.6...@standardnotes/desktop@3.110.89) (2024-10-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.88](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.5...@standardnotes/desktop@3.110.88) (2024-09-28)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.87](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.4...@standardnotes/desktop@3.110.87) (2024-09-26)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.86](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.3...@standardnotes/desktop@3.110.86) (2024-09-20)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.85](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.2...@standardnotes/desktop@3.110.85) (2024-09-14)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.84](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.1...@standardnotes/desktop@3.110.84) (2024-09-09)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.83](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.195.0...@standardnotes/desktop@3.110.83) (2024-07-17)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.82](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.13...@standardnotes/desktop@3.110.82) (2024-07-14)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.81](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.80...@standardnotes/desktop@3.110.81) (2024-07-04)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.80](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.12...@standardnotes/desktop@3.110.80) (2024-07-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.79](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.11...@standardnotes/desktop@3.110.79) (2024-07-03)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.78](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.10...@standardnotes/desktop@3.110.78) (2024-06-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.77](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.9...@standardnotes/desktop@3.110.77) (2024-06-21)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.76](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.110.75...@standardnotes/desktop@3.110.76) (2024-06-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.75](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.8...@standardnotes/desktop@3.110.75) (2024-06-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.74](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.7...@standardnotes/desktop@3.110.74) (2024-06-05)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
+## [3.110.73](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.6...@standardnotes/desktop@3.110.73) (2024-05-22)
+
+**Note:** Version bump only for package @standardnotes/desktop
+
 ## [3.110.72](https://github.com/standardnotes/app/compare/@standardnotes/desktop@3.194.5...@standardnotes/desktop@3.110.72) (2024-05-14)
 
 **Note:** Version bump only for package @standardnotes/desktop

@@ -3,6 +3,171 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.212.11](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.10...@standardnotes/snjs@2.212.11) (2026-11-12)
+
+### Bug Fixes
+
+* Improves errors on file attachments for expired subscriptions ([#3076](https://github.com/standardnotes/app/issues/3076)) ([cdb1b42](https://github.com/standardnotes/app/commit/cdb1b42cd9ce29abab07a735bf4137e5206f41ff))
+
+## [2.212.10](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.9...@standardnotes/snjs@2.212.10) (2026-11-12)
+
+### Bug Fixes
+
+* Prevents custom plugin sandbox escape via Super notes ([#3075](https://github.com/standardnotes/app/issues/3075)) ([84adfbb](https://github.com/standardnotes/app/commit/84adfbb5df81474aba5573c53d35ee55698c0167))
+
+## [2.212.9](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.8...@standardnotes/snjs@2.212.9) (2026-11-02)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.8](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.7...@standardnotes/snjs@2.212.8) (2026-10-30)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.7](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.6...@standardnotes/snjs@2.212.7) (2026-10-23)
+
+### Bug Fixes
+
+* Improves errors on file attachments for expired subs ([#3069](https://github.com/standardnotes/app/issues/3069)) ([7f9b07f](https://github.com/standardnotes/app/commit/7f9b07f9f88ae8885874fdb77425c883e4a41132))
+
+## [2.212.6](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.5...@standardnotes/snjs@2.212.6) (2026-10-17)
+
+### Bug Fixes
+
+* Theme selection not updating colors correctly on some editors ([#3064](https://github.com/standardnotes/app/issues/3064)) ([ba00979](https://github.com/standardnotes/app/commit/ba00979d977dbe925909ae0f1e5b33ad3a67ca33))
+
+## [2.212.5](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.4...@standardnotes/snjs@2.212.5) (2026-10-08)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.4](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.3...@standardnotes/snjs@2.212.4) (2026-09-15)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.3](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.2...@standardnotes/snjs@2.212.3) (2026-09-04)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.1...@standardnotes/snjs@2.212.2) (2026-09-03)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.212.1](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.212.0...@standardnotes/snjs@2.212.1) (2026-08-25)
+
+### Bug Fixes
+
+* Fixes web clipper hardware key auth for Firefox ([#3040](https://github.com/standardnotes/app/issues/3040)) ([369b1f0](https://github.com/standardnotes/app/commit/369b1f001ff1691240fc8e4c19c169bc7e34b838))
+
+# [2.212.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.8...@standardnotes/snjs@2.212.0) (2026-08-17)
+
+### Features
+
+* Adds in-note search for plain text notes ([#3038](https://github.com/standardnotes/app/issues/3038)) ([1ea8da6](https://github.com/standardnotes/app/commit/1ea8da6009df6c3f01067a639e27bba9f0321707))
+* Adds new search filter options: search titles only and tag filters ([#3039](https://github.com/standardnotes/app/issues/3039)) ([f7f947a](https://github.com/standardnotes/app/commit/f7f947a8552b85ef00a15e4920e07eeb272bb63c))
+
+## [2.211.8](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.7...@standardnotes/snjs@2.211.8) (2026-07-18)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.211.7](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.6...@standardnotes/snjs@2.211.7) (2026-04-24)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.211.6](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.5...@standardnotes/snjs@2.211.6) (2026-04-23)
+
+### Reverts
+
+* Revert "chore: split snjs session tests and increase token ttl [snjs docker only] (#3001)" ([cc1f16c](https://github.com/standardnotes/app/commit/cc1f16c70e6ccfc5d43c0d4e7af6c65d5fd51104)), closes [#3001](https://github.com/standardnotes/app/issues/3001)
+
+## [2.211.5](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.4...@standardnotes/snjs@2.211.5) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.211.4](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.3...@standardnotes/snjs@2.211.4) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.211.3](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.2...@standardnotes/snjs@2.211.3) (2026-04-07)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.211.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.1...@standardnotes/snjs@2.211.2) (2025-12-18)
+
+### Bug Fixes
+
+* Shows informative error on UI when file upload limit is reached ([#2961](https://github.com/standardnotes/app/issues/2961)) ([844b7a7](https://github.com/standardnotes/app/commit/844b7a7a2b26bd4e74c2d8d36ddfa9e28b47f589))
+
+## [2.211.1](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.211.0...@standardnotes/snjs@2.211.1) (2025-11-06)
+
+### Bug Fixes
+
+* Fix native themes not working on external editors ([#2957](https://github.com/standardnotes/app/issues/2957)) [skip e2e] ([60e92c7](https://github.com/standardnotes/app/commit/60e92c7035a54fd60e88034ca5ee120ae23e7c1d))
+
+# [2.211.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.210.0...@standardnotes/snjs@2.211.0) (2025-11-04)
+
+### Features
+
+* Show warning modal when Merge local data option is unchecked ([#2953](https://github.com/standardnotes/app/issues/2953)) [skip e2e] ([531cc70](https://github.com/standardnotes/app/commit/531cc7066760732ae882e0901dafce276b17d89f))
+
+# [2.210.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.14...@standardnotes/snjs@2.210.0) (2025-09-25)
+
+### Features
+
+* Added command palette for quick actions and switching between items ([#2933](https://github.com/standardnotes/app/issues/2933)) [skip e2e] ([efba7c6](https://github.com/standardnotes/app/commit/efba7c682d81d518d02ea52aea8c022f190679eb))
+
+## [2.209.14](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.13...@standardnotes/snjs@2.209.14) (2025-09-12)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.13](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.12...@standardnotes/snjs@2.209.13) (2025-08-26)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.12](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.11...@standardnotes/snjs@2.209.12) (2025-07-15)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.11](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.10...@standardnotes/snjs@2.209.11) (2025-06-24)
+
+### Bug Fixes
+
+* Fixed issue with UI sometimes getting shifted up on iOS ([c050a2c](https://github.com/standardnotes/app/commit/c050a2cd339bb7a8fd482904216de1db2b8fe568))
+
+## [2.209.10](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.9...@standardnotes/snjs@2.209.10) (2025-06-18)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.9](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.8...@standardnotes/snjs@2.209.9) (2025-06-16)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.8](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.7...@standardnotes/snjs@2.209.8) (2025-05-02)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.7](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.6...@standardnotes/snjs@2.209.7) (2025-05-02)
+
+### Bug Fixes
+
+* Fixed issue with keyboard on Android covering content ([#2899](https://github.com/standardnotes/app/issues/2899)) ([c4e0138](https://github.com/standardnotes/app/commit/c4e0138ce3ef9bc0adb75dae08aec2203473552d))
+
+## [2.209.6](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.5...@standardnotes/snjs@2.209.6) (2024-11-22)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.5](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.4...@standardnotes/snjs@2.209.5) (2024-09-20)
+
+### Bug Fixes
+
+* trim/lowercase email on email change ([#2886](https://github.com/standardnotes/app/issues/2886)) ([98304cc](https://github.com/standardnotes/app/commit/98304cc57df59f3d18061f97427f811f336b268f))
+
+## [2.209.4](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.3...@standardnotes/snjs@2.209.4) (2024-09-09)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.209.3](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.2...@standardnotes/snjs@2.209.3) (2024-05-22)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
 ## [2.209.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.209.1...@standardnotes/snjs@2.209.2) (2024-05-07)
 
 **Note:** Version bump only for package @standardnotes/snjs

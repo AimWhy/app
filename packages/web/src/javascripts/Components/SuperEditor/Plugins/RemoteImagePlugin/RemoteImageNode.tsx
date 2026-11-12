@@ -1,11 +1,18 @@
 import { DecoratorBlockNode, SerializedDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
-import { DOMConversionMap, DOMExportOutput, EditorConfig, LexicalEditor, LexicalNode, Spread } from 'lexical'
+import {
+  DOMConversionMap,
+  DOMExportOutput,
+  EditorConfig,
+  ElementFormatType,
+  LexicalEditor,
+  LexicalNode,
+  NodeKey,
+  Spread,
+} from 'lexical'
 import RemoteImageComponent from './RemoteImageComponent'
 
 type SerializedRemoteImageNode = Spread<
   {
-    version: 1
-    type: 'unencrypted-image'
     alt: string | undefined
     src: string
   },
@@ -20,19 +27,18 @@ export class RemoteImageNode extends DecoratorBlockNode {
     return 'unencrypted-image'
   }
 
-  constructor(src: string, alt?: string) {
-    super()
+  constructor(src: string, alt?: string, format?: ElementFormatType, key?: NodeKey) {
+    super(format, key)
     this.__src = src
     this.__alt = alt
   }
 
   static clone(node: RemoteImageNode): RemoteImageNode {
-    return new RemoteImageNode(node.__src, node.__alt)
+    return new RemoteImageNode(node.__src, node.__alt, node.__format, node.__key)
   }
 
   static importJSON(serializedNode: SerializedRemoteImageNode): RemoteImageNode {
-    const node = $createRemoteImageNode(serializedNode.src, serializedNode.alt)
-    return node
+    return $createRemoteImageNode(serializedNode.src, serializedNode.alt).updateFromJSON(serializedNode)
   }
 
   exportJSON(): SerializedRemoteImageNode {
@@ -40,8 +46,6 @@ export class RemoteImageNode extends DecoratorBlockNode {
       ...super.exportJSON(),
       src: this.__src,
       alt: this.__alt,
-      version: 1,
-      type: 'unencrypted-image',
     }
   }
 
@@ -90,6 +94,7 @@ export class RemoteImageNode extends DecoratorBlockNode {
       <RemoteImageComponent
         className={className}
         format={this.__format}
+        setFormat={this.setFormat.bind(this)}
         nodeKey={this.getKey()}
         node={this}
         src={this.__src}

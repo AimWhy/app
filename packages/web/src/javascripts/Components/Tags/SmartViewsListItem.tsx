@@ -15,6 +15,8 @@ import {
 import { classNames } from '@standardnotes/utils'
 import { FOCUSABLE_BUT_NOT_TABBABLE } from '@/Constants/Constants'
 import { useApplication } from '../ApplicationProvider'
+import { getSmartViewDisplayTitle } from '@/Utils/LocalizedSystemViewTitle'
+import { c } from 'ttag'
 
 type Props = {
   view: SmartView
@@ -41,12 +43,16 @@ const SmartViewsListItem: FunctionComponent<Props> = ({ view, tagsState, setEdit
   const inputRef = useRef<HTMLInputElement>(null)
 
   const level = 0
-  const isSelected = tagsState.selected === view
+  const isSelected = tagsState.selected?.uuid === view.uuid
   const isEditing = tagsState.editingTag === view
 
   useEffect(() => {
-    setTitle(view.title || '')
-  }, [setTitle, view])
+    if (!isSystemView(view)) {
+      setTitle(view.title || '')
+    }
+  }, [view])
+
+  const displayTitle = isEditing ? title : getSmartViewDisplayTitle(view)
 
   const selectCurrentTag = useCallback(async () => {
     await tagsState.setSelectedTag(view, 'views', {
@@ -151,7 +157,7 @@ const SmartViewsListItem: FunctionComponent<Props> = ({ view, tagsState, setEdit
             className={'title overflow-hidden text-left text-mobile-navigation-list-item lg:text-navigation-list-item'}
             id={`react-tag-${view.uuid}`}
           >
-            {title}
+            {displayTitle}
           </div>
         )}
         <div className={'count text-base lg:text-sm'}>
@@ -163,15 +169,19 @@ const SmartViewsListItem: FunctionComponent<Props> = ({ view, tagsState, setEdit
 
       {!isSystemView(view) && (
         <div className="meta">
-          {view.conflictOf && <div className="-mt-1 text-[0.625rem] font-bold text-danger">Conflicted Copy</div>}
+          {view.conflictOf && (
+            <div className="-mt-1 text-[0.625rem] font-bold text-danger">
+              {c('B4.Notes.TagsLinkedItems.Label').t`Conflicted Copy`}
+            </div>
+          )}
 
           {isSelected && (
             <div className="menu">
               <a className="item" onClick={onClickEdit}>
-                Edit
+                {c('B4.Notes.TagsLinkedItems.Action').t`Edit`}
               </a>
               <a className="item" onClick={onClickDelete}>
-                Delete
+                {c('B4.Notes.TagsLinkedItems.Action').t`Delete`}
               </a>
             </div>
           )}

@@ -1,14 +1,16 @@
 import { WebApplication } from '@/Application/WebApplication'
+import { c } from 'ttag'
 import { UIFeature, GetDarkThemeFeature } from '@standardnotes/snjs'
 import { TOGGLE_DARK_MODE_COMMAND } from '@standardnotes/ui-services'
 import { classNames } from '@standardnotes/utils'
-import { useEffect, useRef, useState } from 'react'
-import { useCommandService } from '../CommandProvider'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useKeyboardService } from '../KeyboardServiceProvider'
 import Icon from '../Icon/Icon'
 import Popover from '../Popover/Popover'
 import QuickSettingsMenu from '../QuickSettingsMenu/QuickSettingsMenu'
 import StyledTooltip from '../StyledTooltip/StyledTooltip'
 import RoundIconButton from '../Button/RoundIconButton'
+import mergeRegister from '../../Hooks/mergeRegister'
 
 type Props = {
   application: WebApplication
@@ -17,30 +19,47 @@ type Props = {
 
 const QuickSettingsButton = ({ application, isMobileNavigation = false }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const commandService = useCommandService()
+  const keyboardService = useKeyboardService()
 
   const [isOpen, setIsOpen] = useState(false)
-  const toggleMenu = () => setIsOpen(!isOpen)
+  const toggleMenu = useCallback(() => setIsOpen((isOpen) => !isOpen), [])
 
   useEffect(() => {
+    if (isMobileNavigation) {
+      return
+    }
+
     const darkThemeFeature = new UIFeature(GetDarkThemeFeature())
 
-    return commandService.addCommandHandler({
-      command: TOGGLE_DARK_MODE_COMMAND,
-      category: 'General',
-      description: 'Toggle dark mode',
-      onKeyDown: () => {
-        void application.componentManager.toggleTheme(darkThemeFeature)
-        return true
-      },
-    })
-  }, [application, commandService])
+    return mergeRegister(
+      application.commands.addWithShortcut(
+        TOGGLE_DARK_MODE_COMMAND,
+        'General',
+        c('B2.NavSharedUI.Action').t`Toggle dark mode`,
+        () => {
+          void application.componentManager.toggleTheme(darkThemeFeature)
+          return true
+        },
+      ),
+      application.commands.add(
+        'open-quick-settings-menu',
+        c('B2.NavSharedUI.Action').t`Open quick settings menu`,
+        toggleMenu,
+        'themes',
+      ),
+    )
+  }, [application, isMobileNavigation, keyboardService, toggleMenu])
 
   return (
     <>
-      <StyledTooltip label="Open quick settings menu">
+      <StyledTooltip label={c('B2.NavSharedUI.AriaLabel').t`Open quick settings menu`}>
         {isMobileNavigation ? (
-          <RoundIconButton className="ml-2.5 bg-default" onClick={toggleMenu} label="Go to vaults menu" icon="themes" />
+          <RoundIconButton
+            className="ml-2.5 bg-default"
+            onClick={toggleMenu}
+            label={c('B2.NavSharedUI.AriaLabel').t`Go to quick settings menu`}
+            icon="themes"
+          />
         ) : (
           <button
             onClick={toggleMenu}
@@ -54,7 +73,7 @@ const QuickSettingsButton = ({ application, isMobileNavigation = false }: Props)
         )}
       </StyledTooltip>
       <Popover
-        title="Quick settings"
+        title={c('B2.NavSharedUI.Title').t`Quick settings`}
         togglePopover={toggleMenu}
         anchorElement={buttonRef}
         open={isOpen}

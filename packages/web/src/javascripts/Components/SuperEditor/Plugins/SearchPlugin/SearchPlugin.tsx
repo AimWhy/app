@@ -1,169 +1,215 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { $getNearestNodeFromDOMNode, TextNode, $createRangeSelection, $setSelection, $isTextNode } from 'lexical'
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
-import { createSearchHighlightElement } from './createSearchHighlightElement'
-import { useSuperSearchContext } from './Context'
-import { SearchDialog } from './SearchDialog'
-import { getAllTextNodesInElement } from './getAllTextNodesInElement'
-import { SuperSearchResult } from './Types'
-import { debounce } from '@standardnotes/utils'
-import { useApplication } from '@/Components/ApplicationProvider'
+import { c } from 'ttag'
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useApplication } from '../../../ApplicationProvider'
 import {
+  SUPER_TOGGLE_SEARCH,
+  SUPER_SEARCH_TOGGLE_REPLACE_MODE,
+  SUPER_SEARCH_TOGGLE_CASE_SENSITIVE,
   SUPER_SEARCH_NEXT_RESULT,
   SUPER_SEARCH_PREVIOUS_RESULT,
-  SUPER_SEARCH_TOGGLE_CASE_SENSITIVE,
-  SUPER_SEARCH_TOGGLE_REPLACE_MODE,
-  SUPER_TOGGLE_SEARCH,
+  KeyboardKey,
+  keyboardStringForShortcut,
 } from '@standardnotes/ui-services'
-import { useStateRef } from '@/Hooks/useStateRef'
+import { TranslateFromTopAnimation, TranslateToTopAnimation } from '../../../../Constants/AnimationConfigs'
+import { useLifecycleAnimation } from '../../../../Hooks/useLifecycleAnimation'
+import { classNames, debounce } from '@standardnotes/utils'
+import DecoratedInput from '../../../Input/DecoratedInput'
+import { searchInElement } from './searchInElement'
+import { useKeyboardService } from '../../../KeyboardServiceProvider'
+import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon, CloseIcon } from '@standardnotes/icons'
+import Button from '../../../Button/Button'
+import { canUseCSSHiglights, SearchHighlightRenderer, SearchHighlightRendererMethods } from './SearchHighlightRenderer'
+import { useStateRef } from '../../../../Hooks/useStateRef'
+import { createPortal } from 'react-dom'
+import { $createRangeSelection, $getSelection, $setSelection } from 'lexical'
+import StyledTooltip from '../../../StyledTooltip/StyledTooltip'
+import Icon from '../../../Icon/Icon'
 
-export const SearchPlugin = () => {
+export function SearchPlugin() {
   const application = useApplication()
   const [editor] = useLexicalComposerContext()
-  const { query, currentResultIndex, results, isCaseSensitive, isSearchActive, dispatch, addReplaceEventListener } =
-    useSuperSearchContext()
+  const isEditable = useLexicalEditable()
+
+  const [isSearchActive, setIsSearchActive] = useState(false)
+
+  const [query, setQuery] = useState('')
   const queryRef = useStateRef(query)
-  const currentResultIndexRef = useStateRef(currentResultIndex)
+  const [results, setResults] = useState<Range[]>([])
+
+  const [isCaseSensitive, setIsCaseSensitive] = useState(false)
   const isCaseSensitiveRef = useStateRef(isCaseSensitive)
-  const resultsRef = useStateRef(results)
+  const toggleCaseSensitivity = useCallback(() => setIsCaseSensitive((sensitive) => !sensitive), [])
+
+  const [isReplaceMode, setIsReplaceMode] = useState(false)
+  const toggleReplaceMode = useCallback(() => setIsReplaceMode((enabled) => !enabled), [])
+  const [replaceQuery, setReplaceQuery] = useState('')
+
+  useEffect(() => {
+    if (!isEditable) {
+      setIsReplaceMode(false)
+    }
+  }, [isEditable])
+
+  const highlightRendererRef = useRef<SearchHighlightRendererMethods>(null)
+
+  const [currentResultIndex, setCurrentResultIndex] = useState(-1)
+  const highlightAndScrollResultIntoView = useCallback(
+    (index: number) => {
+      const result = results[index]
+      if (!result) {
+        return
+      }
+      highlightRendererRef.current?.setActiveHighlight(result)
+      result.startContainer.parentElement?.scrollIntoView({
+        block: 'center',
+      })
+    },
+    [results],
+  )
+  const goToNextResult = useCallback(() => {
+    let next = currentResultIndex + 1
+    if (next >= results.length) {
+      next = 0
+    }
+    highlightAndScrollResultIntoView(next)
+    setCurrentResultIndex(next)
+  }, [currentResultIndex, highlightAndScrollResultIntoView, results.length])
+  const goToPrevResult = useCallback(() => {
+    let prev = currentResultIndex - 1
+    if (prev < 0) {
+      prev = results.length - 1
+    }
+    highlightAndScrollResultIntoView(prev)
+    setCurrentResultIndex(prev)
+  }, [currentResultIndex, highlightAndScrollResultIntoView, results.length])
+
+  const selectCurrentResult = useCallback(() => {
+    if (results.length === 0) {
+      return
+    }
+    const result = results[currentResultIndex]
+    if (!result) {
+      return
+    }
+    editor.update(() => {
+      const rangeSelection = $createRangeSelection()
+      rangeSelection.applyDOMRange(result)
+      $setSelection(rangeSelection)
+    })
+  }, [currentResultIndex, editor, results])
+
+  const [shouldHighlightAll, setShouldHighlightAll] = useState(canUseCSSHiglights)
+
+  const closeDialog = useCallback(() => {
+    selectCurrentResult()
+    setIsSearchActive(false)
+    setQuery('')
+    setResults([])
+    setIsCaseSensitive(false)
+    setIsReplaceMode(false)
+    setReplaceQuery('')
+    setShouldHighlightAll(canUseCSSHiglights)
+    editor.update(() => {
+      if ($getSelection() !== null) {
+        editor.focus()
+      }
+    })
+  }, [editor, selectCurrentResult])
 
   useEffect(() => {
     return application.keyboardService.addCommandHandlers([
       {
         command: SUPER_TOGGLE_SEARCH,
         category: 'Super notes',
-        description: 'Search in current note',
+        description: c('B3.Notes.EditorToolbar.Action').t`Search in current note`,
         onKeyDown: (event) => {
           event.preventDefault()
           event.stopPropagation()
-          dispatch({ type: 'toggle-search' })
+          setIsSearchActive((active) => !active)
         },
       },
       {
         command: SUPER_SEARCH_TOGGLE_REPLACE_MODE,
         category: 'Super notes',
-        description: 'Search and replace in current note',
+        description: c('B3.Notes.EditorToolbar.Action').t`Search and replace in current note`,
         onKeyDown: (event) => {
-          if (!editor.isEditable()) {
+          if (!isEditable) {
             return
           }
           event.preventDefault()
           event.stopPropagation()
-          dispatch({ type: 'toggle-replace-mode' })
+          toggleReplaceMode()
         },
       },
       {
         command: SUPER_SEARCH_TOGGLE_CASE_SENSITIVE,
         onKeyDown() {
-          dispatch({
-            type: 'toggle-case-sensitive',
-          })
+          toggleCaseSensitivity()
         },
       },
       {
         command: SUPER_SEARCH_NEXT_RESULT,
         category: 'Super notes',
-        description: 'Go to next search result',
+        description: c('B3.Notes.EditorToolbar.Action').t`Go to next search result`,
         onKeyDown(event) {
           event.preventDefault()
           event.stopPropagation()
-          dispatch({
-            type: 'go-to-next-result',
-          })
+          goToNextResult()
         },
       },
       {
         command: SUPER_SEARCH_PREVIOUS_RESULT,
         category: 'Super notes',
-        description: 'Go to previous search result',
+        description: c('B3.Notes.EditorToolbar.Action').t`Go to previous search result`,
         onKeyDown(event) {
           event.preventDefault()
           event.stopPropagation()
-          dispatch({
-            type: 'go-to-previous-result',
-          })
+          goToPrevResult()
         },
       },
     ])
-  }, [application.keyboardService, dispatch, editor])
+  }, [
+    application.keyboardService,
+    editor,
+    goToNextResult,
+    goToPrevResult,
+    isEditable,
+    toggleCaseSensitivity,
+    toggleReplaceMode,
+  ])
 
-  const handleSearch = useCallback(
+  const searchQueryAndHighlight = useCallback(
     (query: string, isCaseSensitive: boolean) => {
-      document.querySelectorAll('.search-highlight').forEach((element) => {
-        element.remove()
-      })
-
-      if (!query) {
-        dispatch({ type: 'clear-results' })
+      const highlightRenderer = highlightRendererRef.current
+      const rootElement = editor.getRootElement()
+      if (!rootElement || !query) {
+        highlightRenderer?.clearHighlights()
         return
       }
-
-      editor.getEditorState().read(() => {
-        const rootElement = editor.getRootElement()
-
-        if (!rootElement) {
-          return
-        }
-
-        const textNodes = getAllTextNodesInElement(rootElement)
-
-        const results: SuperSearchResult[] = []
-
-        textNodes.forEach((node) => {
-          const text = node.textContent || ''
-
-          const indices: number[] = []
-          let index = -1
-
-          const textWithCase = isCaseSensitive ? text : text.toLowerCase()
-          const queryWithCase = isCaseSensitive ? query : query.toLowerCase()
-
-          while ((index = textWithCase.indexOf(queryWithCase, index + 1)) !== -1) {
-            indices.push(index)
-          }
-
-          indices.forEach((index) => {
-            const startIndex = index
-            const endIndex = startIndex + query.length
-
-            results.push({
-              node,
-              startIndex,
-              endIndex,
-            })
-          })
-        })
-
-        dispatch({
-          type: 'set-results',
-          results,
-        })
-      })
+      highlightRenderer?.clearHighlights()
+      const ranges = searchInElement(rootElement, query, isCaseSensitive)
+      setResults(ranges)
+      highlightRenderer?.highlightMultipleRanges(ranges)
+      if (ranges.length > 0) {
+        setCurrentResultIndex(0)
+        highlightRenderer?.setActiveHighlight(ranges[0])
+      } else {
+        setCurrentResultIndex(-1)
+      }
     },
-    [dispatch, editor],
+    [editor],
   )
 
-  const handleQueryChange = useMemo(() => debounce(handleSearch, 250), [handleSearch])
-  const handleEditorChange = useMemo(() => debounce(handleSearch, 500), [handleSearch])
+  const handleQueryChange = useMemo(() => debounce(searchQueryAndHighlight, 30), [searchQueryAndHighlight])
+  const handleEditorChange = useMemo(() => debounce(searchQueryAndHighlight, 250), [searchQueryAndHighlight])
 
   useEffect(() => {
-    if (!query) {
-      dispatch({ type: 'clear-results' })
-      dispatch({ type: 'set-current-result-index', index: -1 })
-      return
-    }
-
-    void handleQueryChange(query, isCaseSensitiveRef.current)
-  }, [dispatch, handleQueryChange, isCaseSensitiveRef, query])
+    void handleQueryChange(query, isCaseSensitive)
+  }, [handleQueryChange, isCaseSensitive, query])
 
   useEffect(() => {
-    const handleCaseSensitiveChange = () => {
-      void handleSearch(queryRef.current, isCaseSensitive)
-    }
-    handleCaseSensitiveChange()
-  }, [handleSearch, isCaseSensitive, queryRef])
-
-  useLayoutEffect(() => {
     return editor.registerUpdateListener(({ dirtyElements, dirtyLeaves, prevEditorState, tags }) => {
       if (
         (dirtyElements.size === 0 && dirtyLeaves.size === 0) ||
@@ -177,132 +223,271 @@ export const SearchPlugin = () => {
     })
   }, [editor, handleEditorChange, isCaseSensitiveRef, queryRef])
 
-  useEffect(() => {
-    return addReplaceEventListener((event) => {
-      const { replace, type } = event
-
-      const replaceResult = (result: SuperSearchResult, scrollIntoView = false) => {
-        const { node, startIndex, endIndex } = result
-        const lexicalNode = $getNearestNodeFromDOMNode(node)
-        if (!lexicalNode) {
-          return
-        }
-        if (lexicalNode instanceof TextNode) {
-          lexicalNode.spliceText(startIndex, endIndex - startIndex, replace, true)
-        }
-        if (scrollIntoView && node.parentElement) {
-          node.parentElement.scrollIntoView({
-            block: 'center',
-          })
-        }
+  const $replaceResult = useCallback(
+    (result: Range, scrollIntoView = false) => {
+      const selection = $createRangeSelection()
+      selection.applyDOMRange(result)
+      selection.insertText(replaceQuery)
+      const nodeParent = result.startContainer.parentElement
+      if (nodeParent && scrollIntoView) {
+        nodeParent.scrollIntoView({
+          block: 'center',
+        })
       }
+    },
+    [replaceQuery],
+  )
 
-      editor.update(() => {
-        if (type === 'next') {
-          const result = resultsRef.current[currentResultIndexRef.current]
-          if (!result) {
-            return
-          }
-          replaceResult(result, true)
-        } else if (type === 'all') {
-          resultsRef.current.forEach((result) => replaceResult(result))
-        }
-
-        void handleSearch(queryRef.current, isCaseSensitiveRef.current)
-      })
-    })
-  }, [addReplaceEventListener, currentResultIndexRef, editor, handleSearch, isCaseSensitiveRef, queryRef, resultsRef])
-
-  useEffect(() => {
-    document.querySelectorAll('.search-highlight').forEach((element) => {
-      element.remove()
-    })
-    if (currentResultIndex === -1) {
+  const replaceCurrentResult = useCallback(() => {
+    if (!isEditable) {
       return
     }
-    const result = results[currentResultIndex]
-    editor.getEditorState().read(() => {
-      const rootElement = editor.getRootElement()
-      const containerElement = rootElement?.parentElement?.getElementsByClassName('search-highlight-container')[0]
-      result.node.parentElement?.scrollIntoView({
-        block: 'center',
-      })
-      if (!rootElement || !containerElement) {
-        return
-      }
-      createSearchHighlightElement(result, rootElement, containerElement)
-    })
-  }, [currentResultIndex, editor, results])
-
-  useEffect(() => {
-    let containerElement: HTMLElement | null | undefined
-    let rootElement: HTMLElement | null | undefined
-
-    editor.getEditorState().read(() => {
-      rootElement = editor.getRootElement()
-      containerElement = rootElement?.parentElement?.querySelector('.search-highlight-container')
-    })
-
-    if (!rootElement || !containerElement) {
+    const currentResult = results[currentResultIndex]
+    if (!currentResult) {
       return
     }
+    editor.update(
+      () => {
+        $replaceResult(currentResult, true)
+      },
+      {
+        discrete: true,
+        tag: 'skip-dom-selection',
+      },
+    )
+    searchQueryAndHighlight(query, isCaseSensitive)
+  }, [$replaceResult, currentResultIndex, editor, isCaseSensitive, isEditable, query, results, searchQueryAndHighlight])
 
-    const resizeObserver = new ResizeObserver(() => {
-      if (!rootElement || !containerElement) {
-        return
-      }
-
-      containerElement.style.height = `${rootElement.scrollHeight}px`
-      containerElement.style.overflow = 'visible'
-    })
-    resizeObserver.observe(rootElement)
-
-    const handleScroll = () => {
-      if (!rootElement || !containerElement) {
-        return
-      }
-
-      containerElement.style.top = `-${rootElement.scrollTop}px`
+  const replaceAllResults = useCallback(() => {
+    if (!isEditable) {
+      return
     }
-
-    rootElement.addEventListener('scroll', handleScroll)
-
-    return () => {
-      resizeObserver.disconnect()
-      rootElement?.removeEventListener('scroll', handleScroll)
-    }
-  }, [editor])
-
-  const selectCurrentResult = useCallback(() => {
     if (results.length === 0) {
       return
     }
-    const result = results[currentResultIndex]
-    if (!result) {
-      return
-    }
-    editor.update(() => {
-      const rangeSelection = $createRangeSelection()
-      $setSelection(rangeSelection)
+    editor.update(
+      () => {
+        for (let i = 0; i < results.length; i++) {
+          const result = results[i]
+          if (!result) {
+            continue
+          }
+          $replaceResult(result, false)
+        }
+      },
+      {
+        discrete: true,
+        tag: 'skip-dom-selection',
+      },
+    )
+    searchQueryAndHighlight(query, isCaseSensitive)
+  }, [$replaceResult, editor, isCaseSensitive, isEditable, query, results, searchQueryAndHighlight])
 
-      const lexicalNode = $getNearestNodeFromDOMNode(result.node)
-      if ($isTextNode(lexicalNode)) {
-        lexicalNode.select(result.startIndex, result.endIndex)
-      }
-    })
-  }, [currentResultIndex, editor, results])
+  const [isMounted, setElement] = useLifecycleAnimation({
+    open: isSearchActive,
+    enter: TranslateFromTopAnimation,
+    exit: TranslateToTopAnimation,
+  })
+
+  const focusOnMount = useCallback((node: HTMLInputElement | null) => {
+    if (node) {
+      node.focus()
+    }
+  }, [])
+
+  const keyboardService = useKeyboardService()
+  const searchToggleShortcut = useMemo(
+    () => keyboardStringForShortcut(keyboardService.keyboardShortcutForCommand(SUPER_TOGGLE_SEARCH)),
+    [keyboardService],
+  )
+  const toggleReplaceShortcut = useMemo(
+    () => keyboardStringForShortcut(keyboardService.keyboardShortcutForCommand(SUPER_SEARCH_TOGGLE_REPLACE_MODE)),
+    [keyboardService],
+  )
+  const caseSensitivityShortcut = useMemo(
+    () => keyboardStringForShortcut(keyboardService.keyboardShortcutForCommand(SUPER_SEARCH_TOGGLE_CASE_SENSITIVE)),
+    [keyboardService],
+  )
+
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <>
-      <SearchDialog
-        open={isSearchActive}
-        closeDialog={() => {
-          selectCurrentResult()
-          dispatch({ type: 'toggle-search' })
-          dispatch({ type: 'reset-search' })
-          editor.focus()
-        }}
-      />
+      <div
+        className={classNames(
+          'absolute left-2 right-6 top-2 z-10 flex select-none rounded border border-border bg-default font-sans md:left-auto',
+          isEditable ? 'md:top-13' : 'md:top-3',
+        )}
+        ref={setElement}
+      >
+        {isEditable && (
+          <button
+            className="focus:ring-none border-r border-border px-1 hover:bg-contrast focus:shadow-inner focus:shadow-info"
+            onClick={toggleReplaceMode}
+            title={
+              c('B3.Notes.EditorToolbar.Label').jt`Toggle Replace Mode (${toggleReplaceShortcut})` as unknown as string
+            }
+          >
+            {isReplaceMode ? (
+              <ArrowDownIcon className="h-4 w-4 fill-text" />
+            ) : (
+              <ArrowRightIcon className="h-4 w-4 fill-text" />
+            )}
+          </button>
+        )}
+        <div
+          className="flex flex-col gap-2 px-2 py-2"
+          onKeyDown={(event) => {
+            if (event.key === KeyboardKey.Escape) {
+              closeDialog()
+            }
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <DecoratedInput
+              placeholder={c('B3.Notes.EditorToolbar.Label').t`Search`}
+              className={{
+                container: classNames('flex-grow !text-[length:inherit]', !query.length && '!py-1'),
+                right: '!py-1',
+              }}
+              value={query}
+              onChange={setQuery}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && results.length) {
+                  if (event.shiftKey) {
+                    goToPrevResult()
+                    return
+                  }
+                  goToNextResult()
+                }
+              }}
+              ref={focusOnMount}
+              right={[
+                <div className="min-w-[7ch] max-w-[7ch] flex-shrink-0 whitespace-nowrap text-right">
+                  {query.length > 0 && (
+                    <>
+                      {currentResultIndex > -1 ? currentResultIndex + 1 + ' / ' : null}
+                      {results.length}
+                    </>
+                  )}
+                </div>,
+              ]}
+            />
+            <label
+              className={classNames(
+                'relative flex items-center rounded border px-1.5 py-1 focus-within:ring-2 focus-within:ring-info focus-within:ring-offset-2 focus-within:ring-offset-default',
+                isCaseSensitive ? 'border-info bg-info text-info-contrast' : 'border-border hover:bg-contrast',
+              )}
+              title={
+                c('B3.Notes.EditorToolbar.Label').jt`Case sensitive (${caseSensitivityShortcut})` as unknown as string
+              }
+            >
+              <input
+                type="checkbox"
+                className="absolute left-0 top-0 z-[1] m-0 h-full w-full cursor-pointer border border-transparent p-0 opacity-0 shadow-none outline-none"
+                checked={isCaseSensitive}
+                onChange={toggleCaseSensitivity}
+              />
+              <span aria-hidden>Aa</span>
+              <span className="sr-only">{c('B3.Notes.EditorToolbar.Label').t`Case sensitive`}</span>
+            </label>
+            <button
+              className="flex items-center rounded border border-border p-1.5 hover:bg-contrast disabled:cursor-not-allowed"
+              onClick={goToPrevResult}
+              disabled={results.length < 1}
+              title={c('B3.Notes.EditorToolbar.Label').t`Previous result (Shift + Enter)`}
+            >
+              <ArrowUpIcon className="h-4 w-4 fill-current text-text" />
+            </button>
+            <button
+              className="flex items-center rounded border border-border p-1.5 hover:bg-contrast disabled:cursor-not-allowed"
+              onClick={goToNextResult}
+              disabled={results.length < 1}
+              title={c('B3.Notes.EditorToolbar.Label').t`Next result (Enter)`}
+            >
+              <ArrowDownIcon className="h-4 w-4 fill-current text-text" />
+            </button>
+            <button
+              className="flex items-center rounded border border-border p-1.5 hover:bg-contrast"
+              onClick={() => {
+                closeDialog()
+              }}
+              title={c('B3.Notes.EditorToolbar.Label').jt`Close (${searchToggleShortcut})` as unknown as string}
+            >
+              <CloseIcon className="h-4 w-4 fill-current text-text" />
+            </button>
+          </div>
+          {isReplaceMode && isEditable && (
+            <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
+              <input
+                type="text"
+                placeholder={c('B3.Notes.EditorToolbar.Label').t`Replace`}
+                onChange={(e) => {
+                  setReplaceQuery(e.target.value)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && replaceQuery && results.length) {
+                    if (event.ctrlKey && event.altKey) {
+                      replaceAllResults()
+                      event.preventDefault()
+                      return
+                    }
+                    replaceCurrentResult()
+                    event.preventDefault()
+                  }
+                }}
+                className="rounded border border-border bg-default p-1 px-2"
+                ref={focusOnMount}
+              />
+              <Button
+                small
+                onClick={replaceCurrentResult}
+                disabled={results.length < 1 || replaceQuery.length < 1}
+                title={c('B3.Notes.EditorToolbar.Label').t`Replace (Ctrl + Enter)`}
+              >
+                {c('B3.Notes.EditorToolbar.Action').t`Replace`}
+              </Button>
+              <Button
+                small
+                onClick={replaceAllResults}
+                disabled={results.length < 1 || replaceQuery.length < 1}
+                title={c('B3.Notes.EditorToolbar.Label').t`Replace all (Ctrl + Alt + Enter)`}
+              >
+                {c('B3.Notes.EditorToolbar.Action').t`Replace all`}
+              </Button>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <label className="inline-flex items-center gap-2">
+              <input
+                className="h-4 w-4 rounded accent-info"
+                type="checkbox"
+                checked={shouldHighlightAll}
+                onChange={(e) => setShouldHighlightAll(e.target.checked)}
+              />
+              <div>{c('B3.Notes.EditorToolbar.Label').t`Highlight all results`}</div>
+            </label>
+            {!canUseCSSHiglights && (
+              <StyledTooltip
+                label={c('B3.Notes.EditorToolbar.Info')
+                  .t`May lead to performance degradation, especially on large documents.`}
+                className="!z-modal"
+                showOnMobile
+              >
+                <button className="cursor-default">
+                  <Icon type="info" size="medium" />
+                </button>
+              </StyledTooltip>
+            )}
+          </div>
+        </div>
+      </div>
+      {createPortal(
+        <SearchHighlightRenderer shouldHighlightAll={shouldHighlightAll} ref={highlightRendererRef} />,
+        editor.getRootElement()?.parentElement || document.body,
+      )}
     </>
   )
 }

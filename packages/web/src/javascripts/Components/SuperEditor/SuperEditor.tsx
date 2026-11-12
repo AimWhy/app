@@ -1,5 +1,7 @@
 import { WebApplication } from '@/Application/WebApplication'
+import { c } from 'ttag'
 import {
+  ApplicationEvent,
   isPayloadSourceRetrieved,
   NativeFeatureIdentifier,
   FeatureStatus,
@@ -27,7 +29,6 @@ import {
   ChangeContentCallbackPlugin,
   ChangeEditorFunction,
 } from './Plugins/ChangeContentCallback/ChangeContentCallback'
-import { useCommandService } from '@/Components/CommandProvider'
 import { SUPER_SHOW_MARKDOWN_PREVIEW, getPrimaryModifier } from '@standardnotes/ui-services'
 import { SuperNoteMarkdownPreview } from './SuperNoteMarkdownPreview'
 import GetMarkdownPlugin, { GetMarkdownPluginInterface } from './Plugins/GetMarkdownPlugin/GetMarkdownPlugin'
@@ -40,6 +41,7 @@ import { useLocalPreference } from '@/Hooks/usePreference'
 import BlockPickerMenuPlugin from './Plugins/BlockPickerPlugin/BlockPickerPlugin'
 import { EditorEventSource } from '@/Types/EditorEventSource'
 import { ElementIds } from '@/Constants/ElementIDs'
+import { NoteFromSelectionPlugin } from './Plugins/NoteFromSelectionPlugin'
 
 export const SuperNotePreviewCharLimit = 160
 
@@ -71,7 +73,7 @@ export const SuperEditor: FunctionComponent<Props> = ({
   const getMarkdownPlugin = useRef<GetMarkdownPluginInterface | null>(null)
   const [featureStatus, setFeatureStatus] = useState<FeatureStatus>(FeatureStatus.Entitled)
 
-  useEffect(() => {
+  const reloadFeatureStatus = useCallback(() => {
     setFeatureStatus(
       application.features.getFeatureStatus(
         NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.SuperEditor).getValue(),
@@ -82,52 +84,70 @@ export const SuperEditor: FunctionComponent<Props> = ({
     )
   }, [application.features])
 
-  const commandService = useCommandService()
+  useEffect(() => {
+    reloadFeatureStatus()
+  }, [reloadFeatureStatus])
 
   useEffect(() => {
-    return commandService.addCommandHandler({
-      command: SUPER_SHOW_MARKDOWN_PREVIEW,
-      category: 'Super notes',
-      description: 'Show markdown preview for current note',
-      onKeyDown: () => setShowMarkdownPreview(true),
+    return application.addEventObserver(async (event) => {
+      switch (event) {
+        case ApplicationEvent.FeaturesAvailabilityChanged:
+        case ApplicationEvent.UserRolesChanged:
+        case ApplicationEvent.LocalDataLoaded:
+          reloadFeatureStatus()
+          break
+      }
     })
-  }, [commandService])
+  }, [application, reloadFeatureStatus])
+
+  const keyboardService = application.keyboardService
+  const isEditorReadonly = note.current.locked || Boolean(readonly) || featureStatus !== FeatureStatus.Entitled
+
+  useEffect(() => {
+    return application.commands.addWithShortcut(
+      SUPER_SHOW_MARKDOWN_PREVIEW,
+      'Super notes',
+      c('B3.Notes.EditorToolbar.Action').t`Show markdown preview for current note`,
+      () => setShowMarkdownPreview((s) => !s),
+      'markdown',
+    )
+  }, [application.commands])
 
   useEffect(() => {
     const platform = application.platform
     const primaryModifier = getPrimaryModifier(application.platform)
 
-    return commandService.registerExternalKeyboardShortcutHelpItems([
+    return keyboardService.registerExternalKeyboardShortcutHelpItems([
       {
         key: 'b',
         modifiers: [primaryModifier],
-        description: 'Bold',
+        description: c('B3.Notes.EditorToolbar.Action').t`Bold`,
         category: 'Formatting',
         platform: platform,
       },
       {
         key: 'i',
         modifiers: [primaryModifier],
-        description: 'Italic',
+        description: c('B3.Notes.EditorToolbar.Action').t`Italic`,
         category: 'Formatting',
         platform: platform,
       },
       {
         key: 'u',
         modifiers: [primaryModifier],
-        description: 'Underline',
+        description: c('B3.Notes.EditorToolbar.Action').t`Underline`,
         category: 'Formatting',
         platform: platform,
       },
       {
         key: 'k',
         modifiers: [primaryModifier],
-        description: 'Link',
+        description: c('B3.Notes.EditorToolbar.Action').t`Link`,
         category: 'Formatting',
         platform: platform,
       },
     ])
-  }, [application.platform, commandService])
+  }, [application.platform, keyboardService])
 
   const closeMarkdownPreview = useCallback(() => {
     setShowMarkdownPreview(false)
@@ -154,6 +174,9 @@ export const SuperEditor: FunctionComponent<Props> = ({
         ignoreNextChange.current = false
         return
       }
+      if (isEditorReadonly) {
+        return
+      }
 
       void controller.saveAndAwaitLocalPropagation({
         text: value,
@@ -164,13 +187,14 @@ export const SuperEditor: FunctionComponent<Props> = ({
         },
       })
     },
-    [controller],
+    [controller, isEditorReadonly],
   )
 
   const handleBubbleRemove = useCallback(
     (itemUuid: string) => {
       const item = application.items.findItem(itemUuid)
       if (item) {
+        // TODO: We should only unlink item if all link bubbles to that item have been removed from the note
         linkingController.unlinkItemFromSelectedItem(item).catch(console.error)
       }
     },
@@ -250,13 +274,13 @@ export const SuperEditor: FunctionComponent<Props> = ({
       <ErrorBoundary>
         <LinkingControllerProvider controller={linkingController}>
           <FilesControllerProvider controller={filesController}>
-            <BlocksEditorComposer readonly={note.current.locked || readonly} initialValue={note.current.text}>
+            <BlocksEditorComposer readonly={isEditorReadonly} initialValue={note.current.text}>
               <BlocksEditor
                 onChange={handleChange}
                 className="blocks-editor h-full resize-none"
                 previewLength={SuperNotePreviewCharLimit}
                 spellcheck={spellcheck}
-                readonly={note.current.locked || readonly}
+                readonly={isEditorReadonly}
                 onFocus={handleFocus}
                 onBlur={onBlur}
               >
@@ -269,9 +293,12 @@ export const SuperEditor: FunctionComponent<Props> = ({
                 />
                 <NodeObserverPlugin nodeType={BubbleNode} onRemove={handleBubbleRemove} />
                 <NodeObserverPlugin nodeType={FileNode} onRemove={handleBubbleRemove} />
-                {readonly === undefined && <ReadonlyPlugin note={note.current} />}
+                {readonly === undefined && (
+                  <ReadonlyPlugin note={note.current} forceReadonly={featureStatus !== FeatureStatus.Entitled} />
+                )}
                 <AutoFocusPlugin isEnabled={controller.isTemplateNote} />
                 <BlockPickerMenuPlugin />
+                <NoteFromSelectionPlugin currentNote={note.current} />
               </BlocksEditor>
             </BlocksEditorComposer>
           </FilesControllerProvider>

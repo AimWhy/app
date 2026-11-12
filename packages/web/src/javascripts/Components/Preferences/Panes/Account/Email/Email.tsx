@@ -12,11 +12,12 @@ import HorizontalSeparator from '@/Components/Shared/HorizontalSeparator'
 import Switch from '@/Components/Switch/Switch'
 import { Subtitle, Text, Title } from '@/Components/Preferences/PreferencesComponents/Content'
 import { WebApplication } from '@/Application/WebApplication'
-import { STRING_FAILED_TO_UPDATE_USER_SETTING } from '@/Constants/Strings'
+import { StringFailedToUpdateUserSetting } from '@/Constants/Strings'
 import PreferencesGroup from '@/Components/Preferences/PreferencesComponents/PreferencesGroup'
 import PreferencesSegment from '@/Components/Preferences/PreferencesComponents/PreferencesSegment'
 import Spinner from '@/Components/Spinner/Spinner'
 import NoProSubscription from '../NoProSubscription'
+import { c } from 'ttag'
 
 type Props = {
   application: WebApplication
@@ -36,8 +37,8 @@ const Email: FunctionComponent<Props> = ({ application }: Props) => {
     try {
       await application.settings.updateSetting(settingName, payload, false)
       return true
-    } catch (e) {
-      application.alerts.alert(STRING_FAILED_TO_UPDATE_USER_SETTING).catch(console.error)
+    } catch {
+      application.alerts.alert(StringFailedToUpdateUserSetting()).catch(console.error)
       return false
     }
   }
@@ -46,8 +47,8 @@ const Email: FunctionComponent<Props> = ({ application }: Props) => {
     try {
       await application.settings.updateSubscriptionSetting(settingName, payload, false)
       return true
-    } catch (e) {
-      application.alerts.alert(STRING_FAILED_TO_UPDATE_USER_SETTING).catch(console.error)
+    } catch {
+      application.alerts.alert(StringFailedToUpdateUserSetting()).catch(console.error)
       return false
     }
   }
@@ -65,13 +66,13 @@ const Email: FunctionComponent<Props> = ({ application }: Props) => {
           SettingName.create(SettingName.NAMES.MuteSignInEmails).getValue(),
           MuteSignInEmailsOption.NotMuted,
         ),
-      ),
-        setMarketingEmailsMutedValue(
-          userSettings.getSettingValue<MuteMarketingEmailsOption>(
-            SettingName.create(SettingName.NAMES.MuteMarketingEmails).getValue(),
-            MuteMarketingEmailsOption.NotMuted,
-          ),
-        )
+      )
+      setMarketingEmailsMutedValue(
+        userSettings.getSettingValue<MuteMarketingEmailsOption>(
+          SettingName.create(SettingName.NAMES.MuteMarketingEmails).getValue(),
+          MuteMarketingEmailsOption.NotMuted,
+        ),
+      )
     } catch (error) {
       console.error(error)
     } finally {
@@ -120,24 +121,23 @@ const Email: FunctionComponent<Props> = ({ application }: Props) => {
   return (
     <PreferencesGroup>
       <PreferencesSegment>
-        <Title>Email</Title>
+        <Title>{c('B6.Preferences.Account.Title').t`Email`}</Title>
         <div>
           <div className="flex items-start justify-between gap-2 md:items-center">
             <div className="flex flex-col">
-              <Subtitle>Mute sign-in notification emails</Subtitle>
+              <Subtitle>{c('B6.Preferences.Account.Subtitle').t`Mute sign-in notification emails`}</Subtitle>
               {isMuteSignInEmailsFeatureAvailable ? (
                 <Text>
-                  Disables email notifications when a new sign-in occurs on your account. (Email notifications are
-                  available only to paid subscribers).
+                  {c('B6.Preferences.Account.Info')
+                    .t`Disables email notifications when a new sign-in occurs on your account. (Email notifications are available only to paid subscribers).`}
                 </Text>
               ) : (
                 <NoProSubscription
                   application={application}
                   text={
                     <span>
-                      Sign-in notification emails are available only on a{' '}
-                      <span className="font-bold">subscription</span> plan. Please upgrade in order to enable sign-in
-                      notifications.
+                      {c('B6.Preferences.Account.Info')
+                        .t`Sign-in notification emails are available only on a subscription plan. Please upgrade in order to enable sign-in notifications.`}
                     </span>
                   }
                 />
@@ -157,8 +157,9 @@ const Email: FunctionComponent<Props> = ({ application }: Props) => {
           <HorizontalSeparator classes="my-4" />
           <div className="flex items-start justify-between gap-2 md:items-center">
             <div className="flex flex-col">
-              <Subtitle>Mute marketing notification emails</Subtitle>
-              <Text>Disables email notifications with special deals and promotions.</Text>
+              <Subtitle>{c('B6.Preferences.Account.Subtitle').t`Mute marketing notification emails`}</Subtitle>
+              <Text>{c('B6.Preferences.Account.Info')
+                .t`Disables email notifications with special deals and promotions.`}</Text>
             </div>
             {isLoading ? (
               <Spinner className="h-5 w-5 flex-shrink-0" />

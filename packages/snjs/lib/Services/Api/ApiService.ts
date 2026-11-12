@@ -12,7 +12,7 @@ import {
   API_MESSAGE_GENERIC_TOKEN_REFRESH_FAIL,
   API_MESSAGE_CHANGE_CREDENTIALS_IN_PROGRESS,
   API_MESSAGE_FAILED_ACCESS_PURCHASE,
-  API_MESSAGE_FAILED_CREATE_FILE_TOKEN,
+  FileStrings,
   API_MESSAGE_FAILED_GET_SETTINGS,
   API_MESSAGE_FAILED_LISTED_REGISTRATION,
   API_MESSAGE_FAILED_OFFLINE_ACTIVATION,
@@ -77,7 +77,7 @@ import { PureCryptoInterface } from '@standardnotes/sncrypto-common'
 import { Paths } from './Paths'
 import { DiskStorageService } from '../Storage/DiskStorageService'
 import { UuidString } from '../../Types/UuidString'
-import { SettingsServerInterface } from '../Settings/SettingsServerInterface'
+import { SettingsServerInterface, MfaSecretResponse } from '../Settings/SettingsServerInterface'
 import { Strings } from '@Lib/Strings'
 import { AnyFeatureDescription } from '@standardnotes/features'
 
@@ -280,7 +280,7 @@ export class LegacyApiService
     return this.request({
       verb: HttpVerb.Post,
       url: joinPaths(this.host, Paths.v2.keyParams),
-      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN,
+      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN(),
       params,
       /** A session is optional here, if valid, endpoint bypasses 2FA and returns additional params */
       authentication: this.getSessionAccessToken(),
@@ -294,7 +294,7 @@ export class LegacyApiService
     hvmToken?: string
   }): Promise<HttpResponse<SignInResponse>> {
     if (this.authenticating) {
-      return this.createErrorResponse(API_MESSAGE_LOGIN_IN_PROGRESS, HttpStatusCode.BadRequest)
+      return this.createErrorResponse(API_MESSAGE_LOGIN_IN_PROGRESS(), HttpStatusCode.BadRequest)
     }
     this.authenticating = true
     const url = joinPaths(this.host, Paths.v2.signIn)
@@ -310,7 +310,7 @@ export class LegacyApiService
       verb: HttpVerb.Post,
       url,
       params,
-      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN,
+      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN(),
     })
 
     this.authenticating = false
@@ -334,7 +334,7 @@ export class LegacyApiService
     newEmail?: string
   }): Promise<HttpResponse<ChangeCredentialsResponse>> {
     if (this.changing) {
-      return this.createErrorResponse(API_MESSAGE_CHANGE_CREDENTIALS_IN_PROGRESS, HttpStatusCode.BadRequest)
+      return this.createErrorResponse(API_MESSAGE_CHANGE_CREDENTIALS_IN_PROGRESS(), HttpStatusCode.BadRequest)
     }
     const preprocessingError = this.preprocessingError()
     if (preprocessingError) {
@@ -356,7 +356,7 @@ export class LegacyApiService
     this.changing = false
 
     if (isErrorResponse(response)) {
-      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_CHANGE_CREDENTIALS_FAIL)
+      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_CHANGE_CREDENTIALS_FAIL())
     }
 
     this.processSuccessResponseForMetaBody(response)
@@ -380,7 +380,7 @@ export class LegacyApiService
 
     if (isErrorResponse(response)) {
       this.preprocessAuthenticatedErrorResponse(response)
-      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL)
+      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL())
     }
 
     this.processSuccessResponseForMetaBody(response)
@@ -476,12 +476,12 @@ export class LegacyApiService
     this.refreshingSession = false
 
     if (response === null) {
-      return this.createErrorResponse(API_MESSAGE_INVALID_SESSION, HttpStatusCode.BadRequest)
+      return this.createErrorResponse(API_MESSAGE_INVALID_SESSION(), HttpStatusCode.BadRequest)
     }
 
     if (isErrorResponse(response)) {
       this.preprocessAuthenticatedErrorResponse(response)
-      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_TOKEN_REFRESH_FAIL)
+      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_TOKEN_REFRESH_FAIL())
     }
 
     return response
@@ -501,7 +501,7 @@ export class LegacyApiService
 
     if (isErrorResponse(response)) {
       this.preprocessAuthenticatedErrorResponse(response)
-      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL)
+      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL())
     }
 
     this.processSuccessResponseForMetaBody(response)
@@ -523,7 +523,7 @@ export class LegacyApiService
 
     if (isErrorResponse(response)) {
       this.preprocessAuthenticatedErrorResponse(response)
-      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL)
+      return this.errorResponseWithFallbackMessage(response, API_MESSAGE_GENERIC_SYNC_FAIL())
     }
 
     this.processSuccessResponseForMetaBody(response)
@@ -553,7 +553,7 @@ export class LegacyApiService
     return await this.tokenRefreshableRequest<ListSettingsResponse>({
       verb: HttpVerb.Get,
       url: joinPaths(this.host, Paths.v1.settings(userUuid)),
-      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS(),
       authentication: this.getSessionAccessToken(),
     })
   }
@@ -563,27 +563,35 @@ export class LegacyApiService
     settingName: string,
     settingValue: string | null,
     sensitive: boolean,
+    totpToken?: string,
   ): Promise<HttpResponse<UpdateSettingResponse>> {
     const params = {
       name: settingName,
       value: settingValue,
       sensitive: sensitive,
+      ...(totpToken && { totpToken }),
     }
     return this.tokenRefreshableRequest<UpdateSettingResponse>({
       verb: HttpVerb.Put,
       url: joinPaths(this.host, Paths.v1.settings(userUuid)),
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS(),
       params,
     })
   }
 
-  async getSetting(userUuid: UuidString, settingName: string): Promise<HttpResponse<GetSettingResponse>> {
+  async getSetting(
+    userUuid: UuidString,
+    settingName: string,
+    serverPassword?: string,
+  ): Promise<HttpResponse<GetSettingResponse>> {
+    const customHeaders = serverPassword ? [{ key: 'x-server-password', value: serverPassword }] : undefined
     return await this.tokenRefreshableRequest<GetSettingResponse>({
       verb: HttpVerb.Get,
       url: joinPaths(this.host, Paths.v1.setting(userUuid, settingName.toLowerCase())),
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS(),
+      customHeaders,
     })
   }
 
@@ -592,7 +600,7 @@ export class LegacyApiService
       verb: HttpVerb.Get,
       url: joinPaths(this.host, Paths.v1.subscriptionSetting(userUuid, settingName.toLowerCase())),
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_GET_SETTINGS(),
     })
   }
 
@@ -611,17 +619,32 @@ export class LegacyApiService
       verb: HttpVerb.Put,
       url: joinPaths(this.host, Paths.v1.subscriptionSettings(userUuid)),
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS(),
       params,
     })
   }
 
-  async deleteSetting(userUuid: UuidString, settingName: string): Promise<HttpResponse<DeleteSettingResponse>> {
+  async deleteSetting(
+    userUuid: UuidString,
+    settingName: string,
+    serverPassword?: string,
+  ): Promise<HttpResponse<DeleteSettingResponse>> {
+    const customHeaders = serverPassword ? [{ key: 'x-server-password', value: serverPassword }] : undefined
     return this.tokenRefreshableRequest<DeleteSettingResponse>({
       verb: HttpVerb.Delete,
       url: joinPaths(this.host, Paths.v1.setting(userUuid, settingName)),
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS,
+      fallbackErrorMessage: API_MESSAGE_FAILED_UPDATE_SETTINGS(),
+      customHeaders,
+    })
+  }
+
+  async getMfaSecret(userUuid: UuidString): Promise<HttpResponse<MfaSecretResponse>> {
+    return this.tokenRefreshableRequest<MfaSecretResponse>({
+      verb: HttpVerb.Get,
+      url: joinPaths(this.host, Paths.v1.mfaSecret(userUuid)),
+      authentication: this.getSessionAccessToken(),
+      fallbackErrorMessage: 'Failed to get MFA secret.',
     })
   }
 
@@ -630,7 +653,7 @@ export class LegacyApiService
       verb: HttpVerb.Get,
       url,
       external: true,
-      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN,
+      fallbackErrorMessage: API_MESSAGE_GENERIC_INVALID_LOGIN(),
     })
   }
 
@@ -640,7 +663,7 @@ export class LegacyApiService
       verb: HttpVerb.Post,
       url,
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_ACCESS_PURCHASE,
+      fallbackErrorMessage: API_MESSAGE_FAILED_ACCESS_PURCHASE(),
     })
 
     if (isErrorResponse(response)) {
@@ -671,7 +694,7 @@ export class LegacyApiService
       const response = await this.request<GetOfflineFeaturesResponse>({
         verb: HttpVerb.Get,
         url: featuresUrl,
-        fallbackErrorMessage: API_MESSAGE_FAILED_OFFLINE_FEATURES,
+        fallbackErrorMessage: API_MESSAGE_FAILED_OFFLINE_FEATURES(),
         customHeaders: [{ key: 'x-offline-token', value: extensionKey }],
       })
 
@@ -684,7 +707,7 @@ export class LegacyApiService
         roles: data?.roles || [],
       }
     } catch {
-      return new ClientDisplayableError(API_MESSAGE_FAILED_OFFLINE_ACTIVATION)
+      return new ClientDisplayableError(API_MESSAGE_FAILED_OFFLINE_ACTIVATION())
     }
   }
 
@@ -695,7 +718,7 @@ export class LegacyApiService
     return this.tokenRefreshableRequest<ListedRegistrationResponse>({
       verb: HttpVerb.Post,
       url: joinPaths(this.host, Paths.v1.listedRegistration(this.user.uuid)),
-      fallbackErrorMessage: API_MESSAGE_FAILED_LISTED_REGISTRATION,
+      fallbackErrorMessage: API_MESSAGE_FAILED_LISTED_REGISTRATION(),
       authentication: this.getSessionAccessToken(),
     })
   }
@@ -716,19 +739,29 @@ export class LegacyApiService
       verb: HttpVerb.Post,
       url: url,
       authentication: this.getSessionAccessToken(),
-      fallbackErrorMessage: API_MESSAGE_FAILED_CREATE_FILE_TOKEN,
+      fallbackErrorMessage: FileStrings.FailedCreateFileToken,
       params,
     })
 
+    const data = response.data as CreateValetTokenResponse | undefined
+
+    if (data?.success === false) {
+      return new ClientDisplayableError(
+        FileStrings.ValetTokenFailureMessage(data.reason, operation),
+        undefined,
+        data.reason,
+      )
+    }
+
     if (isErrorResponse(response)) {
-      return new ClientDisplayableError(response.data?.error?.message as string)
+      return ClientDisplayableError.FromNetworkError(response)
     }
 
-    if (!response.data?.success) {
-      return new ClientDisplayableError(response.data?.reason as string, undefined, response.data?.reason as string)
+    if (data?.success === true) {
+      return data.valetToken
     }
 
-    return response.data?.valetToken
+    return new ClientDisplayableError(FileStrings.FailedCreateFileToken)
   }
 
   public async startUploadSession(
@@ -798,7 +831,10 @@ export class LegacyApiService
     return response.data.success
   }
 
-  public async closeUploadSession(valetToken: string, ownershipType: FileOwnershipType): Promise<boolean> {
+  public async closeUploadSession(
+    valetToken: string,
+    ownershipType: FileOwnershipType,
+  ): Promise<boolean | ClientDisplayableError> {
     const url = joinPaths(
       this.getFilesHost(),
       ownershipType === 'user' ? Paths.v1.closeUploadSession : Paths.v1.closeSharedVaultUploadSession,
@@ -812,7 +848,7 @@ export class LegacyApiService
     })
 
     if (isErrorResponse(response)) {
-      return false
+      return ClientDisplayableError.FromNetworkError(response)
     }
 
     return response.data.success
@@ -918,7 +954,7 @@ export class LegacyApiService
       params: {
         integrityPayloads,
       },
-      fallbackErrorMessage: API_MESSAGE_GENERIC_INTEGRITY_CHECK_FAIL,
+      fallbackErrorMessage: API_MESSAGE_GENERIC_INTEGRITY_CHECK_FAIL(),
       authentication: this.getSessionAccessToken(),
     })
   }
@@ -927,25 +963,35 @@ export class LegacyApiService
     return this.tokenRefreshableRequest<GetSingleItemResponse>({
       verb: HttpVerb.Get,
       url: joinPaths(this.host, Paths.v1.getSingleItem(itemUuid)),
-      fallbackErrorMessage: API_MESSAGE_GENERIC_SINGLE_ITEM_SYNC_FAIL,
+      fallbackErrorMessage: API_MESSAGE_GENERIC_SINGLE_ITEM_SYNC_FAIL(),
       authentication: this.getSessionAccessToken(),
     })
   }
 
   private preprocessingError() {
     if (this.refreshingSession) {
-      return this.createErrorResponse(API_MESSAGE_TOKEN_REFRESH_IN_PROGRESS, HttpStatusCode.BadRequest)
+      return this.createErrorResponse(API_MESSAGE_TOKEN_REFRESH_IN_PROGRESS(), HttpStatusCode.BadRequest)
     }
 
     if (!this.session) {
-      return this.createErrorResponse(API_MESSAGE_INVALID_SESSION, HttpStatusCode.BadRequest)
+      return this.createErrorResponse(API_MESSAGE_INVALID_SESSION(), HttpStatusCode.BadRequest)
     }
 
     return undefined
   }
 
   private preprocessAuthenticatedErrorResponse(response: HttpResponse) {
-    if (response.status === HttpStatusCode.Unauthorized && this.session) {
+    if (!this.session) {
+      return
+    }
+
+    /**
+     * In most cases the ExpiredAccessToken erorr shouldn't reach this function, since if a 498 is caught, a refresh
+     * will automatically take place. However there does appear to be rare cases where for some reason the 498 falls through,
+     * perhaps because for example the server responds to a refresh request with a 498. In those cases, we'll just
+     * fallback here to the invalid session observer so that the user can be reprompted for auth.
+     */
+    if (response.status === HttpStatusCode.Unauthorized || response.status === HttpStatusCode.ExpiredAccessToken) {
       this.invalidSessionObserver?.(response.data.error?.tag === ErrorTag.RevokedSession)
     }
   }

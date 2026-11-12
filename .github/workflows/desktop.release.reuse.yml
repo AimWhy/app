@@ -6,10 +6,15 @@ on:
       channel:
         required: true
         type: string
+      skip_release:
+        description: Run build and publish prep only; skip GitHub release and Snap store upload
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   Mac:
-    runs-on: macos-latest
+    runs-on: macos-15
     env:
       CSC_LINK: ${{ secrets.MAC_CI_KEYS }}
       CSC_KEY_PASSWORD: ${{ secrets.MAC_CI_KEYS_PASSWORD }}
@@ -42,22 +47,26 @@ jobs:
         run: |
           yarn run electron-builder --mac --x64 --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
           node scripts/fixMacZip.js ${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-mac.yml dist/update-meta/mac-x64.yml
       - name: MacArm64
-        run: yarn run electron-builder --mac --arm64 --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+        run: |
+          yarn run electron-builder --mac --arm64 --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-mac.yml dist/update-meta/mac-arm64.yml
 
       - name: Upload
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4.0.0
         with:
-          name: assets
+          name: dist-macos
           path: |
             packages/desktop/dist/*.dmg
             packages/desktop/dist/*.zip
             packages/desktop/dist/*.blockmap
             packages/desktop/dist/*.yml
             packages/desktop/dist/*.yaml
+            packages/desktop/dist/update-meta/**
 
-  Linux-AppImage:
-    name: Linux AppImage
+  Linux-AppImage-X64:
+    name: Linux AppImage X64
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -87,24 +96,71 @@ jobs:
 
       - name: Compile for AppImage
         run: yarn run webpack --config desktop.webpack.prod.js
-      - name: AppImage
-        run: yarn run electron-builder --linux --x64 -c.linux.target=AppImage --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+
       - name: AppImageX64
-        run: yarn run electron-builder --linux --x64 -c.linux.target=AppImage --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
-      - name: AppImageArm64
-        run: yarn run electron-builder --linux --arm64 -c.linux.target=AppImage --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+        run: |
+          yarn run electron-builder --linux --x64 -c.linux.target=AppImage --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-linux.yml dist/update-meta/linux-appimage-x64.yml
 
       - name: Upload
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4.0.0
         with:
-          name: assets
+          name: dist-linux-appimage-x64
           path: |
             packages/desktop/dist/*.AppImage
             packages/desktop/dist/*.yml
             packages/desktop/dist/*.yaml
+            packages/desktop/dist/update-meta/**
 
-  Linux-Dir:
-    name: Linux Dir
+  Linux-AppImage-ARM64:
+    name: Linux AppImage ARM64
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: packages/desktop
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          registry-url: 'https://registry.npmjs.org'
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install FPM
+        run: sudo gem install fpm -f
+
+      - run: yarn install --immutable
+
+      - name: Rebuild Electron Native Modules
+        run: yarn workspace @standardnotes/desktop rebuild:home-server
+
+      - run: yarn build:desktop
+
+      - run: echo APP_VERSION=$(node -p "require('./../web/package.json').version") >> $GITHUB_ENV
+
+      - name: Compile for AppImage
+        run: yarn run webpack --config desktop.webpack.prod.js
+
+      - name: AppImageArm64
+        run: |
+          yarn run electron-builder --linux --arm64 -c.linux.target=AppImage --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-linux-arm64.yml dist/update-meta/linux-appimage-arm64.yml
+
+      - name: Upload
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: dist-linux-appimage-arm64
+          path: |
+            packages/desktop/dist/*.AppImage
+            packages/desktop/dist/*.yml
+            packages/desktop/dist/*.yaml
+            packages/desktop/dist/update-meta/**
+
+  Linux-Dir-X64:
+    name: Linux Dir X64
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -136,15 +192,43 @@ jobs:
         run: |
           yarn run webpack --config desktop.webpack.prod.js
           yarn run electron-builder --linux --x64 -c.linux.target=dir --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+
+  Linux-Dir-ARM64:
+    name: Linux Dir ARM64
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: packages/desktop
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          registry-url: 'https://registry.npmjs.org'
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install FPM
+        run: sudo gem install fpm -f
+
+      - run: yarn install --immutable
+
+      - name: Rebuild Electron Native Modules
+        run: yarn workspace @standardnotes/desktop rebuild:home-server
+
+      - run: yarn build:desktop
+
+      - run: echo APP_VERSION=$(node -p "require('./../web/package.json').version") >> $GITHUB_ENV
+
       - name: DirArm64
         run: |
           yarn run webpack --config desktop.webpack.prod.js
           yarn run electron-builder --linux --arm64 -c.linux.target=dir --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
-        env:
-          npm_config_target_arch: 'arm64'
 
-  Linux-Deb:
-    name: Linux Deb
+  Linux-Deb-X64:
+    name: Linux Deb X64
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -176,22 +260,64 @@ jobs:
         run: |
           yarn run webpack --config desktop.webpack.prod.js --env deb
           yarn run electron-builder --linux --x64 -c.linux.target=deb --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
-      - name: DebArm64
-        env:
-          npm_config_target_arch: 'arm64'
-          USE_SYSTEM_FPM: 'true'
-        run: |
-          yarn run webpack --config desktop.webpack.prod.js --env deb
-          yarn run electron-builder --linux --arm64 -c.linux.target=deb --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-linux.yml dist/update-meta/linux-deb-x64.yml
 
       - name: Upload
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4.0.0
         with:
-          name: assets
+          name: dist-linux-deb-x64
           path: |
             packages/desktop/dist/*.deb
             packages/desktop/dist/*.yml
             packages/desktop/dist/*.yaml
+            packages/desktop/dist/update-meta/**
+
+  Linux-Deb-ARM64:
+    name: Linux Deb ARM64
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: packages/desktop
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          registry-url: 'https://registry.npmjs.org'
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install FPM
+        run: sudo gem install fpm -f
+
+      - run: yarn install --immutable
+
+      - name: Rebuild Electron Native Modules
+        run: yarn workspace @standardnotes/desktop rebuild:home-server
+
+      - run: yarn build:desktop
+
+      - run: echo APP_VERSION=$(node -p "require('./../web/package.json').version") >> $GITHUB_ENV
+
+      - name: DebArm64
+        env:
+          USE_SYSTEM_FPM: 'true'
+        run: |
+          yarn run webpack --config desktop.webpack.prod.js --env deb
+          yarn run electron-builder --linux --arm64 -c.linux.target=deb --publish=never --c.extraMetadata.version=${{ env.APP_VERSION }}
+          mkdir -p dist/update-meta && cp dist/latest-linux-arm64.yml dist/update-meta/linux-deb-arm64.yml
+
+      - name: Upload
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: dist-linux-deb-arm64
+          path: |
+            packages/desktop/dist/*.deb
+            packages/desktop/dist/*.yml
+            packages/desktop/dist/*.yaml
+            packages/desktop/dist/update-meta/**
 
   Linux-Snap:
     name: Linux Snap
@@ -221,7 +347,9 @@ jobs:
 
       - name: Install Snapcraft
         run: |
-          sudo snap install snapcraft --classic
+          # Pin to 8.x: electron-builder's legacy core22 snap target calls `snapcraft snap`,
+          # which was removed in snapcraft 9.0 (renamed to `pack`).
+          sudo snap install snapcraft --classic --channel=8.x/stable
 
       - name: Setup LXD
         uses: canonical/setup-lxd@v0.1.1
@@ -238,93 +366,11 @@ jobs:
         run: review-tools.snap-review dist/standard-notes-${{ env.APP_VERSION }}-linux-amd64.snap
 
       - name: Upload
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4.0.0
         with:
-          name: assets
+          name: dist-linux-snap
           path: |
             packages/desktop/dist/*.snap
-            packages/desktop/dist/*.yml
-            packages/desktop/dist/*.yaml
-
-  Windows:
-    runs-on: windows-latest
-
-    defaults:
-      run:
-        working-directory: packages/desktop
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          registry-url: 'https://registry.npmjs.org'
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Dependencies
-        run: yarn install --immutable
-
-      - name: Rebuild Electron Native Modules
-        run: yarn workspace @standardnotes/desktop rebuild:home-server
-
-      - name: Build
-        run: yarn build:desktop
-
-      - name: Webpack
-        run: yarn run webpack --config desktop.webpack.prod.js
-
-      - name: Set up certificate
-        run: |
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
-        shell: bash
-
-      - name: Set variables
-        id: variables
-        run: |
-          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "KEYPAIR_NAME=snkeypair" >> $GITHUB_OUTPUT
-          echo "CERTIFICATE_NAME=sncertificate" >> $GITHUB_OUTPUT
-          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
-          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
-          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
-          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
-          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH
-          echo "C:\Program Files\DigiCert\DigiCert Keylocker Tools" >> $GITHUB_PATH
-        shell: bash
-
-      - name: Setup Keylocker KSP on windows
-        run: |
-          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
-          msiexec /i Keylockertools-windows-x64.msi /quiet /qn
-          smksp_registrar.exe list
-          smctl.exe keypair ls
-          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
-        shell: cmd
-
-      - name: Certificates Sync
-        run: |
-           smctl windows certsync
-        shell: cmd
-
-      - name: Build & Sign With Electron Builder
-        run: yarn run electron-builder --windows --x64 --ia32 --publish=never --c.extraMetadata.version=$(node -p "require('./../web/package.json').version")
-
-      - name: Upload
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: assets
-          path: |
-            packages/desktop/dist/*.blockmap
-            packages/desktop/dist/*.exe
             packages/desktop/dist/*.yml
             packages/desktop/dist/*.yaml
 
@@ -333,7 +379,17 @@ jobs:
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
     if: ${{ always() }}
-    needs: [Windows, Mac, Linux-AppImage, Linux-Dir, Linux-Deb, Linux-Snap]
+    needs:
+      [
+        Mac,
+        Linux-AppImage-X64,
+        Linux-AppImage-ARM64,
+        Linux-Dir-X64,
+        Linux-Dir-ARM64,
+        Linux-Deb-X64,
+        Linux-Deb-ARM64,
+        Linux-Snap,
+      ]
     defaults:
       run:
         working-directory: packages/desktop
@@ -349,13 +405,17 @@ jobs:
 
       - run: yarn install --immutable
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: assets
+          pattern: dist-*
           path: packages/desktop/dist
+          merge-multiple: true
 
       - name: Generate Checksums
         run: node scripts/sums.mjs
+
+      - name: Merge update manifests
+        run: node scripts/merge-update-manifests.mjs
 
       - name: Generate Release Notes
         uses: ./actions/release-notes
@@ -364,30 +424,28 @@ jobs:
         id: release-notes
 
       - name: Release
+        if: ${{ !inputs.skip_release }}
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.CI_PAT_TOKEN }}
-          tag_name: "@standardnotes/desktop@${{ env.APP_VERSION }}"
-          name: "Desktop ${{ env.APP_VERSION }}"
+          tag_name: '@standardnotes/desktop@${{ env.APP_VERSION }}'
+          name: 'Desktop ${{ env.APP_VERSION }}'
           body: ${{ steps.release-notes.outputs.result }}
           prerelease: true
           draft: false
           files: packages/desktop/dist/*
 
       - name: Publish Snap
+        if: ${{ !inputs.skip_release }}
         run: |
-          sudo snap install snapcraft --classic
+          sudo snap install snapcraft --classic --channel=8.x/stable
           snapcraft upload dist/standard-notes-${{ env.APP_VERSION }}-linux-amd64.snap --release stable,candidate,beta,edge
 
-  Notify:
-    runs-on: ubuntu-latest
-    needs: [Publish]
-    steps:
-      - name: Notify Release Update
-        uses: peter-evans/repository-dispatch@v2
+      - name: Upload publish output (dry run)
+        if: inputs.skip_release
+        uses: actions/upload-artifact@v4
         with:
-          token: ${{ secrets.CI_PAT_TOKEN }}
-          repository: ${{ secrets.RELEASES_EVENT_RECEIVING_REPO }}
-          event-type: releases-updated-event
-
-
+          name: desktop-publish-dry-run-${{ env.APP_VERSION }}
+          retention-days: 7
+          # Same flat layout as GitHub release (dist/*); no unpacked build subdirs or update-meta fragments
+          path: packages/desktop/dist/*

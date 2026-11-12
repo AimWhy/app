@@ -27,6 +27,7 @@ import { initializeZoomManager } from './ZoomManager'
 import { HomeServerManager } from './HomeServer/HomeServerManager'
 import { FilesManager } from './File/FilesManager'
 import { DirectoryManager } from './Directory/DirectoryManager'
+import { registerMainProcessLocalizationCallbacks } from './Localization/MainProcessLocalization'
 
 const WINDOW_DEFAULT_WIDTH = 1100
 const WINDOW_DEFAULT_HEIGHT = 800
@@ -224,6 +225,13 @@ async function createWindowServices(window: Electron.BrowserWindow, appState: Ap
     spellcheckerManager,
   })
 
+  registerMainProcessLocalizationCallbacks({
+    onStringsReloaded: () => {
+      menuManager.reload()
+      trayManager.reloadLabels()
+    },
+  })
+
   const fileBackupsManager = new FilesBackupManager(appState, window.webContents, filesManager)
 
   return {
@@ -260,7 +268,7 @@ function fileUrlsAreEqual(a: string, b: string): boolean {
       bPath = lowercaseDriveLetter(bPath)
     }
     return aPath === bPath
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -275,7 +283,7 @@ async function getPreviousWindowPosition() {
   let position: WindowPosition
   try {
     position = JSON.parse(await fs.promises.readFile(path.join(Paths.userDataDir, 'window-position.json'), 'utf8'))
-  } catch (e) {
+  } catch {
     return {
       bounds: {
         width: WINDOW_DEFAULT_WIDTH,

@@ -22,7 +22,9 @@ export class AuthApiService implements AuthApiServiceInterface {
     this.operationsInProgress = new Map()
   }
 
-  async generateRecoveryCodes(): Promise<HttpResponse<GenerateRecoveryCodesResponseBody>> {
+  async generateRecoveryCodes(dto: {
+    serverPassword: string
+  }): Promise<HttpResponse<GenerateRecoveryCodesResponseBody>> {
     if (this.operationsInProgress.get(AuthApiOperations.GenerateRecoveryCodes)) {
       throw new ApiCallError(ErrorMessage.GenericInProgress)
     }
@@ -30,10 +32,12 @@ export class AuthApiService implements AuthApiServiceInterface {
     this.operationsInProgress.set(AuthApiOperations.GenerateRecoveryCodes, true)
 
     try {
-      const response = await this.authServer.generateRecoveryCodes()
+      const response = await this.authServer.generateRecoveryCodes({
+        headers: [{ key: 'x-server-password', value: dto.serverPassword }],
+      })
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     } finally {
       this.operationsInProgress.set(AuthApiOperations.GenerateRecoveryCodes, false)
@@ -60,7 +64,7 @@ export class AuthApiService implements AuthApiServiceInterface {
       })
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     } finally {
       this.operationsInProgress.set(AuthApiOperations.GetRecoveryKeyParams, false)
@@ -91,7 +95,7 @@ export class AuthApiService implements AuthApiServiceInterface {
       })
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     } finally {
       this.operationsInProgress.set(AuthApiOperations.SignInWithRecoveryCodes, false)

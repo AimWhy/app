@@ -1,6 +1,8 @@
 import { DAYS_IN_A_WEEK, DAYS_IN_A_YEAR } from '@/Constants/Constants'
+import { formatDefaultDateTime, formatMonthAndYear } from '@/Utils/LocalizedDateFormat'
 import { HistoryEntry, NoteHistoryEntry, RevisionMetadata } from '@standardnotes/snjs'
 import { calculateDifferenceBetweenDatesInDays } from '../../Utils/CalculateDifferenceBetweenDatesInDays'
+import { c } from 'ttag'
 
 export type HistoryModalMobileTab = 'Content' | 'List'
 
@@ -20,15 +22,27 @@ export type RemoteRevisionListGroup = ListGroup<RevisionMetadata>
 export type SessionRevisionListGroup = ListGroup<NoteHistoryEntry>
 
 export const formatDateAsMonthYearString = (date: Date) => {
-  return date.toLocaleDateString(undefined, {
-    month: 'long',
-    year: 'numeric',
-  })
+  return formatMonthAndYear(date)
+}
+
+const getRevisionEntryDate = (entry: RevisionEntry): Date => {
+  const createdAt = (entry as RevisionMetadata).created_at
+  if (createdAt) {
+    return new Date(createdAt)
+  }
+
+  const noteEntry = entry as NoteHistoryEntry
+
+  if (noteEntry.payload.updated_at.getTime() > 0) {
+    return noteEntry.payload.updated_at
+  }
+
+  return noteEntry.payload.created_at
 }
 
 export const getGroupIndexForEntry = (entry: RevisionEntry, groups: ListGroup<RevisionEntry>[]) => {
   const todayAsDate = new Date()
-  const entryDate = new Date((entry as RevisionMetadata).created_at ?? (entry as NoteHistoryEntry).payload.updated_at)
+  const entryDate = getRevisionEntryDate(entry)
 
   const differenceBetweenDatesInDays = calculateDifferenceBetweenDatesInDays(todayAsDate, entryDate)
 
@@ -52,6 +66,19 @@ export const getGroupIndexForEntry = (entry: RevisionEntry, groups: ListGroup<Re
 const GROUP_TITLE_TODAY = 'Today'
 const GROUP_TITLE_WEEK = 'This Week'
 const GROUP_TITLE_YEAR = 'More Than A Year Ago'
+
+export const formatRevisionGroupTitle = (title: string): string => {
+  switch (title) {
+    case GROUP_TITLE_TODAY:
+      return c('B4.Notes.History.Label').t`Today`
+    case GROUP_TITLE_WEEK:
+      return c('B4.Notes.History.Label').t`This Week`
+    case GROUP_TITLE_YEAR:
+      return c('B4.Notes.History.Label').t`More Than A Year Ago`
+    default:
+      return title
+  }
+}
 
 export const sortRevisionListIntoGroups = <EntryType extends RevisionEntry>(revisionList: EntryType[] | undefined) => {
   const sortedGroups: ListGroup<EntryType>[] = [
@@ -80,9 +107,7 @@ export const sortRevisionListIntoGroups = <EntryType extends RevisionEntry>(revi
       sortedGroups[groupIndex]?.entries?.push(entry)
     } else {
       addBeforeLastGroup({
-        title: formatDateAsMonthYearString(
-          new Date((entry as RevisionMetadata).created_at ?? (entry as NoteHistoryEntry).payload.updated_at),
-        ),
+        title: formatDateAsMonthYearString(getRevisionEntryDate(entry)),
         entries: [entry],
       })
     }
@@ -92,5 +117,5 @@ export const sortRevisionListIntoGroups = <EntryType extends RevisionEntry>(revi
 }
 
 export const previewHistoryEntryTitle = (revision: RevisionMetadata | LegacyHistoryEntry) => {
-  return new Date(revision.created_at).toLocaleString()
+  return formatDefaultDateTime(new Date(revision.created_at))
 }

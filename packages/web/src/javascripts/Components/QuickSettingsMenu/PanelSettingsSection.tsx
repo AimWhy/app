@@ -1,24 +1,25 @@
 import { TOGGLE_LIST_PANE_KEYBOARD_COMMAND, TOGGLE_NAVIGATION_PANE_KEYBOARD_COMMAND } from '@standardnotes/ui-services'
+import { c } from 'ttag'
 import { useMemo } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useResponsiveAppPane } from '../Panes/ResponsivePaneProvider'
-import { useCommandService } from '../CommandProvider'
+import { useKeyboardService } from '../KeyboardServiceProvider'
 import MenuSwitchButtonItem from '../Menu/MenuSwitchButtonItem'
 
 const PanelSettingsSection = () => {
   const { isListPaneCollapsed, isNavigationPaneCollapsed, toggleListPane, toggleNavigationPane } =
     useResponsiveAppPane()
 
-  const commandService = useCommandService()
+  const keyboardService = useKeyboardService()
 
   const navigationShortcut = useMemo(
-    () => commandService.keyboardShortcutForCommand(TOGGLE_NAVIGATION_PANE_KEYBOARD_COMMAND),
-    [commandService],
+    () => keyboardService.keyboardShortcutForCommand(TOGGLE_NAVIGATION_PANE_KEYBOARD_COMMAND),
+    [keyboardService],
   )
 
   const listShortcut = useMemo(
-    () => commandService.keyboardShortcutForCommand(TOGGLE_LIST_PANE_KEYBOARD_COMMAND),
-    [commandService],
+    () => keyboardService.keyboardShortcutForCommand(TOGGLE_LIST_PANE_KEYBOARD_COMMAND),
+    [keyboardService],
   )
 
   return (
@@ -29,7 +30,7 @@ const PanelSettingsSection = () => {
         onChange={toggleNavigationPane}
         shortcut={navigationShortcut}
       >
-        Show Tags Panel
+        {c('B2.NavSharedUI.Label').t`Show Tags Panel`}
       </MenuSwitchButtonItem>
       <MenuSwitchButtonItem
         className="items-center"
@@ -37,7 +38,7 @@ const PanelSettingsSection = () => {
         onChange={toggleListPane}
         shortcut={listShortcut}
       >
-        Show Notes Panel
+        {c('B2.NavSharedUI.Label').t`Show Notes Panel`}
       </MenuSwitchButtonItem>
     </div>
   )

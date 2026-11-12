@@ -5,9 +5,10 @@ import NotesOptionsPanel from '@/Components/NotesOptions/NotesOptionsPanel'
 import PinNoteButton from '@/Components/PinNoteButton/PinNoteButton'
 import ProtectedItemOverlay from '@/Components/ProtectedItemOverlay/ProtectedItemOverlay'
 import { ElementIds } from '@/Constants/ElementIDs'
-import { StringDeleteNote, STRING_DELETE_LOCKED_ATTEMPT, STRING_DELETE_PLACEHOLDER_ATTEMPT } from '@/Constants/Strings'
+import { StringDeleteLockedAttempt, StringDeleteNote, StringDeletePlaceholderAttempt } from '@/Constants/Strings'
 import { log, LoggingDomain } from '@/Logging'
 import { debounce, isDesktopApplication, isMobileScreen } from '@/Utils'
+import { c } from 'ttag'
 import { classNames, compareArrayReferences, pluralize } from '@standardnotes/utils'
 import {
   ApplicationEvent,
@@ -30,7 +31,7 @@ import {
   LocalPrefKey,
 } from '@standardnotes/snjs'
 import { confirmDialog, DELETE_NOTE_KEYBOARD_COMMAND, KeyboardKey } from '@standardnotes/ui-services'
-import { ChangeEventHandler, createRef, CSSProperties, FocusEvent, KeyboardEventHandler, RefObject } from 'react'
+import { ChangeEventHandler, createRef, FocusEvent, KeyboardEventHandler, RefObject } from 'react'
 import { SuperEditor } from '../SuperEditor/SuperEditor'
 import IndicatorCircle from '../IndicatorCircle/IndicatorCircle'
 import LinkedItemBubblesContainer from '../LinkedItems/LinkedItemBubblesContainer'
@@ -46,14 +47,15 @@ import {
 } from './TransactionFunctions'
 import { SuperEditorContentId } from '../SuperEditor/Constants'
 import { NoteViewController } from './Controller/NoteViewController'
-import { PlainEditor, PlainEditorInterface } from './PlainEditor/PlainEditor'
-import { EditorMargins, EditorMaxWidths } from '../EditorWidthSelectionModal/EditorWidths'
+import { PlainEditorInterface } from './PlainEditor/PlainEditor'
+import { PlainEditorSearchContainer } from './PlainEditor/search/PlainEditorSearchContainer'
 import NoteStatusIndicator, { NoteStatus } from './NoteStatusIndicator'
 import CollaborationInfoHUD from './CollaborationInfoHUD'
 import Button from '../Button/Button'
 import ModalOverlay from '../Modal/ModalOverlay'
 import NoteConflictResolutionModal from './NoteConflictResolutionModal/NoteConflictResolutionModal'
 import Icon from '../Icon/Icon'
+import { EditorContentWithSafeAreaPadding } from './EditorContentWithSafeAreaPadding'
 
 function sortAlphabetically(array: ComponentInterface[]): ComponentInterface[] {
   return array.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1))
@@ -93,11 +95,7 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
 
   onEditorComponentLoad?: () => void
 
-  private removeTrashKeyObserver?: () => void
-  private removeNoteStreamObserver?: () => void
-  private removeComponentManagerObserver?: () => void
-  private removeInnerNoteObserver?: () => void
-  private removeVaultUsersEventHandler?: () => void
+  #observers: (() => void)[] = []
 
   private protectionTimeoutId: ReturnType<typeof setTimeout> | null = null
   private noteViewElementRef: RefObject<HTMLDivElement>
@@ -147,20 +145,12 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
     super.deinit()
     ;(this.controller as unknown) = undefined
 
-    this.removeNoteStreamObserver?.()
-    ;(this.removeNoteStreamObserver as unknown) = undefined
-
-    this.removeInnerNoteObserver?.()
-    ;(this.removeInnerNoteObserver as unknown) = undefined
-
-    this.removeComponentManagerObserver?.()
-    ;(this.removeComponentManagerObserver as unknown) = undefined
-
-    this.removeTrashKeyObserver?.()
-    this.removeTrashKeyObserver = undefined
-
-    this.removeVaultUsersEventHandler?.()
-    this.removeVaultUsersEventHandler = undefined
+    for (let i = 0; i < this.#observers.length; i++) {
+      const cleanup = this.#observers[i]
+      cleanup()
+    }
+    this.#observers.length = 0
+    ;(this.#observers as unknown) = undefined
 
     this.clearNoteProtectionInactivityTimer()
     ;(this.ensureNoteIsInsertedBeforeUIAction as unknown) = undefined
@@ -213,23 +203,27 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
   override componentDidMount(): void {
     super.componentDidMount()
 
-    this.removeVaultUsersEventHandler = this.application.vaultUsers.addEventObserver((event, data) => {
-      if (event === VaultUserServiceEvent.InvalidatedUserCacheForVault) {
-        const vault = this.application.vaults.getItemVault(this.note)
-        if ((data as string) !== vault?.sharing?.sharedVaultUuid) {
-          return
+    this.#observers.push(
+      this.application.vaultUsers.addEventObserver((event, data) => {
+        if (event === VaultUserServiceEvent.InvalidatedUserCacheForVault) {
+          const vault = this.application.vaults.getItemVault(this.note)
+          if ((data as string) !== vault?.sharing?.sharedVaultUuid) {
+            return
+          }
+          this.setState({
+            readonly: vault ? this.application.vaultUsers.isCurrentUserReadonlyVaultMember(vault) : undefined,
+          })
         }
-        this.setState({
-          readonly: vault ? this.application.vaultUsers.isCurrentUserReadonlyVaultMember(vault) : undefined,
-        })
-      }
-    })
+      }),
+    )
 
     this.registerKeyboardShortcuts()
 
-    this.removeInnerNoteObserver = this.controller.addNoteInnerValueChangeObserver((note, source) => {
-      this.onNoteInnerChange(note, source)
-    })
+    this.#observers.push(
+      this.controller.addNoteInnerValueChangeObserver((note, source) => {
+        this.onNoteInnerChange(note, source)
+      }),
+    )
 
     this.autorun(() => {
       const syncStatus = this.controller.syncStatus
@@ -402,8 +396,8 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
       case ApplicationEvent.LocalDatabaseWriteError:
         this.controller.showErrorSyncStatus({
           type: 'error',
-          message: 'Offline Saving Issue',
-          description: 'Changes not saved',
+          message: c('B4.Notes.EditingUI.Error').t`Offline Saving Issue`,
+          description: c('B4.Notes.EditingUI.Error').t`Changes not saved`,
         })
         break
       case ApplicationEvent.UnprotectedSessionBegan: {
@@ -463,15 +457,17 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
   }
 
   streamItems() {
-    this.removeNoteStreamObserver = this.application.items.streamItems<SNNote>(ContentType.TYPES.Note, async () => {
-      if (!this.note) {
-        return
-      }
+    this.#observers.push(
+      this.application.items.streamItems<SNNote>(ContentType.TYPES.Note, async () => {
+        if (!this.note) {
+          return
+        }
 
-      this.setState({
-        conflictedNotes: this.application.items.conflictsOf(this.note.uuid) as SNNote[],
-      })
-    })
+        this.setState({
+          conflictedNotes: this.application.items.conflictsOf(this.note.uuid) as SNNote[],
+        })
+      }),
+    )
   }
 
   private createComponentViewer(component: UIFeature<IframeComponentFeatureDescription>) {
@@ -601,16 +597,16 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
 
   async deleteNote(permanently: boolean) {
     if (this.controller.isTemplateNote) {
-      this.application.alerts.alert(STRING_DELETE_PLACEHOLDER_ATTEMPT).catch(console.error)
+      this.application.alerts.alert(StringDeletePlaceholderAttempt()).catch(console.error)
       return
     }
 
     if (this.note.locked) {
-      this.application.alerts.alert(STRING_DELETE_LOCKED_ATTEMPT).catch(console.error)
+      this.application.alerts.alert(StringDeleteLockedAttempt()).catch(console.error)
       return
     }
 
-    const title = this.note.title.length ? `'${this.note.title}'` : 'this note'
+    const title = this.note.title.length ? `'${this.note.title}'` : c('B3.Notes.NoteActions.Label').t`this note`
     const text = StringDeleteNote(title, permanently)
     if (
       await confirmDialog({
@@ -766,14 +762,18 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
   }
 
   registerKeyboardShortcuts() {
-    this.removeTrashKeyObserver = this.application.keyboardService.addCommandHandler({
-      command: DELETE_NOTE_KEYBOARD_COMMAND,
-      notTags: ['INPUT', 'TEXTAREA'],
-      notElementIds: [SuperEditorContentId],
-      onKeyDown: () => {
-        this.deleteNote(false).catch(console.error)
-      },
-    })
+    const moveNoteToTrash = () => {
+      this.deleteNote(this.note.trashed).catch(console.error)
+    }
+
+    this.#observers.push(
+      this.application.keyboardService.addCommandHandler({
+        command: DELETE_NOTE_KEYBOARD_COMMAND,
+        notTags: ['INPUT', 'TEXTAREA'],
+        notElementIds: [SuperEditorContentId],
+        onKeyDown: moveNoteToTrash,
+      }),
+    )
   }
 
   ensureNoteIsInsertedBeforeUIAction = async () => {
@@ -800,6 +800,10 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
   }
 
   triggerSyncOnAction = () => {
+    if (!this.controller) {
+      // component might've already unmounted
+      return
+    }
     this.controller.syncNow()
   }
 
@@ -833,7 +837,11 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
     const shouldShowConflictsButton = this.state.conflictedNotes.length > 0 && !this.state.readonly
 
     return (
-      <div aria-label="Note" className="section editor sn-component h-full md:max-h-full" ref={this.noteViewElementRef}>
+      <div
+        aria-label={c('B4.Notes.EditingUI.Label').t`Note`}
+        className="section editor sn-component h-full md:max-h-full"
+        ref={this.noteViewElementRef}
+      >
         {this.note && (
           <NoteViewFileDropTarget
             note={this.note}
@@ -846,7 +854,7 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
         {this.state.readonly && (
           <div className="bg-warning-faded flex items-center px-3.5 py-2 text-sm text-accessory-tint-3">
             <Icon type="pencil-off" className="mr-3" />
-            You don't have permission to edit this note
+            {c('B4.Notes.EditingUI.Label').t`You don't have permission to edit this note`}
           </div>
         )}
 
@@ -904,7 +912,11 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
                 >
                   <Icon type="merge" size="small" className="mr-2" />
                   {this.state.conflictedNotes.length}{' '}
-                  {pluralize(this.state.conflictedNotes.length, 'conflict', 'conflicts')}
+                  {pluralize(
+                    this.state.conflictedNotes.length,
+                    c('B3.Notes.NoteActions.Label').t`conflict`,
+                    c('B3.Notes.NoteActions.Label').t`conflicts`,
+                  )}
                 </Button>
               )}
               <div className="note-view-options-buttons flex items-center gap-3">
@@ -951,20 +963,7 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
           </div>
         )}
 
-        <div
-          id={ElementIds.EditorContent}
-          className={classNames(
-            ElementIds.EditorContent,
-            'z-editor-content overflow-auto sm:[&>*]:mx-[var(--editor-margin)] sm:[&>*]:max-w-[var(--editor-max-width)]',
-          )}
-          style={
-            {
-              '--editor-margin': EditorMargins[this.state.editorLineWidth],
-              '--editor-max-width': EditorMaxWidths[this.state.editorLineWidth],
-            } as CSSProperties
-          }
-          ref={this.editorContentRef}
-        >
+        <EditorContentWithSafeAreaPadding editorLineWidth={this.state.editorLineWidth} ref={this.editorContentRef}>
           {editorMode === 'component' && this.state.editorComponentViewer && (
             <div className="component-view relative flex-grow">
               {this.state.paneGestureEnabled && <div className="absolute left-0 top-0 h-full w-[20px] md:hidden" />}
@@ -979,7 +978,7 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
           )}
 
           {editorMode === 'plain' && (
-            <PlainEditor
+            <PlainEditorSearchContainer
               application={this.application}
               spellcheck={this.state.spellcheck}
               ref={this.setPlainEditorRef}
@@ -1005,7 +1004,7 @@ class NoteView extends AbstractComponent<NoteViewProps, State> {
               />
             </div>
           )}
-        </div>
+        </EditorContentWithSafeAreaPadding>
 
         <div id="editor-pane-component-stack">
           {this.state.availableStackComponents.length > 0 && (

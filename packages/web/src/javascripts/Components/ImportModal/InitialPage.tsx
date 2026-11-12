@@ -5,6 +5,8 @@ import Icon from '../Icon/Icon'
 import { useApplication } from '../ApplicationProvider'
 import { FeatureName } from '@/Controllers/FeatureName'
 import { NativeFeatureIdentifier, FeatureStatus } from '@standardnotes/snjs'
+import { SuperName } from '@standardnotes/features'
+import { c } from 'ttag'
 
 type Props = {
   setFiles: ImportModalController['setFiles']
@@ -27,10 +29,11 @@ const ImportModalInitialPage = ({ setFiles, selectFiles }: Props) => {
           setFiles(files)
         }}
       >
-        <div className="text-lg font-semibold">Drag and drop files to auto-detect and import</div>
-        <div className="text-sm">Or click to open file picker</div>
+        <div className="text-lg font-semibold">{c('B1.Account.ImportExport.Info')
+          .t`Drag and drop files to auto-detect and import`}</div>
+        <div className="text-sm">{c('B1.Account.ImportExport.Info').t`Or click to open file picker`}</div>
       </button>
-      <div className="my-4 w-full text-center">or import from:</div>
+      <div className="my-4 w-full text-center">{c('B1.Account.ImportExport.Info').t`or import from:`}</div>
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Button className="flex items-center !py-2" onClick={() => selectFiles('evernote')}>
           <Icon type="evernote" className="mr-2 text-[#14cc45]" />
@@ -50,7 +53,7 @@ const ImportModalInitialPage = ({ setFiles, selectFiles }: Props) => {
         </Button>
         <Button className="flex items-center !py-2" onClick={() => selectFiles('plaintext')}>
           <Icon type="plain-text" className="mr-2 text-info" />
-          Plaintext / Markdown
+          {c('B1.Account.ImportExport.ImportSource').t`Plaintext / Markdown`}
         </Button>
         <Button className="flex items-center !py-2" onClick={() => selectFiles('html')}>
           <Icon type="rich-text" className="mr-2 text-accessory-tint-2" />
@@ -71,7 +74,7 @@ const ImportModalInitialPage = ({ setFiles, selectFiles }: Props) => {
           }}
         >
           <Icon type="file-doc" className="mr-2 text-accessory-tint-1" />
-          Super (JSON)
+          {`${SuperName} (JSON)`}
         </Button>
       </div>
     </>

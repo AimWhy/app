@@ -16,10 +16,15 @@ import {
   classNames,
 } from '@standardnotes/snjs'
 import { usePremiumModal } from '@/Hooks/usePremiumModal'
-import { NoteTitleFormatOptions } from '@/Components/ContentListView/Header/NoteTitleFormatOptions'
+import {
+  NOTE_TITLE_FORMAT_PATTERN_EXAMPLE,
+  getNoteTitleFormatOptions,
+} from '@/Components/ContentListView/Header/NoteTitleFormatOptions'
 import HorizontalSeparator from '@/Components/Shared/HorizontalSeparator'
 import { ErrorBoundary } from '@/Utils/ErrorBoundary'
 import { getDayjsFormattedString } from '@/Utils/GetDayjsFormattedString'
+import { jtString } from '@standardnotes/features'
+import { c } from 'ttag'
 
 const PrefChangeDebounceTimeInMs = 25
 const HelpPageUrl = 'https://day.js.org/docs/en/display/format#list-of-all-available-formats'
@@ -121,13 +126,13 @@ const NewNoteDefaults = () => {
   return (
     <PreferencesGroup>
       <PreferencesSegment>
-        <Title>New Note Defaults</Title>
+        <Title>{c('B6.Preferences.General.Title').t`New Note Defaults`}</Title>
         <div className="mt-2">
           <div>
-            <Subtitle>Note Type</Subtitle>
+            <Subtitle>{c('B6.Preferences.General.Subtitle').t`Note Type`}</Subtitle>
             <div className="mt-2">
               <Dropdown
-                label="Select the default note type"
+                label={c('B6.Preferences.General.Label').t`Select the default note type`}
                 items={editorItems}
                 value={defaultEditorIdentifier}
                 onChange={(value) => selectEditorForNewNoteDefault(value as EditorOption['value'])}
@@ -136,11 +141,11 @@ const NewNoteDefaults = () => {
           </div>
           <HorizontalSeparator classes="my-4" />
           <div>
-            <Subtitle>Title Format</Subtitle>
+            <Subtitle>{c('B6.Preferences.General.Subtitle').t`Title Format`}</Subtitle>
             <div className="mt-2">
               <Dropdown
-                label="Select the format for the note title"
-                items={NoteTitleFormatOptions}
+                label={c('B6.Preferences.General.Action').t`Select the format for the note title`}
+                items={getNoteTitleFormatOptions()}
                 value={newNoteTitleFormat}
                 onChange={setNewNoteTitleFormatChange}
               />
@@ -153,14 +158,16 @@ const NewNoteDefaults = () => {
                       'w-full min-w-55 rounded border border-solid border-passive-3 bg-default px-2 py-1.5 text-base md:w-auto md:translucent-ui:bg-transparent lg:text-sm',
                       'focus-within:ring-2 focus-within:ring-info',
                     )}
-                    placeholder="e.g. YYYY-MM-DD"
+                    placeholder={jtString(
+                      c('B6.Preferences.General.Placeholder').jt`e.g. ${NOTE_TITLE_FORMAT_PATTERN_EXAMPLE}`,
+                    )}
                     value={customNoteTitleFormat}
                     onChange={handleCustomFormatInputChange}
                     spellCheck={false}
                   />
                 </div>
                 <div className="mt-3 text-neutral">
-                  <span className="font-bold">Preview: </span>
+                  <span className="font-bold">{c('B6.Preferences.General.Label').t`Preview:`} </span>
                   <ErrorBoundary>
                     <em>{getDayjsFormattedString(undefined, customNoteTitleFormat)}</em>
                   </ErrorBoundary>
@@ -178,9 +185,9 @@ const NewNoteDefaults = () => {
                       }
                     }}
                   >
-                    Options
+                    {c('B6.Preferences.General.Action').t`Options`}
                   </a>
-                  . Use <code>[]</code> to escape formatting.
+                  {c('B6.Preferences.General.Info').t`. Use [] to escape formatting.`}
                 </div>
               </div>
             )}

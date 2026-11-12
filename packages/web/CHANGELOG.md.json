@@ -1,6 +1,1816 @@
 {
   "versions": [
     {
+      "version": "3.203.2",
+      "title": "[3.203.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.203.1...@standardnotes/web@3.203.2) (2026-11-12)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Improves errors on file attachments for expired subscriptions ([#3076](https://github.com/standardnotes/app/issues/3076)) ([cdb1b42](https://github.com/standardnotes/app/commit/cdb1b42cd9ce29abab07a735bf4137e5206f41ff))",
+      "parsed": {
+        "_": [
+          "Improves errors on file attachments for expired subscriptions (#3076) (cdb1b42)"
+        ],
+        "Bug Fixes": [
+          "Improves errors on file attachments for expired subscriptions (#3076) (cdb1b42)"
+        ]
+      }
+    },
+    {
+      "version": "3.203.1",
+      "title": "[3.203.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.203.0...@standardnotes/web@3.203.1) (2026-11-12)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Improves conflict resolver UI ([#3077](https://github.com/standardnotes/app/issues/3077)) ([b068189](https://github.com/standardnotes/app/commit/b0681895dd6f24c62c6e3cba83f44aafd18d0035))\n* Prevents custom plugin sandbox escape via Super notes ([#3075](https://github.com/standardnotes/app/issues/3075)) ([84adfbb](https://github.com/standardnotes/app/commit/84adfbb5df81474aba5573c53d35ee55698c0167))\n* Prevents redirect to checkout when clicking Sign up to sync ([#3078](https://github.com/standardnotes/app/issues/3078)) ([8194df3](https://github.com/standardnotes/app/commit/8194df3820271abe6b17e352a39ad519eca309f3))",
+      "parsed": {
+        "_": [
+          "Improves conflict resolver UI (#3077) (b068189)",
+          "Prevents custom plugin sandbox escape via Super notes (#3075) (84adfbb)",
+          "Prevents redirect to checkout when clicking Sign up to sync (#3078) (8194df3)"
+        ],
+        "Bug Fixes": [
+          "Improves conflict resolver UI (#3077) (b068189)",
+          "Prevents custom plugin sandbox escape via Super notes (#3075) (84adfbb)",
+          "Prevents redirect to checkout when clicking Sign up to sync (#3078) (8194df3)"
+        ]
+      }
+    },
+    {
+      "version": "3.203.0",
+      "title": "[3.203.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.12...@standardnotes/web@3.203.0) (2026-11-02)",
+      "date": null,
+      "body": "### Features\n\n* Introduces localization with support for multiple languages ([#3073](https://github.com/standardnotes/app/issues/3073)) ([b2f812b](https://github.com/standardnotes/app/commit/b2f812bcac226d12c0217d6b92938e60ecc3f392))",
+      "parsed": {
+        "_": [
+          "Introduces localization with support for multiple languages (#3073) (b2f812b)"
+        ],
+        "Features": [
+          "Introduces localization with support for multiple languages (#3073) (b2f812b)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.12",
+      "title": "[3.202.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.11...@standardnotes/web@3.202.12) (2026-10-30)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.11",
+      "title": "[3.202.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.10...@standardnotes/web@3.202.11) (2026-10-23)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Improves errors on file attachments for expired subs ([#3069](https://github.com/standardnotes/app/issues/3069)) ([7f9b07f](https://github.com/standardnotes/app/commit/7f9b07f9f88ae8885874fdb77425c883e4a41132))\n* Potentially fixes keyboard hiding when editing misspelt words ([#3070](https://github.com/standardnotes/app/issues/3070)) ([08ed33b](https://github.com/standardnotes/app/commit/08ed33bacd2877e504470b2b797724367336b387))\n* Uses default note type setting when creating note by sharing content on Android ([#3071](https://github.com/standardnotes/app/issues/3071)) ([72b05ff](https://github.com/standardnotes/app/commit/72b05ffdc0d14dec7be1804324b12b406b881b3b))",
+      "parsed": {
+        "_": [
+          "Improves errors on file attachments for expired subs (#3069) (7f9b07f)",
+          "Potentially fixes keyboard hiding when editing misspelt words (#3070) (08ed33b)",
+          "Uses default note type setting when creating note by sharing content on Android (#3071) (72b05ff)"
+        ],
+        "Bug Fixes": [
+          "Improves errors on file attachments for expired subs (#3069) (7f9b07f)",
+          "Potentially fixes keyboard hiding when editing misspelt words (#3070) (08ed33b)",
+          "Uses default note type setting when creating note by sharing content on Android (#3071) (72b05ff)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.10",
+      "title": "[3.202.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.9...@standardnotes/web@3.202.10) (2026-10-17)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes backups copy styling ([#3065](https://github.com/standardnotes/app/issues/3065)) ([7a6f8b8](https://github.com/standardnotes/app/commit/7a6f8b8770d61b71383a2a958559d38018877d57))",
+      "parsed": {
+        "_": [
+          "Fixes backups copy styling (#3065) (7a6f8b8)"
+        ],
+        "Bug Fixes": [
+          "Fixes backups copy styling (#3065) (7a6f8b8)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.9",
+      "title": "[3.202.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.8...@standardnotes/web@3.202.9) (2026-10-08)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.8",
+      "title": "[3.202.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.7...@standardnotes/web@3.202.8) (2026-09-30)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes footer loading items string ([#3057](https://github.com/standardnotes/app/issues/3057)) ([b313c58](https://github.com/standardnotes/app/commit/b313c58e3410ef9860fd2b62d690981472e7ae18))\n* Fixes Open file preview button on Android ([#3056](https://github.com/standardnotes/app/issues/3056)) ([210b896](https://github.com/standardnotes/app/commit/210b896137474c80e9fc54b808976e3a8386f24f))",
+      "parsed": {
+        "_": [
+          "Fixes footer loading items string (#3057) (b313c58)",
+          "Fixes Open file preview button on Android (#3056) (210b896)"
+        ],
+        "Bug Fixes": [
+          "Fixes footer loading items string (#3057) (b313c58)",
+          "Fixes Open file preview button on Android (#3056) (210b896)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.7",
+      "title": "[3.202.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.6...@standardnotes/web@3.202.7) (2026-09-17)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.6",
+      "title": "[3.202.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.5...@standardnotes/web@3.202.6) (2026-09-16)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.5",
+      "title": "[3.202.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.4...@standardnotes/web@3.202.5) (2026-09-15)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes blank screen when tagging untagged current note on mobile ([#3047](https://github.com/standardnotes/app/issues/3047)) ([24da230](https://github.com/standardnotes/app/commit/24da23096f7fea453225bb4f680325fdb39e3ad8))\n* Fixes scroll position shift on Super checkbox toggle ([#3049](https://github.com/standardnotes/app/issues/3049)) ([d73ec83](https://github.com/standardnotes/app/commit/d73ec8378d202b63a72210357ed07b2fda17e823))",
+      "parsed": {
+        "_": [
+          "Fixes blank screen when tagging untagged current note on mobile (#3047) (24da230)",
+          "Fixes scroll position shift on Super checkbox toggle (#3049) (d73ec83)"
+        ],
+        "Bug Fixes": [
+          "Fixes blank screen when tagging untagged current note on mobile (#3047) (24da230)",
+          "Fixes scroll position shift on Super checkbox toggle (#3049) (d73ec83)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.4",
+      "title": "[3.202.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.3...@standardnotes/web@3.202.4) (2026-09-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.3",
+      "title": "[3.202.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.2...@standardnotes/web@3.202.3) (2026-09-04)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.2",
+      "title": "[3.202.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.1...@standardnotes/web@3.202.2) (2026-09-03)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.202.1",
+      "title": "[3.202.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.202.0...@standardnotes/web@3.202.1) (2026-08-25)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes upgrade prompt string ([#3041](https://github.com/standardnotes/app/issues/3041)) ([6a0a404](https://github.com/standardnotes/app/commit/6a0a404114e9755f1de8bdf53da8f7dd3b7bba5b))\n* Fixes web clipper hardware key auth for Firefox ([#3040](https://github.com/standardnotes/app/issues/3040)) ([369b1f0](https://github.com/standardnotes/app/commit/369b1f001ff1691240fc8e4c19c169bc7e34b838))\n* Sanitizes filename on iOS file share ([#3036](https://github.com/standardnotes/app/issues/3036)) ([cf5ca47](https://github.com/standardnotes/app/commit/cf5ca4718546dd2fd08da8777b2398044721f1f3))",
+      "parsed": {
+        "_": [
+          "Fixes upgrade prompt string (#3041) (6a0a404)",
+          "Fixes web clipper hardware key auth for Firefox (#3040) (369b1f0)",
+          "Sanitizes filename on iOS file share (#3036) (cf5ca47)"
+        ],
+        "Bug Fixes": [
+          "Fixes upgrade prompt string (#3041) (6a0a404)",
+          "Fixes web clipper hardware key auth for Firefox (#3040) (369b1f0)",
+          "Sanitizes filename on iOS file share (#3036) (cf5ca47)"
+        ]
+      }
+    },
+    {
+      "version": "3.202.0",
+      "title": "[3.202.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.35...@standardnotes/web@3.202.0) (2026-08-17)",
+      "date": null,
+      "body": "### Features\n\n* Adds in-note search for plain text notes ([#3038](https://github.com/standardnotes/app/issues/3038)) ([1ea8da6](https://github.com/standardnotes/app/commit/1ea8da6009df6c3f01067a639e27bba9f0321707))\n* Adds new search filter options: search titles only and tag filters ([#3039](https://github.com/standardnotes/app/issues/3039)) ([f7f947a](https://github.com/standardnotes/app/commit/f7f947a8552b85ef00a15e4920e07eeb272bb63c))",
+      "parsed": {
+        "_": [
+          "Adds in-note search for plain text notes (#3038) (1ea8da6)",
+          "Adds new search filter options: search titles only and tag filters (#3039) (f7f947a)"
+        ],
+        "Features": [
+          "Adds in-note search for plain text notes (#3038) (1ea8da6)",
+          "Adds new search filter options: search titles only and tag filters (#3039) (f7f947a)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.35",
+      "title": "[3.201.35](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.34...@standardnotes/web@3.201.35) (2026-07-20)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes hardware key authentication ([#3029](https://github.com/standardnotes/app/issues/3029)) ([be928de](https://github.com/standardnotes/app/commit/be928defccdc4ff3e877ab83886cf0d7d0092246))",
+      "parsed": {
+        "_": [
+          "Fixes hardware key authentication (#3029) (be928de)"
+        ],
+        "Bug Fixes": [
+          "Fixes hardware key authentication (#3029) (be928de)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.34",
+      "title": "[3.201.34](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.33...@standardnotes/web@3.201.34) (2026-07-18)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes blurry context menus on desktop ([#2882](https://github.com/standardnotes/app/issues/2882)) ([0f65f70](https://github.com/standardnotes/app/commit/0f65f7061cd0d67150a76cbb9a2bd1bf3919952b))\n* Fixes hardware key authentication on Web Clipper ([#3028](https://github.com/standardnotes/app/issues/3028)) ([09bcc2f](https://github.com/standardnotes/app/commit/09bcc2f937f90f340e84a14474fa207d13da6a3f))",
+      "parsed": {
+        "_": [
+          "Fixes blurry context menus on desktop (#2882) (0f65f70)",
+          "Fixes hardware key authentication on Web Clipper (#3028) (09bcc2f)"
+        ],
+        "Bug Fixes": [
+          "Fixes blurry context menus on desktop (#2882) (0f65f70)",
+          "Fixes hardware key authentication on Web Clipper (#3028) (09bcc2f)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.33",
+      "title": "[3.201.33](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.32...@standardnotes/web@3.201.33) (2026-07-18)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix keyboard shortcut handling from within iframe editors ([#3025](https://github.com/standardnotes/app/issues/3025)) ([ee56c85](https://github.com/standardnotes/app/commit/ee56c858ab2c0d7d5a158e29c070b4bf55c1bd8b))\n* Fixes gaps after linked items within bullet lists on Super PDF export ([#3023](https://github.com/standardnotes/app/issues/3023)) ([883cd4f](https://github.com/standardnotes/app/commit/883cd4fda968c01648b8465f5cf02cd72d16f514))\n* Fixes incorrect rendering of some special characters on Super PDF export ([#3024](https://github.com/standardnotes/app/issues/3024)) ([44a1a6c](https://github.com/standardnotes/app/commit/44a1a6c374ea1d5ee05cc938dce77afe369a1ce5))\n* Fixes text alignment in Super linked items ([#3027](https://github.com/standardnotes/app/issues/3027)) ([eec6bc2](https://github.com/standardnotes/app/commit/eec6bc2782fd3b499961f73c33b2b284a69a49b5))",
+      "parsed": {
+        "_": [
+          "Fix keyboard shortcut handling from within iframe editors (#3025) (ee56c85)",
+          "Fixes gaps after linked items within bullet lists on Super PDF export (#3023) (883cd4f)",
+          "Fixes incorrect rendering of some special characters on Super PDF export (#3024) (44a1a6c)",
+          "Fixes text alignment in Super linked items (#3027) (eec6bc2)"
+        ],
+        "Bug Fixes": [
+          "Fix keyboard shortcut handling from within iframe editors (#3025) (ee56c85)",
+          "Fixes gaps after linked items within bullet lists on Super PDF export (#3023) (883cd4f)",
+          "Fixes incorrect rendering of some special characters on Super PDF export (#3024) (44a1a6c)",
+          "Fixes text alignment in Super linked items (#3027) (eec6bc2)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.32",
+      "title": "[3.201.32](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.31...@standardnotes/web@3.201.32) (2026-07-06)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes default language for newly created code blocks in Super notes ([#2999](https://github.com/standardnotes/app/issues/2999)) ([9d026df](https://github.com/standardnotes/app/commit/9d026df49aedc49b143e7cf91576576c73e49986))\n* Fixes Super replace functionality not correctly hidden when toggling Prevent editing on a note ([#3022](https://github.com/standardnotes/app/issues/3022)) ([386d73f](https://github.com/standardnotes/app/commit/386d73ffb839e7a6b3c4bc7578c674fa6b29f658))",
+      "parsed": {
+        "_": [
+          "Fixes default language for newly created code blocks in Super notes (#2999) (9d026df)",
+          "Fixes Super replace functionality not correctly hidden when toggling Prevent editing on a note (#3022) (386d73f)"
+        ],
+        "Bug Fixes": [
+          "Fixes default language for newly created code blocks in Super notes (#2999) (9d026df)",
+          "Fixes Super replace functionality not correctly hidden when toggling Prevent editing on a note (#3022) (386d73f)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.31",
+      "title": "[3.201.31](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.30...@standardnotes/web@3.201.31) (2026-06-08)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.30",
+      "title": "[3.201.30](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.29...@standardnotes/web@3.201.30) (2026-06-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.29",
+      "title": "[3.201.29](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.28...@standardnotes/web@3.201.29) (2026-06-05)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes checkboxes parsed as bullet items when importing Evernote notes ([f488518](https://github.com/standardnotes/app/commit/f4885188ad7a289b16f95eeea56de2bed56dfb95))\n* Fixes highlight text style lost when importing Evernote notes ([a62f496](https://github.com/standardnotes/app/commit/a62f496ee6ca588876b616261c479f6499b4ec19))",
+      "parsed": {
+        "_": [
+          "Fixes checkboxes parsed as bullet items when importing Evernote notes (f488518)",
+          "Fixes highlight text style lost when importing Evernote notes (a62f496)"
+        ],
+        "Bug Fixes": [
+          "Fixes checkboxes parsed as bullet items when importing Evernote notes (f488518)",
+          "Fixes highlight text style lost when importing Evernote notes (a62f496)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.28",
+      "title": "[3.201.28](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.27...@standardnotes/web@3.201.28) (2026-05-27)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes cell padding and bold font within table cells in Super pdf export ([c81589b](https://github.com/standardnotes/app/commit/c81589b945b04b6f2b6842f193495d562c132bc8))\n* Fixes images rendering too small on Super pdf export ([80fa337](https://github.com/standardnotes/app/commit/80fa337afba85bada70b4ddacb6e5ad391978f28))\n* Fixes Super pdf export code block formatting issues ([bd3cf60](https://github.com/standardnotes/app/commit/bd3cf600e7a766c2fd980fbc01924e59664184b8))\n* Fixes Super pdf export headings font sizes and weights ([6daf58c](https://github.com/standardnotes/app/commit/6daf58c92893a6cfa93596a2429ed3e0697222e0))\n* Fixes Super pdf export line height ([e22e6fc](https://github.com/standardnotes/app/commit/e22e6fce7936a9b425f90e7363f274bce3b3b841))\n* Fixes Upgrade button in Settings leading to purchase page ([#3011](https://github.com/standardnotes/app/issues/3011)) ([eda1bfe](https://github.com/standardnotes/app/commit/eda1bfe0bd5b2be762dadf840f49034a2c659816))",
+      "parsed": {
+        "_": [
+          "Fixes cell padding and bold font within table cells in Super pdf export (c81589b)",
+          "Fixes images rendering too small on Super pdf export (80fa337)",
+          "Fixes Super pdf export code block formatting issues (bd3cf60)",
+          "Fixes Super pdf export headings font sizes and weights (6daf58c)",
+          "Fixes Super pdf export line height (e22e6fc)",
+          "Fixes Upgrade button in Settings leading to purchase page (#3011) (eda1bfe)"
+        ],
+        "Bug Fixes": [
+          "Fixes cell padding and bold font within table cells in Super pdf export (c81589b)",
+          "Fixes images rendering too small on Super pdf export (80fa337)",
+          "Fixes Super pdf export code block formatting issues (bd3cf60)",
+          "Fixes Super pdf export headings font sizes and weights (6daf58c)",
+          "Fixes Super pdf export line height (e22e6fc)",
+          "Fixes Upgrade button in Settings leading to purchase page (#3011) (eda1bfe)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.27",
+      "title": "[3.201.27](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.26...@standardnotes/web@3.201.27) (2026-04-29)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes Super search highlights styling ([#3009](https://github.com/standardnotes/app/issues/3009)) ([a39bb82](https://github.com/standardnotes/app/commit/a39bb824f7b6d4f761abb27df9b7c7ba4818ce14))\n* Switches back to note list on mobile when active note is deleted from a different device ([#3008](https://github.com/standardnotes/app/issues/3008)) ([f4a9481](https://github.com/standardnotes/app/commit/f4a94811848ea19550703d5dcd2b446091bf9536))",
+      "parsed": {
+        "_": [
+          "Fixes Super search highlights styling (#3009) (a39bb82)",
+          "Switches back to note list on mobile when active note is deleted from a different device (#3008) (f4a9481)"
+        ],
+        "Bug Fixes": [
+          "Fixes Super search highlights styling (#3009) (a39bb82)",
+          "Switches back to note list on mobile when active note is deleted from a different device (#3008) (f4a9481)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.26",
+      "title": "[3.201.26](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.25...@standardnotes/web@3.201.26) (2026-04-24)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Shows info on UI and hides Manage button for shared subs ([#3002](https://github.com/standardnotes/app/issues/3002)) ([073db14](https://github.com/standardnotes/app/commit/073db143144bf88007010e4f44003198b327b4da))",
+      "parsed": {
+        "_": [
+          "Shows info on UI and hides Manage button for shared subs (#3002) (073db14)"
+        ],
+        "Bug Fixes": [
+          "Shows info on UI and hides Manage button for shared subs (#3002) (073db14)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.25",
+      "title": "[3.201.25](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.24...@standardnotes/web@3.201.25) (2026-04-23)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Adds dynamic type support for iOS ([#3005](https://github.com/standardnotes/app/issues/3005)) ([6261fd8](https://github.com/standardnotes/app/commit/6261fd8241b36be0e73dd84b39d31059d6077c16))\n* Fixes Super sections drag and drop issues on mobile ([#3003](https://github.com/standardnotes/app/issues/3003)) ([b330890](https://github.com/standardnotes/app/commit/b33089029f5979adf0c8e80a65c29a38945cf899))\n* Prevents unhandled error when attempting to import a blank note ([#3004](https://github.com/standardnotes/app/issues/3004)) ([90ca0c2](https://github.com/standardnotes/app/commit/90ca0c2cfb648d34c97d58b332a10c61daa20fa4))",
+      "parsed": {
+        "_": [
+          "Adds dynamic type support for iOS (#3005) (6261fd8)",
+          "Fixes Super sections drag and drop issues on mobile (#3003) (b330890)",
+          "Prevents unhandled error when attempting to import a blank note (#3004) (90ca0c2)"
+        ],
+        "Bug Fixes": [
+          "Adds dynamic type support for iOS (#3005) (6261fd8)",
+          "Fixes Super sections drag and drop issues on mobile (#3003) (b330890)",
+          "Prevents unhandled error when attempting to import a blank note (#3004) (90ca0c2)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.24",
+      "title": "[3.201.24](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.23...@standardnotes/web@3.201.24) (2026-04-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.23",
+      "title": "[3.201.23](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.22...@standardnotes/web@3.201.23) (2026-04-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.22",
+      "title": "[3.201.22](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.21...@standardnotes/web@3.201.22) (2026-04-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.21",
+      "title": "[3.201.21](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.20...@standardnotes/web@3.201.21) (2026-03-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.20",
+      "title": "[3.201.20](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.19...@standardnotes/web@3.201.20) (2026-03-06)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Adjusts lists items left marin on iOS ([#2991](https://github.com/standardnotes/app/issues/2991)) ([e2f9f63](https://github.com/standardnotes/app/commit/e2f9f636ae61929101ac778fde4a388e48f89179))\n* Fixes dropdowns styling when labels are too long ([#2989](https://github.com/standardnotes/app/issues/2989)) ([bdc43d6](https://github.com/standardnotes/app/commit/bdc43d6d5496b10fbcefd501420bd79cea7db39e))\n* Fixes prompt for Cmd/Ctrl+Backspace command on trashed note ([#2990](https://github.com/standardnotes/app/issues/2990)) ([8a845df](https://github.com/standardnotes/app/commit/8a845df38c98f774e52e968a94ec40dba64ad8cd))\n* Renders single line breaks properly on Super editor Show markdown ([#2988](https://github.com/standardnotes/app/issues/2988)) ([ac07cea](https://github.com/standardnotes/app/commit/ac07cea06efa041957d1ac227dd6e9ff2190b613))",
+      "parsed": {
+        "_": [
+          "Adjusts lists items left marin on iOS (#2991) (e2f9f63)",
+          "Fixes dropdowns styling when labels are too long (#2989) (bdc43d6)",
+          "Fixes prompt for Cmd/Ctrl+Backspace command on trashed note (#2990) (8a845df)",
+          "Renders single line breaks properly on Super editor Show markdown (#2988) (ac07cea)"
+        ],
+        "Bug Fixes": [
+          "Adjusts lists items left marin on iOS (#2991) (e2f9f63)",
+          "Fixes dropdowns styling when labels are too long (#2989) (bdc43d6)",
+          "Fixes prompt for Cmd/Ctrl+Backspace command on trashed note (#2990) (8a845df)",
+          "Renders single line breaks properly on Super editor Show markdown (#2988) (ac07cea)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.19",
+      "title": "[3.201.19](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.18...@standardnotes/web@3.201.19) (2026-02-24)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes Import button staying disabled after untoggling option to add notes to a tag ([#2981](https://github.com/standardnotes/app/issues/2981)) ([75c3e2e](https://github.com/standardnotes/app/commit/75c3e2e6fd2e992d6e1e8c82e52678b0c750e623))\n* Fixes lists left margin on Super editor on mobile ([#2983](https://github.com/standardnotes/app/issues/2983)) ([0c4ce38](https://github.com/standardnotes/app/commit/0c4ce38aa4caf8cbfd23a339e5bffff771e877f7))\n* Fixes multiple selection checkbox not working when only one note is selected ([99c7cb9](https://github.com/standardnotes/app/commit/99c7cb92b5e5d08000e24908e735ef02f9059990))\n* Fixes unselecting note deactivating multiple selection note when there is only one selected note left ([36f973a](https://github.com/standardnotes/app/commit/36f973aa3fdd7f79767d4da8e443dd3504e24f8f))\n* Prevents note list from switching to a different note when opening a note not in the current folder from the command palette ([#2986](https://github.com/standardnotes/app/issues/2986)) ([ff58de3](https://github.com/standardnotes/app/commit/ff58de30fb4d8093f5056b5c4789163e81edf632))\n* Redirect to app after creating account ([#2984](https://github.com/standardnotes/app/issues/2984)) ([f4c64b8](https://github.com/standardnotes/app/commit/f4c64b8db2e5a51547182b67436aff7c2a23c3ad))\n* Render line breaks properly on Super editor Show markdown ([#2982](https://github.com/standardnotes/app/issues/2982)) ([6b15118](https://github.com/standardnotes/app/commit/6b151187189a88774d439e6cfd7204207e26c3f8))",
+      "parsed": {
+        "_": [
+          "Fixes Import button staying disabled after untoggling option to add notes to a tag (#2981) (75c3e2e)",
+          "Fixes lists left margin on Super editor on mobile (#2983) (0c4ce38)",
+          "Fixes multiple selection checkbox not working when only one note is selected (99c7cb9)",
+          "Fixes unselecting note deactivating multiple selection note when there is only one selected note left (36f973a)",
+          "Prevents note list from switching to a different note when opening a note not in the current folder from the command palette (#2986) (ff58de3)",
+          "Redirect to app after creating account (#2984) (f4c64b8)",
+          "Render line breaks properly on Super editor Show markdown (#2982) (6b15118)"
+        ],
+        "Bug Fixes": [
+          "Fixes Import button staying disabled after untoggling option to add notes to a tag (#2981) (75c3e2e)",
+          "Fixes lists left margin on Super editor on mobile (#2983) (0c4ce38)",
+          "Fixes multiple selection checkbox not working when only one note is selected (99c7cb9)",
+          "Fixes unselecting note deactivating multiple selection note when there is only one selected note left (36f973a)",
+          "Prevents note list from switching to a different note when opening a note not in the current folder from the command palette (#2986) (ff58de3)",
+          "Redirect to app after creating account (#2984) (f4c64b8)",
+          "Render line breaks properly on Super editor Show markdown (#2982) (6b15118)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.18",
+      "title": "[3.201.18](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.17...@standardnotes/web@3.201.18) (2026-02-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.17",
+      "title": "[3.201.17](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.16...@standardnotes/web@3.201.17) (2026-02-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.16",
+      "title": "[3.201.16](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.15...@standardnotes/web@3.201.16) (2026-02-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.15",
+      "title": "[3.201.15](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.14...@standardnotes/web@3.201.15) (2026-02-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.14",
+      "title": "[3.201.14](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.13...@standardnotes/web@3.201.14) (2026-02-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.13",
+      "title": "[3.201.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.12...@standardnotes/web@3.201.13) (2026-02-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.12",
+      "title": "[3.201.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.11...@standardnotes/web@3.201.12) (2026-02-05)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Keeps note active even if it's not on the current view when coming from command palette ([#2979](https://github.com/standardnotes/app/issues/2979)) [skip e2e] ([e63be04](https://github.com/standardnotes/app/commit/e63be048f491ecf5d216b50548032b339df33199))",
+      "parsed": {
+        "_": [
+          "Keeps note active even if it's not on the current view when coming from command palette (#2979) skip e2e] ([e63be04)"
+        ],
+        "Bug Fixes": [
+          "Keeps note active even if it's not on the current view when coming from command palette (#2979) skip e2e] ([e63be04)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.11",
+      "title": "[3.201.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.10...@standardnotes/web@3.201.11) (2026-02-05)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Add support for hiragana and katakana on Super pdf export ([#2977](https://github.com/standardnotes/app/issues/2977)) ([fafd15e](https://github.com/standardnotes/app/commit/fafd15ec96b3961c4c87004ed59ad84b9209fb83))\n* Adds support for superscript and subscript on Super pdf exports ([#2978](https://github.com/standardnotes/app/issues/2978)) [skip e2e] ([f5a721b](https://github.com/standardnotes/app/commit/f5a721bae0522a2286902b323ee3392964f51295))",
+      "parsed": {
+        "_": [
+          "Add support for hiragana and katakana on Super pdf export (#2977) (fafd15e)",
+          "Adds support for superscript and subscript on Super pdf exports (#2978) skip e2e] ([f5a721b)"
+        ],
+        "Bug Fixes": [
+          "Add support for hiragana and katakana on Super pdf export (#2977) (fafd15e)",
+          "Adds support for superscript and subscript on Super pdf exports (#2978) skip e2e] ([f5a721b)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.10",
+      "title": "[3.201.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.9...@standardnotes/web@3.201.10) (2026-01-27)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes issue where accessing a note from the command palette when not on the home list view causes view to switch to a different note when syncing ([#2972](https://github.com/standardnotes/app/issues/2972)) ([dd014c8](https://github.com/standardnotes/app/commit/dd014c850868d2294a05c45ca01ff711f3939780))\n* Fixes UI layout regression on Android 14 ([#2971](https://github.com/standardnotes/app/issues/2971)) ([ef56933](https://github.com/standardnotes/app/commit/ef56933667cdc13a9148798babd4ffabdfa012fd))",
+      "parsed": {
+        "_": [
+          "Fixes issue where accessing a note from the command palette when not on the home list view causes view to switch to a different note when syncing (#2972) (dd014c8)",
+          "Fixes UI layout regression on Android 14 (#2971) (ef56933)"
+        ],
+        "Bug Fixes": [
+          "Fixes issue where accessing a note from the command palette when not on the home list view causes view to switch to a different note when syncing (#2972) (dd014c8)",
+          "Fixes UI layout regression on Android 14 (#2971) (ef56933)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.9",
+      "title": "[3.201.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.8...@standardnotes/web@3.201.9) (2026-01-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.8",
+      "title": "[3.201.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.7...@standardnotes/web@3.201.8) (2026-01-16)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.7",
+      "title": "[3.201.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.6...@standardnotes/web@3.201.7) (2026-01-08)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes Cancel button not working on Super export modal ([#2968](https://github.com/standardnotes/app/issues/2968)) [skip e2e] ([0a5cd13](https://github.com/standardnotes/app/commit/0a5cd13a96135a3365a7ed33a484edd4eb3b6105))\n* Fixes wrong header for session note history when offline ([#2967](https://github.com/standardnotes/app/issues/2967)) ([308b98d](https://github.com/standardnotes/app/commit/308b98db3d3308e5254f17efdeb5cdd385781e22))",
+      "parsed": {
+        "_": [
+          "Fixes Cancel button not working on Super export modal (#2968) skip e2e] ([0a5cd13)",
+          "Fixes wrong header for session note history when offline (#2967) (308b98d)"
+        ],
+        "Bug Fixes": [
+          "Fixes Cancel button not working on Super export modal (#2968) skip e2e] ([0a5cd13)",
+          "Fixes wrong header for session note history when offline (#2967) (308b98d)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.6",
+      "title": "[3.201.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.5...@standardnotes/web@3.201.6) (2026-01-06)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes bottom note being hidden behind nav bar on Android ([#2966](https://github.com/standardnotes/app/issues/2966)) ([895353c](https://github.com/standardnotes/app/commit/895353ca7b2c039df26a59224f146c7f04d77f1a))",
+      "parsed": {
+        "_": [
+          "Fixes bottom note being hidden behind nav bar on Android (#2966) (895353c)"
+        ],
+        "Bug Fixes": [
+          "Fixes bottom note being hidden behind nav bar on Android (#2966) (895353c)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.5",
+      "title": "[3.201.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.4...@standardnotes/web@3.201.5) (2025-12-18)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Shows informative error on UI when file upload limit is reached ([#2961](https://github.com/standardnotes/app/issues/2961)) ([844b7a7](https://github.com/standardnotes/app/commit/844b7a7a2b26bd4e74c2d8d36ddfa9e28b47f589))",
+      "parsed": {
+        "_": [
+          "Shows informative error on UI when file upload limit is reached (#2961) (844b7a7)"
+        ],
+        "Bug Fixes": [
+          "Shows informative error on UI when file upload limit is reached (#2961) (844b7a7)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.4",
+      "title": "[3.201.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.3...@standardnotes/web@3.201.4) (2025-12-05)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix confirmation dialog title for permanently deleting files ([#2960](https://github.com/standardnotes/app/issues/2960)) ([26735b5](https://github.com/standardnotes/app/commit/26735b5e7a5ca0362b5ba185e67121382c936c88))",
+      "parsed": {
+        "_": [
+          "Fix confirmation dialog title for permanently deleting files (#2960) (26735b5)"
+        ],
+        "Bug Fixes": [
+          "Fix confirmation dialog title for permanently deleting files (#2960) (26735b5)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.3",
+      "title": "[3.201.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.2...@standardnotes/web@3.201.3) (2025-11-21)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Use regular debouncing for tab indentations ([#2959](https://github.com/standardnotes/app/issues/2959)) [skip e2e] ([3190a27](https://github.com/standardnotes/app/commit/3190a278314fe788f9136528971c0a9cd0dffbf4))",
+      "parsed": {
+        "_": [
+          "Use regular debouncing for tab indentations (#2959) skip e2e] ([3190a27)"
+        ],
+        "Bug Fixes": [
+          "Use regular debouncing for tab indentations (#2959) skip e2e] ([3190a27)"
+        ]
+      }
+    },
+    {
+      "version": "3.201.2",
+      "title": "[3.201.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.1...@standardnotes/web@3.201.2) (2025-11-07)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.1",
+      "title": "[3.201.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.201.0...@standardnotes/web@3.201.1) (2025-11-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.201.0",
+      "title": "[3.201.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.9...@standardnotes/web@3.201.0) (2025-11-04)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes rendering of non-Latin alphabet characters in PDF export ([#2956](https://github.com/standardnotes/app/issues/2956)) [skip e2e] ([11e36e1](https://github.com/standardnotes/app/commit/11e36e1d4cca23fa10ccaabd01877d574b62bf06)), closes [#2948](https://github.com/standardnotes/app/issues/2948) [#2950](https://github.com/standardnotes/app/issues/2950)\n\n### Features\n\n* Show warning modal when Merge local data option is unchecked ([#2953](https://github.com/standardnotes/app/issues/2953)) [skip e2e] ([531cc70](https://github.com/standardnotes/app/commit/531cc7066760732ae882e0901dafce276b17d89f))",
+      "parsed": {
+        "_": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2956) skip e2e] ([11e36e1), closes #2948 #2950",
+          "Show warning modal when Merge local data option is unchecked (#2953) skip e2e] ([531cc70)"
+        ],
+        "Bug Fixes": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2956) skip e2e] ([11e36e1), closes #2948 #2950"
+        ],
+        "Features": [
+          "Show warning modal when Merge local data option is unchecked (#2953) skip e2e] ([531cc70)"
+        ]
+      }
+    },
+    {
+      "version": "3.200.9",
+      "title": "[3.200.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.8...@standardnotes/web@3.200.9) (2025-10-28)",
+      "date": null,
+      "body": "### Reverts\n\n* Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" [skip e2e] ([d9cf9f7](https://github.com/standardnotes/app/commit/d9cf9f758c529785b1af58ffe9610b945907d4c7)), closes [#2948](https://github.com/standardnotes/app/issues/2948)",
+      "parsed": {
+        "_": [
+          "Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" skip e2e] ([d9cf9f7), closes #2948"
+        ],
+        "Reverts": [
+          "Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" skip e2e] ([d9cf9f7), closes #2948"
+        ]
+      }
+    },
+    {
+      "version": "3.200.8",
+      "title": "[3.200.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.7...@standardnotes/web@3.200.8) (2025-10-28)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes rendering of non-Latin alphabet characters in PDF export ([#2948](https://github.com/standardnotes/app/issues/2948)) ([4c18962](https://github.com/standardnotes/app/commit/4c1896208f2da2ff0e6448cfef407c217ab14908))",
+      "parsed": {
+        "_": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2948) (4c18962)"
+        ],
+        "Bug Fixes": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2948) (4c18962)"
+        ]
+      }
+    },
+    {
+      "version": "3.200.7",
+      "title": "[3.200.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.6...@standardnotes/web@3.200.7) (2025-10-28)",
+      "date": null,
+      "body": "### Reverts\n\n* Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" ([4956122](https://github.com/standardnotes/app/commit/4956122b9229fff4205ab04cbbd5f794f299deda)), closes [#2948](https://github.com/standardnotes/app/issues/2948)\n* Revert \"chore: fix pdf fonts fetching for local development (#2950) [skip e2e]\" ([e35ee74](https://github.com/standardnotes/app/commit/e35ee746169ce626c38acecbe828762cf7c5676d)), closes [#2950](https://github.com/standardnotes/app/issues/2950)\n* Revert \"chore: upgrade lexical (#2951)\" ([77c1847](https://github.com/standardnotes/app/commit/77c18478be896068cccdcf9ff010621321092fdd)), closes [#2951](https://github.com/standardnotes/app/issues/2951)",
+      "parsed": {
+        "_": [
+          "Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" (4956122), closes #2948",
+          "Revert \"chore: fix pdf fonts fetching for local development (#2950) skip e2e]\" ([e35ee74), closes #2950",
+          "Revert \"chore: upgrade lexical (#2951)\" (77c1847), closes #2951"
+        ],
+        "Reverts": [
+          "Revert \"fix: Fixes rendering of non-Latin alphabet characters in PDF export (#2948)\" (4956122), closes #2948",
+          "Revert \"chore: fix pdf fonts fetching for local development (#2950) skip e2e]\" ([e35ee74), closes #2950",
+          "Revert \"chore: upgrade lexical (#2951)\" (77c1847), closes #2951"
+        ]
+      }
+    },
+    {
+      "version": "3.200.6",
+      "title": "[3.200.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.5...@standardnotes/web@3.200.6) (2025-10-27)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes dividers not rendered in Super PDF exports ([#2949](https://github.com/standardnotes/app/issues/2949)) ([9d79bbf](https://github.com/standardnotes/app/commit/9d79bbfeb012c854da738dac765787d19cd26513))\n* Fixes rendering of non-Latin alphabet characters in PDF export ([#2948](https://github.com/standardnotes/app/issues/2948)) ([8af986a](https://github.com/standardnotes/app/commit/8af986a0b11ed4dc3d098f070f2bf70467a3bbb2))",
+      "parsed": {
+        "_": [
+          "Fixes dividers not rendered in Super PDF exports (#2949) (9d79bbf)",
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2948) (8af986a)"
+        ],
+        "Bug Fixes": [
+          "Fixes dividers not rendered in Super PDF exports (#2949) (9d79bbf)",
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2948) (8af986a)"
+        ]
+      }
+    },
+    {
+      "version": "3.200.5",
+      "title": "[3.200.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.4...@standardnotes/web@3.200.5) (2025-10-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.200.4",
+      "title": "[3.200.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.3...@standardnotes/web@3.200.4) (2025-10-13)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes pasting from Google Docs always uses bold font ([#2941](https://github.com/standardnotes/app/issues/2941)) ([bc7c792](https://github.com/standardnotes/app/commit/bc7c792570eb4ddce448f2d48aad4c9bcf9a08b9))",
+      "parsed": {
+        "_": [
+          "Fixes pasting from Google Docs always uses bold font (#2941) (bc7c792)"
+        ],
+        "Bug Fixes": [
+          "Fixes pasting from Google Docs always uses bold font (#2941) (bc7c792)"
+        ]
+      }
+    },
+    {
+      "version": "3.200.3",
+      "title": "[3.200.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.2...@standardnotes/web@3.200.3) (2025-09-29)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.200.2",
+      "title": "[3.200.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.1...@standardnotes/web@3.200.2) (2025-09-29)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes rendering of non-Latin alphabet characters in PDF export ([#2937](https://github.com/standardnotes/app/issues/2937)) ([6b408a6](https://github.com/standardnotes/app/commit/6b408a670d05f32ebb101fb129ebcb728f11dc2d))\n* Fixes Use recovery code option being shown on account creation ([#2939](https://github.com/standardnotes/app/issues/2939)) ([0055696](https://github.com/standardnotes/app/commit/0055696c35f6016eee88ce14cfabe0e13a4e6aa6))",
+      "parsed": {
+        "_": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2937) (6b408a6)",
+          "Fixes Use recovery code option being shown on account creation (#2939) (0055696)"
+        ],
+        "Bug Fixes": [
+          "Fixes rendering of non-Latin alphabet characters in PDF export (#2937) (6b408a6)",
+          "Fixes Use recovery code option being shown on account creation (#2939) (0055696)"
+        ]
+      }
+    },
+    {
+      "version": "3.200.1",
+      "title": "[3.200.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.200.0...@standardnotes/web@3.200.1) (2025-09-26)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.200.0",
+      "title": "[3.200.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.199.0...@standardnotes/web@3.200.0) (2025-09-25)",
+      "date": null,
+      "body": "### Features\n\n* Added command palette for quick actions and switching between items ([#2933](https://github.com/standardnotes/app/issues/2933)) [skip e2e] ([efba7c6](https://github.com/standardnotes/app/commit/efba7c682d81d518d02ea52aea8c022f190679eb))",
+      "parsed": {
+        "_": [
+          "Added command palette for quick actions and switching between items (#2933) skip e2e] ([efba7c6)"
+        ],
+        "Features": [
+          "Added command palette for quick actions and switching between items (#2933) skip e2e] ([efba7c6)"
+        ]
+      }
+    },
+    {
+      "version": "3.199.0",
+      "title": "[3.199.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.20...@standardnotes/web@3.199.0) (2025-09-23)",
+      "date": null,
+      "body": "### Features\n\n* Improves Add Tag dropdown UI ([#2936](https://github.com/standardnotes/app/issues/2936)) ([54ddd37](https://github.com/standardnotes/app/commit/54ddd37052c202c808d0e3bef8bd0df7fc72b148))",
+      "parsed": {
+        "_": [
+          "Improves Add Tag dropdown UI (#2936) (54ddd37)"
+        ],
+        "Features": [
+          "Improves Add Tag dropdown UI (#2936) (54ddd37)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.20",
+      "title": "[3.198.20](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.19...@standardnotes/web@3.198.20) (2025-09-15)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.19",
+      "title": "[3.198.19](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.18...@standardnotes/web@3.198.19) (2025-09-12)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.18",
+      "title": "[3.198.18](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.17...@standardnotes/web@3.198.18) (2025-09-04)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.17",
+      "title": "[3.198.17](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.16...@standardnotes/web@3.198.17) (2025-08-26)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.16",
+      "title": "[3.198.16](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.15...@standardnotes/web@3.198.16) (2025-08-25)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.15",
+      "title": "[3.198.15](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.14...@standardnotes/web@3.198.15) (2025-08-11)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes Share note option not working on Android for note titles with special characters ([#2928](https://github.com/standardnotes/app/issues/2928)) ([d135e09](https://github.com/standardnotes/app/commit/d135e09bda39814585a3d76b0544ed8b5834b4d0))",
+      "parsed": {
+        "_": [
+          "Fixes Share note option not working on Android for note titles with special characters (#2928) (d135e09)"
+        ],
+        "Bug Fixes": [
+          "Fixes Share note option not working on Android for note titles with special characters (#2928) (d135e09)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.14",
+      "title": "[3.198.14](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.13...@standardnotes/web@3.198.14) (2025-08-05)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixes Back and Navigation buttons not working on mobile view when panels explicitly collapsed ([#2926](https://github.com/standardnotes/app/issues/2926)) ([0108648](https://github.com/standardnotes/app/commit/010864881d0c056e88dae2394fb398c0f1e822a5))",
+      "parsed": {
+        "_": [
+          "Fixes Back and Navigation buttons not working on mobile view when panels explicitly collapsed (#2926) (0108648)"
+        ],
+        "Bug Fixes": [
+          "Fixes Back and Navigation buttons not working on mobile view when panels explicitly collapsed (#2926) (0108648)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.13",
+      "title": "[3.198.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.12...@standardnotes/web@3.198.13) (2025-08-04)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Prevents quick type suggestions on iOS for password input ([ff80775](https://github.com/standardnotes/app/commit/ff80775cd6f09863429f053e590a054c6e45722c))",
+      "parsed": {
+        "_": [
+          "Prevents quick type suggestions on iOS for password input (ff80775)"
+        ],
+        "Bug Fixes": [
+          "Prevents quick type suggestions on iOS for password input (ff80775)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.12",
+      "title": "[3.198.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.11...@standardnotes/web@3.198.12) (2025-07-29)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed font size not updating on plain editor when changing it from Preferences ([#2920](https://github.com/standardnotes/app/issues/2920)) ([0d17961](https://github.com/standardnotes/app/commit/0d17961570cdadbbb909709075bdef3b8d77434b))\n* Fixes extra bottom padding in account modal ([63d8472](https://github.com/standardnotes/app/commit/63d84725d2084d014de6aa73e74ba77a7e343484))\n* Fixes quick type suggestions showing up in iOS for password field ([9583d0d](https://github.com/standardnotes/app/commit/9583d0db44ba315e125fbc36b50a8da527ae3a89))",
+      "parsed": {
+        "_": [
+          "Fixed font size not updating on plain editor when changing it from Preferences (#2920) (0d17961)",
+          "Fixes extra bottom padding in account modal (63d8472)",
+          "Fixes quick type suggestions showing up in iOS for password field (9583d0d)"
+        ],
+        "Bug Fixes": [
+          "Fixed font size not updating on plain editor when changing it from Preferences (#2920) (0d17961)",
+          "Fixes extra bottom padding in account modal (63d8472)",
+          "Fixes quick type suggestions showing up in iOS for password field (9583d0d)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.11",
+      "title": "[3.198.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.10...@standardnotes/web@3.198.11) (2025-07-23)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.10",
+      "title": "[3.198.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.9...@standardnotes/web@3.198.10) (2025-07-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.9",
+      "title": "[3.198.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.8...@standardnotes/web@3.198.9) (2025-07-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.8",
+      "title": "[3.198.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.7...@standardnotes/web@3.198.8) (2025-07-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.7",
+      "title": "[3.198.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.6...@standardnotes/web@3.198.7) (2025-07-22)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issues with embedded linked items in Super editor ([#2918](https://github.com/standardnotes/app/issues/2918)) ([43d31d8](https://github.com/standardnotes/app/commit/43d31d8bb44644b0d78d8a7f543da790b30e1eea))",
+      "parsed": {
+        "_": [
+          "Fixed issues with embedded linked items in Super editor (#2918) (43d31d8)"
+        ],
+        "Bug Fixes": [
+          "Fixed issues with embedded linked items in Super editor (#2918) (43d31d8)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.6",
+      "title": "[3.198.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.5...@standardnotes/web@3.198.6) (2025-07-19)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Remove extra bottom padding on Android ([#2915](https://github.com/standardnotes/app/issues/2915)) ([c52030a](https://github.com/standardnotes/app/commit/c52030a525eaf3c8488c19beb84229911bcda8fc))",
+      "parsed": {
+        "_": [
+          "Remove extra bottom padding on Android (#2915) (c52030a)"
+        ],
+        "Bug Fixes": [
+          "Remove extra bottom padding on Android (#2915) (c52030a)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.5",
+      "title": "[3.198.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.4...@standardnotes/web@3.198.5) (2025-07-15)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Prevent text from hiding behind navbar in Android ([#2914](https://github.com/standardnotes/app/issues/2914)) ([d02e5ca](https://github.com/standardnotes/app/commit/d02e5cab7462ea4754a3e650be571a16f6c9c7b4))",
+      "parsed": {
+        "_": [
+          "Prevent text from hiding behind navbar in Android (#2914) (d02e5ca)"
+        ],
+        "Bug Fixes": [
+          "Prevent text from hiding behind navbar in Android (#2914) (d02e5ca)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.4",
+      "title": "[3.198.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.3...@standardnotes/web@3.198.4) (2025-07-04)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issue where safe area insets were not always applying properly on iOS, causing a UI shift ([#2912](https://github.com/standardnotes/app/issues/2912)) ([117781b](https://github.com/standardnotes/app/commit/117781bb3655a2bd6b9b0ca5a4d12f7bbefd164e))",
+      "parsed": {
+        "_": [
+          "Fixed issue where safe area insets were not always applying properly on iOS, causing a UI shift (#2912) (117781b)"
+        ],
+        "Bug Fixes": [
+          "Fixed issue where safe area insets were not always applying properly on iOS, causing a UI shift (#2912) (117781b)"
+        ]
+      }
+    },
+    {
+      "version": "3.198.3",
+      "title": "[3.198.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.2...@standardnotes/web@3.198.3) (2025-07-01)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.2",
+      "title": "[3.198.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.1...@standardnotes/web@3.198.2) (2025-06-26)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.1",
+      "title": "[3.198.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.198.0...@standardnotes/web@3.198.1) (2025-06-24)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.198.0",
+      "title": "[3.198.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.197.4...@standardnotes/web@3.198.0) (2025-06-24)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issue with UI sometimes getting shifted up on iOS ([c050a2c](https://github.com/standardnotes/app/commit/c050a2cd339bb7a8fd482904216de1db2b8fe568))\n\n### Features\n\n* Tag search will now only show the direct tag results instead of also showing the parent and siblings ([#2906](https://github.com/standardnotes/app/issues/2906)) ([caa8eff](https://github.com/standardnotes/app/commit/caa8eff216b2d7a47f849f85f1eb2248eea10c62))",
+      "parsed": {
+        "_": [
+          "Fixed issue with UI sometimes getting shifted up on iOS (c050a2c)",
+          "Tag search will now only show the direct tag results instead of also showing the parent and siblings (#2906) (caa8eff)"
+        ],
+        "Bug Fixes": [
+          "Fixed issue with UI sometimes getting shifted up on iOS (c050a2c)"
+        ],
+        "Features": [
+          "Tag search will now only show the direct tag results instead of also showing the parent and siblings (#2906) (caa8eff)"
+        ]
+      }
+    },
+    {
+      "version": "3.197.4",
+      "title": "[3.197.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.197.3...@standardnotes/web@3.197.4) (2025-06-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.197.3",
+      "title": "[3.197.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.197.2...@standardnotes/web@3.197.3) (2025-06-19)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issue where Android app would crash on screen rotation ([#2905](https://github.com/standardnotes/app/issues/2905)) ([9c1bb35](https://github.com/standardnotes/app/commit/9c1bb353550c0256b4e6dcbee1e087cc9ffdd628))",
+      "parsed": {
+        "_": [
+          "Fixed issue where Android app would crash on screen rotation (#2905) (9c1bb35)"
+        ],
+        "Bug Fixes": [
+          "Fixed issue where Android app would crash on screen rotation (#2905) (9c1bb35)"
+        ]
+      }
+    },
+    {
+      "version": "3.197.2",
+      "title": "[3.197.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.197.1...@standardnotes/web@3.197.2) (2025-06-19)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.197.1",
+      "title": "[3.197.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.197.0...@standardnotes/web@3.197.1) (2025-06-18)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.197.0",
+      "title": "[3.197.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.9...@standardnotes/web@3.197.0) (2025-06-16)",
+      "date": null,
+      "body": "### Features\n\n* Added image alignment options and preference in Super notes ([#2903](https://github.com/standardnotes/app/issues/2903)) ([7bce025](https://github.com/standardnotes/app/commit/7bce025efbab6d57c4dabb8354d400c87eb90032))",
+      "parsed": {
+        "_": [
+          "Added image alignment options and preference in Super notes (#2903) (7bce025)"
+        ],
+        "Features": [
+          "Added image alignment options and preference in Super notes (#2903) (7bce025)"
+        ]
+      }
+    },
+    {
+      "version": "3.196.9",
+      "title": "[3.196.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.8...@standardnotes/web@3.196.9) (2025-06-12)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.8",
+      "title": "[3.196.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.7...@standardnotes/web@3.196.8) (2025-06-05)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.7",
+      "title": "[3.196.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.6...@standardnotes/web@3.196.7) (2025-05-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.6",
+      "title": "[3.196.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.5...@standardnotes/web@3.196.6) (2025-05-12)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.5",
+      "title": "[3.196.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.4...@standardnotes/web@3.196.5) (2025-05-12)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.4",
+      "title": "[3.196.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.3...@standardnotes/web@3.196.4) (2025-05-02)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.196.3",
+      "title": "[3.196.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.2...@standardnotes/web@3.196.3) (2025-05-02)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issue with keyboard on Android covering content ([#2899](https://github.com/standardnotes/app/issues/2899)) ([c4e0138](https://github.com/standardnotes/app/commit/c4e0138ce3ef9bc0adb75dae08aec2203473552d))",
+      "parsed": {
+        "_": [
+          "Fixed issue with keyboard on Android covering content (#2899) (c4e0138)"
+        ],
+        "Bug Fixes": [
+          "Fixed issue with keyboard on Android covering content (#2899) (c4e0138)"
+        ]
+      }
+    },
+    {
+      "version": "3.196.2",
+      "title": "[3.196.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.1...@standardnotes/web@3.196.2) (2025-04-25)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix issue where searching across formatted text would not work in Super note ([#2897](https://github.com/standardnotes/app/issues/2897)) (skip e2e) ([bdf6be3](https://github.com/standardnotes/app/commit/bdf6be38d241a5c35be56a50e239591294383f95))",
+      "parsed": {
+        "_": [
+          "Fix issue where searching across formatted text would not work in Super note (#2897) (skip e2e) (bdf6be3)"
+        ],
+        "Bug Fixes": [
+          "Fix issue where searching across formatted text would not work in Super note (#2897) (skip e2e) (bdf6be3)"
+        ]
+      }
+    },
+    {
+      "version": "3.196.1",
+      "title": "[3.196.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.196.0...@standardnotes/web@3.196.1) (2025-04-23)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Always show \"note from selection\" option in toolbar to prevent layout shift on smaller widths (skip e2e) ([b228114](https://github.com/standardnotes/app/commit/b2281141f825ae614dbeeb3545e21f0554fc2ebe))",
+      "parsed": {
+        "_": [
+          "Always show \"note from selection\" option in toolbar to prevent layout shift on smaller widths (skip e2e) (b228114)"
+        ],
+        "Bug Fixes": [
+          "Always show \"note from selection\" option in toolbar to prevent layout shift on smaller widths (skip e2e) (b228114)"
+        ]
+      }
+    },
+    {
+      "version": "3.196.0",
+      "title": "[3.196.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.33...@standardnotes/web@3.196.0) (2025-04-23)",
+      "date": null,
+      "body": "### Features\n\n* Add toolbar option to create new note from selection in a Super note ([#2896](https://github.com/standardnotes/app/issues/2896)) (skip e2e) ([b32a866](https://github.com/standardnotes/app/commit/b32a866f33c17cd46fc832a63d318767930f3b05))",
+      "parsed": {
+        "_": [
+          "Add toolbar option to create new note from selection in a Super note (#2896) (skip e2e) (b32a866)"
+        ],
+        "Features": [
+          "Add toolbar option to create new note from selection in a Super note (#2896) (skip e2e) (b32a866)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.33",
+      "title": "[3.195.33](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.32...@standardnotes/web@3.195.33) (2025-04-23)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.32",
+      "title": "[3.195.32](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.31...@standardnotes/web@3.195.32) (2025-04-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.31",
+      "title": "[3.195.31](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.30...@standardnotes/web@3.195.31) (2025-04-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.30",
+      "title": "[3.195.30](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.29...@standardnotes/web@3.195.30) (2025-04-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.29",
+      "title": "[3.195.29](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.28...@standardnotes/web@3.195.29) (2025-04-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.28",
+      "title": "[3.195.28](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.27...@standardnotes/web@3.195.28) (2025-04-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.27",
+      "title": "[3.195.27](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.26...@standardnotes/web@3.195.27) (2025-04-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.26",
+      "title": "[3.195.26](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.25...@standardnotes/web@3.195.26) (2025-02-03)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix PDF export not working on Android ([a0467e7](https://github.com/standardnotes/app/commit/a0467e7c4db27d27dc17f588bbaaebbb6f22d259))",
+      "parsed": {
+        "_": [
+          "Fix PDF export not working on Android (a0467e7)"
+        ],
+        "Bug Fixes": [
+          "Fix PDF export not working on Android (a0467e7)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.25",
+      "title": "[3.195.25](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.24...@standardnotes/web@3.195.25) (2025-01-31)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix downloads silently failing on Android ([42aedcd](https://github.com/standardnotes/app/commit/42aedcdf84503a57946ad0e5faf65adc55bc0008))",
+      "parsed": {
+        "_": [
+          "Fix downloads silently failing on Android (42aedcd)"
+        ],
+        "Bug Fixes": [
+          "Fix downloads silently failing on Android (42aedcd)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.24",
+      "title": "[3.195.24](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.23...@standardnotes/web@3.195.24) (2025-01-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.23",
+      "title": "[3.195.23](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.22...@standardnotes/web@3.195.23) (2025-01-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.22",
+      "title": "[3.195.22](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.21...@standardnotes/web@3.195.22) (2025-01-09)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.21",
+      "title": "[3.195.21](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.20...@standardnotes/web@3.195.21) (2025-01-09)",
+      "date": null,
+      "body": "### Reverts\n\n* Revert \"chore: fix github actions [skip e2e]\" ([7e83f24](https://github.com/standardnotes/app/commit/7e83f24373b810916654b5fa5809ac1d2f132ca1))",
+      "parsed": {
+        "_": [
+          "Revert \"chore: fix github actions skip e2e]\" ([7e83f24)"
+        ],
+        "Reverts": [
+          "Revert \"chore: fix github actions skip e2e]\" ([7e83f24)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.20",
+      "title": "[3.195.20](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.19...@standardnotes/web@3.195.20) (2025-01-09)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.19",
+      "title": "[3.195.19](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.18...@standardnotes/web@3.195.19) (2025-01-09)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.18",
+      "title": "[3.195.18](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.17...@standardnotes/web@3.195.18) (2025-01-09)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.17",
+      "title": "[3.195.17](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.16...@standardnotes/web@3.195.17) (2025-01-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.16",
+      "title": "[3.195.16](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.15...@standardnotes/web@3.195.16) (2025-01-06)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.15",
+      "title": "[3.195.15](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.14...@standardnotes/web@3.195.15) (2025-01-02)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.14",
+      "title": "[3.195.14](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.13...@standardnotes/web@3.195.14) (2024-11-22)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Pane visibility settings will be persisted locally ([#2888](https://github.com/standardnotes/app/issues/2888)) ([f179631](https://github.com/standardnotes/app/commit/f1796312deccf78f58a46af900e9f37f2c751aba))",
+      "parsed": {
+        "_": [
+          "Pane visibility settings will be persisted locally (#2888) (f179631)"
+        ],
+        "Bug Fixes": [
+          "Pane visibility settings will be persisted locally (#2888) (f179631)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.13",
+      "title": "[3.195.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.12...@standardnotes/web@3.195.13) (2024-11-10)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fix issue with toggling notes panel back on when it has been turned off ([7516aae](https://github.com/standardnotes/app/commit/7516aae885f3ba7512c1da44212ea9afb8036550)), closes [standardnotes/forum#3754](https://github.com/standardnotes/forum/issues/3754)",
+      "parsed": {
+        "_": [
+          "Fix issue with toggling notes panel back on when it has been turned off (7516aae), closes standardnotes/forum#3754"
+        ],
+        "Bug Fixes": [
+          "Fix issue with toggling notes panel back on when it has been turned off (7516aae), closes standardnotes/forum#3754"
+        ]
+      }
+    },
+    {
+      "version": "3.195.12",
+      "title": "[3.195.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.11...@standardnotes/web@3.195.12) (2024-10-14)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.11",
+      "title": "[3.195.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.10...@standardnotes/web@3.195.11) (2024-10-11)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.10",
+      "title": "[3.195.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.9...@standardnotes/web@3.195.10) (2024-10-11)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.9",
+      "title": "[3.195.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.8...@standardnotes/web@3.195.9) (2024-10-11)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.8",
+      "title": "[3.195.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.7...@standardnotes/web@3.195.8) (2024-10-03)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.7",
+      "title": "[3.195.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.6...@standardnotes/web@3.195.7) (2024-10-03)",
+      "date": null,
+      "body": "### Reverts\n\n* Revert \"chore: update play billing version to fix android build [skip e2e]\" ([3796df5](https://github.com/standardnotes/app/commit/3796df5159282b78f4a59f22451cc7ca1136d862))",
+      "parsed": {
+        "_": [
+          "Revert \"chore: update play billing version to fix android build skip e2e]\" ([3796df5)"
+        ],
+        "Reverts": [
+          "Revert \"chore: update play billing version to fix android build skip e2e]\" ([3796df5)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.6",
+      "title": "[3.195.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.5...@standardnotes/web@3.195.6) (2024-09-28)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.5",
+      "title": "[3.195.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.4...@standardnotes/web@3.195.5) (2024-09-26)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.4",
+      "title": "[3.195.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.3...@standardnotes/web@3.195.4) (2024-09-20)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.3",
+      "title": "[3.195.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.2...@standardnotes/web@3.195.3) (2024-09-14)",
+      "date": null,
+      "body": "### Bug Fixes\n\n* Fixed issue with embedded note links getting deselected after first click ([48b558b](https://github.com/standardnotes/app/commit/48b558bb5dd5254673b7e21df32c1aa35836ed3e))",
+      "parsed": {
+        "_": [
+          "Fixed issue with embedded note links getting deselected after first click (48b558b)"
+        ],
+        "Bug Fixes": [
+          "Fixed issue with embedded note links getting deselected after first click (48b558b)"
+        ]
+      }
+    },
+    {
+      "version": "3.195.2",
+      "title": "[3.195.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.1...@standardnotes/web@3.195.2) (2024-09-09)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.1",
+      "title": "[3.195.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.195.0...@standardnotes/web@3.195.1) (2024-07-17)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.195.0",
+      "title": "[3.195.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.13...@standardnotes/web@3.195.0) (2024-07-14)",
+      "date": null,
+      "body": "### Features\n\n* Added keyboard shortcut to toggle checklist item and fixed issue with pressing Space inside checklist toggling it ([e807c9d](https://github.com/standardnotes/app/commit/e807c9d5584c6320f728b8b34e60bcb8eefd921e))",
+      "parsed": {
+        "_": [
+          "Added keyboard shortcut to toggle checklist item and fixed issue with pressing Space inside checklist toggling it (e807c9d)"
+        ],
+        "Features": [
+          "Added keyboard shortcut to toggle checklist item and fixed issue with pressing Space inside checklist toggling it (e807c9d)"
+        ]
+      }
+    },
+    {
+      "version": "3.194.13",
+      "title": "[3.194.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.12...@standardnotes/web@3.194.13) (2024-07-04)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.12",
+      "title": "[3.194.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.11...@standardnotes/web@3.194.12) (2024-07-03)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.11",
+      "title": "[3.194.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.10...@standardnotes/web@3.194.11) (2024-06-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.10",
+      "title": "[3.194.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.9...@standardnotes/web@3.194.10) (2024-06-21)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.9",
+      "title": "[3.194.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.8...@standardnotes/web@3.194.9) (2024-06-05)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.8",
+      "title": "[3.194.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.7...@standardnotes/web@3.194.8) (2024-06-05)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
+      "version": "3.194.7",
+      "title": "[3.194.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.6...@standardnotes/web@3.194.7) (2024-05-22)",
+      "date": null,
+      "body": "**Note:** Version bump only for package @standardnotes/web",
+      "parsed": {
+        "_": [
+          "Note: Version bump only for package @standardnotes/web"
+        ]
+      }
+    },
+    {
       "version": "3.194.6",
       "title": "[3.194.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.194.5...@standardnotes/web@3.194.6) (2024-05-14)",
       "date": null,

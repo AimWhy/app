@@ -1,8 +1,9 @@
 import { compareSemVersions, StatusServiceEvent } from '@standardnotes/snjs'
+import { c } from 'ttag'
 import { keyboardStringForShortcut, OPEN_PREFERENCES_COMMAND } from '@standardnotes/ui-services'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useApplication } from '../ApplicationProvider'
-import { useCommandService } from '../CommandProvider'
+import { useKeyboardService } from '../KeyboardServiceProvider'
 import Icon from '../Icon/Icon'
 import StyledTooltip from '../StyledTooltip/StyledTooltip'
 import { MutuallyExclusiveMediaQueryBreakpoints, useMediaQuery } from '@/Hooks/useMediaQuery'
@@ -16,10 +17,10 @@ type Props = {
 const PreferencesButton = ({ openPreferences }: Props) => {
   const application = useApplication()
 
-  const commandService = useCommandService()
+  const keyboardService = useKeyboardService()
   const shortcut = useMemo(
-    () => keyboardStringForShortcut(commandService.keyboardShortcutForCommand(OPEN_PREFERENCES_COMMAND)),
-    [commandService],
+    () => keyboardStringForShortcut(keyboardService.keyboardShortcutForCommand(OPEN_PREFERENCES_COMMAND)),
+    [keyboardService],
   )
 
   const [changelogLastReadVersion, setChangelogLastReadVersion] = useState(() =>
@@ -54,14 +55,19 @@ const PreferencesButton = ({ openPreferences }: Props) => {
   if (isMobileScreen) {
     return (
       <div className="relative">
-        <RoundIconButton className="ml-2.5 bg-default" onClick={onClick} label="Go to preferences" icon="tune" />
+        <RoundIconButton
+          className="ml-2.5 bg-default"
+          onClick={onClick}
+          label={c('B2.NavSharedUI.AriaLabel').t`Go to preferences`}
+          icon="tune"
+        />
         <CountBubble position="right" count={bubbleCount} />
       </div>
     )
   }
 
   return (
-    <StyledTooltip label={`Open preferences (${shortcut})`}>
+    <StyledTooltip label={c('B2.NavSharedUI.AriaLabel').t`Open preferences (${shortcut})`}>
       <button onClick={onClick} className="group relative flex h-full w-8 cursor-pointer items-center justify-center">
         <div className="relative h-5">
           <Icon type="tune" className="rounded group-hover:text-info" />

@@ -1,6 +1,13 @@
 import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { $getNodeByKey, CLICK_COMMAND, COMMAND_PRIORITY_LOW, ElementFormatType, NodeKey } from 'lexical'
+import {
+  $getNodeByKey,
+  CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
+  ElementFormatType,
+  NodeKey,
+  SKIP_DOM_SELECTION_TAG,
+} from 'lexical'
 import { useApplication } from '@/Components/ApplicationProvider'
 import FilePreview from '@/Components/FilePreview/FilePreview'
 import { FileItem } from '@standardnotes/snjs'
@@ -9,6 +16,11 @@ import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection'
 import { observer } from 'mobx-react-lite'
 import Spinner from '@/Components/Spinner/Spinner'
 import { FilesControllerEvent } from '@/Controllers/FilesController'
+import { c } from 'ttag'
+
+function isInteractiveClickTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest('button, a, input, select, textarea, [role="button"]') !== null
+}
 
 export type FileComponentProps = Readonly<{
   className: Readonly<{
@@ -16,13 +28,22 @@ export type FileComponentProps = Readonly<{
     focus: string
   }>
   format: ElementFormatType | null
+  setFormat: (format: ElementFormatType) => void
   nodeKey: NodeKey
   fileUuid: string
   zoomLevel: number
   setZoomLevel: (zoomLevel: number) => void
 }>
 
-function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoomLevel }: FileComponentProps) {
+function FileComponent({
+  className,
+  format,
+  setFormat,
+  nodeKey,
+  fileUuid,
+  zoomLevel,
+  setZoomLevel,
+}: FileComponentProps) {
   const application = useApplication()
   const [editor] = useLexicalComposerContext()
   const [file, setFile] = useState(() => application.items.findItem<FileItem>(fileUuid))
@@ -71,6 +92,19 @@ function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoo
     [editor, setZoomLevel],
   )
 
+  const changeAlignment = useCallback(
+    (alignment: ElementFormatType) =>
+      editor.update(
+        () => {
+          setFormat(alignment)
+        },
+        {
+          tag: SKIP_DOM_SELECTION_TAG,
+        },
+      ),
+    [editor, setFormat],
+  )
+
   const [isSelected, setSelected] = useLexicalNodeSelection(nodeKey)
 
   useEffect(() => {
@@ -78,6 +112,10 @@ function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoo
       CLICK_COMMAND,
       (event) => {
         if (blockWrapperRef.current?.contains(event.target as Node)) {
+          if (isInteractiveClickTarget(event.target)) {
+            return false
+          }
+
           event.preventDefault()
 
           $getNodeByKey(nodeKey)?.selectEnd()
@@ -112,7 +150,7 @@ function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoo
         <div className="flex flex-col items-center justify-center gap-2 p-4 text-center" ref={blockWrapperRef}>
           <div className="flex items-center gap-2">
             <Spinner className="h-4 w-4" />
-            Uploading file "{uploadProgress.file.name}"... ({progress}%)
+            {c('B4.Notes.EditingUI.Status').jt`Uploading file "${uploadProgress.file.name}" (${progress}%)`}
           </div>
           <div className="w-full max-w-[50%] overflow-hidden rounded bg-contrast">
             <div
@@ -132,7 +170,7 @@ function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoo
   if (!file) {
     return (
       <BlockWithAlignableContents className={className} format={format} nodeKey={nodeKey}>
-        <div>Unable to find file {fileUuid}</div>
+        <div>{c('B4.Notes.EditingUI.Label').jt`Unable to find file ${fileUuid}`}</div>
       </BlockWithAlignableContents>
     )
   }
@@ -147,6 +185,8 @@ function FileComponent({ className, format, nodeKey, fileUuid, zoomLevel, setZoo
             application={application}
             imageZoomLevel={zoomLevel}
             setImageZoomLevel={setImageZoomLevel}
+            alignment={format}
+            changeAlignment={changeAlignment}
           />
         )}
       </div>

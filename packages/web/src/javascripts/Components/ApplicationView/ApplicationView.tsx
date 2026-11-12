@@ -14,6 +14,7 @@ import RevisionHistoryModal from '@/Components/RevisionHistoryModal/RevisionHist
 import PremiumModalProvider from '@/Hooks/usePremiumModal'
 import ConfirmSignoutContainer from '@/Components/ConfirmSignoutModal/ConfirmSignoutModal'
 import { addToast, ToastContainer, ToastType } from '@standardnotes/toast'
+import { c } from 'ttag'
 import FilePreviewModalWrapper from '@/Components/FilePreview/FilePreviewModal'
 import FileContextMenuWrapper from '@/Components/FileContextMenu/FileContextMenu'
 import PermissionsModalWrapper from '@/Components/PermissionsModal/PermissionsModalWrapper'
@@ -23,15 +24,18 @@ import ResponsivePaneProvider from '../Panes/ResponsivePaneProvider'
 import AndroidBackHandlerProvider from '@/NativeMobileWeb/useAndroidBackHandler'
 import ConfirmDeleteAccountContainer from '@/Components/ConfirmDeleteAccountModal/ConfirmDeleteAccountModal'
 import ApplicationProvider from '../ApplicationProvider'
-import CommandProvider from '../CommandProvider'
+import KeyboardServiceProvider from '../KeyboardServiceProvider'
 import PanesSystemComponent from '../Panes/PanesSystemComponent'
 import DotOrgNotice from './DotOrgNotice'
 import LinkingControllerProvider from '@/Controllers/LinkingControllerProvider'
 import ImportModal from '../ImportModal/ImportModal'
 import IosKeyboardClose from '../IosKeyboardClose/IosKeyboardClose'
 import EditorWidthSelectionModalWrapper from '../EditorWidthSelectionModal/EditorWidthSelectionModal'
+import LocalizationLabsSpotlightModal from '../LocalizationLabsSpotlight/LocalizationLabsSpotlightModal'
 import { ProtectionEvent } from '@standardnotes/services'
 import KeyboardShortcutsModal from '../KeyboardShortcutsHelpModal/KeyboardShortcutsHelpModal'
+import CommandPalette from '../CommandPalette/CommandPalette'
+import SuperExportModal from '../NotesOptions/SuperExportModal'
 
 type Props = {
   application: WebApplication
@@ -95,7 +99,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
       return
     }
 
-    const status = application.status.addMessage('Preparing demo...')
+    const status = application.status.addMessage(c('B2.NavSharedUI.Info').t`Preparing demo...`)
     void application.user.populateSessionFromDemoShareToken(token).then(() => {
       application.status.removeMessage(status)
       application.hideAccountMenu()
@@ -125,7 +129,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
       } else if (eventName === ApplicationEvent.LocalDatabaseReadError) {
         if (!currentLoadErrorDialog.current) {
           alertDialog({
-            text: 'Unable to load local database. Please restart the app and try again.',
+            text: c('B2.NavSharedUI.Error').t`Unable to load local database. Please restart the app and try again.`,
           })
             .then(() => {
               currentLoadErrorDialog.current = null
@@ -135,7 +139,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
       } else if (eventName === ApplicationEvent.LocalDatabaseWriteError) {
         if (!currentWriteErrorDialog.current) {
           currentWriteErrorDialog.current = alertDialog({
-            text: 'Unable to write to local database. Please restart the app and try again.',
+            text: c('B2.NavSharedUI.Error').t`Unable to write to local database. Please restart the app and try again.`,
           })
             .then(() => {
               currentWriteErrorDialog.current = null
@@ -145,7 +149,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
       } else if (eventName === ApplicationEvent.SyncTooManyRequests) {
         addToast({
           type: ToastType.Error,
-          message: 'Too many requests. Please try again later.',
+          message: c('B2.NavSharedUI.Error').t`Too many requests. Please try again later.`,
         })
       }
     })
@@ -212,7 +216,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
   if (route.type === RouteType.AppViewRoute && route.appViewRouteParam === 'extension') {
     return (
       <ApplicationProvider application={application}>
-        <CommandProvider service={application.keyboardService}>
+        <KeyboardServiceProvider service={application.keyboardService}>
           <AndroidBackHandlerProvider application={application}>
             <ResponsivePaneProvider paneController={application.paneController}>
               <PremiumModalProvider application={application}>
@@ -227,14 +231,14 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
               </PremiumModalProvider>
             </ResponsivePaneProvider>
           </AndroidBackHandlerProvider>
-        </CommandProvider>
+        </KeyboardServiceProvider>
       </ApplicationProvider>
     )
   }
 
   return (
     <ApplicationProvider application={application}>
-      <CommandProvider service={application.keyboardService}>
+      <KeyboardServiceProvider service={application.keyboardService}>
         <AndroidBackHandlerProvider application={application}>
           <ResponsivePaneProvider paneController={application.paneController}>
             <PremiumModalProvider application={application}>
@@ -266,9 +270,12 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
                     <FilePreviewModalWrapper application={application} />
                     <PermissionsModalWrapper application={application} />
                     <EditorWidthSelectionModalWrapper />
+                    <LocalizationLabsSpotlightModal application={application} />
                     <ConfirmDeleteAccountContainer application={application} />
                     <ImportModal importModalController={application.importModalController} />
                     <KeyboardShortcutsModal keyboardService={application.keyboardService} />
+                    <SuperExportModal />
+                    <CommandPalette />
                   </>
                   {application.routeService.isDotOrg && <DotOrgNotice />}
                   {isIOS() && <IosKeyboardClose />}
@@ -277,7 +284,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
             </PremiumModalProvider>
           </ResponsivePaneProvider>
         </AndroidBackHandlerProvider>
-      </CommandProvider>
+      </KeyboardServiceProvider>
     </ApplicationProvider>
   )
 }

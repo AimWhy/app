@@ -1,4 +1,5 @@
 import { WebApplication } from '@/Application/WebApplication'
+import { c } from 'ttag'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../../Icon/Icon'
 import { classNames } from '@standardnotes/utils'
@@ -80,7 +81,9 @@ const ContentListHeader = ({
 
       if (event === ApplicationEvent.SyncStatusChanged) {
         setSyncSubtitle(
-          syncStatus.syncInProgress && !application.sync.completedOnlineDownloadFirstSync ? 'Syncing...' : '',
+          syncStatus.syncInProgress && !application.sync.completedOnlineDownloadFirstSync
+            ? c('B3.Notes.NoteList.Status').t`Syncing...`
+            : '',
         )
         return
       }
@@ -91,7 +94,9 @@ const ContentListHeader = ({
           return
         }
 
-        setSyncSubtitle(`Loading ${localDataCurrent}/${localDataTotal} items...`)
+        setSyncSubtitle(
+          c('B3.Notes.NoteList.Info').jt`Loading ${localDataCurrent}/${localDataTotal} items...` as unknown as string,
+        )
         return
       }
     })
@@ -103,6 +108,17 @@ const ContentListHeader = ({
     setShowDisplayOptionsMenu((show) => !show)
   }, [])
 
+  useEffect(
+    () =>
+      application.commands.add(
+        'open-display-opts-menu',
+        c('B3.Notes.NoteList.Action').t`Open display options menu`,
+        toggleDisplayOptionsMenu,
+        'sort-descending',
+      ),
+    [application.commands, toggleDisplayOptionsMenu],
+  )
+
   const OptionsMenu = useMemo(() => {
     return (
       <div className="flex">
@@ -112,7 +128,7 @@ const ContentListHeader = ({
             onClick={toggleDisplayOptionsMenu}
             ref={displayOptionsButtonRef}
             icon="sort-descending"
-            label="Display options menu"
+            label={c('B3.Notes.NoteList.AriaLabel').t`Display options menu`}
           />
           <Popover
             open={showDisplayOptionsMenu}
@@ -120,7 +136,7 @@ const ContentListHeader = ({
             togglePopover={toggleDisplayOptionsMenu}
             align="start"
             className="py-2"
-            title="Display options"
+            title={c('B3.Notes.NoteList.Title').t`Display options`}
           >
             <DisplayOptionsMenu
               application={application}
@@ -174,7 +190,7 @@ const ContentListHeader = ({
             <div className="text-2xl font-semibold text-text md:text-lg">{panelTitle}</div>
             {showSyncSubtitle && (
               <div className={classNames('-mt-1 text-xs md:mt-0', outOfSync ? 'text-warning' : 'text-passive-0')}>
-                {outOfSync ? 'Potentially Out of Sync' : syncSubtitle}
+                {outOfSync ? c('B3.Notes.NoteList.Status').t`Potentially Out of Sync` : syncSubtitle}
               </div>
             )}
             {optionsSubtitle && <div className="text-xs text-passive-0">{optionsSubtitle}</div>}

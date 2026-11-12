@@ -1,11 +1,18 @@
 import { DecoratorBlockNode, SerializedDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
-import { DOMConversionMap, DOMExportOutput, EditorConfig, LexicalEditor, LexicalNode, Spread } from 'lexical'
+import {
+  DOMConversionMap,
+  DOMExportOutput,
+  EditorConfig,
+  ElementFormatType,
+  LexicalEditor,
+  LexicalNode,
+  NodeKey,
+  Spread,
+} from 'lexical'
 import InlineFileComponent from './InlineFileComponent'
 
 type SerializedInlineFileNode = Spread<
   {
-    version: 1
-    type: 'inline-file'
     fileName: string | undefined
     mimeType: string
     src: string
@@ -22,19 +29,23 @@ export class InlineFileNode extends DecoratorBlockNode {
     return 'inline-file'
   }
 
-  constructor(src: string, mimeType: string, fileName: string | undefined) {
-    super()
+  constructor(src: string, mimeType: string, fileName: string | undefined, format?: ElementFormatType, key?: NodeKey) {
+    super(format, key)
     this.__src = src
     this.__mimeType = mimeType
     this.__fileName = fileName
   }
 
   static clone(node: InlineFileNode): InlineFileNode {
-    return new InlineFileNode(node.__src, node.__mimeType, node.__fileName)
+    return new InlineFileNode(node.__src, node.__mimeType, node.__fileName, node.__format, node.__key)
   }
 
   static importJSON(serializedNode: SerializedInlineFileNode): InlineFileNode {
-    const node = $createInlineFileNode(serializedNode.src, serializedNode.mimeType, serializedNode.fileName)
+    const node = $createInlineFileNode(
+      serializedNode.src,
+      serializedNode.mimeType,
+      serializedNode.fileName,
+    ).updateFromJSON(serializedNode)
     return node
   }
 
@@ -44,8 +55,6 @@ export class InlineFileNode extends DecoratorBlockNode {
       src: this.__src,
       mimeType: this.__mimeType,
       fileName: this.__fileName,
-      version: 1,
-      type: 'inline-file',
     }
   }
 
@@ -163,6 +172,7 @@ export class InlineFileNode extends DecoratorBlockNode {
       <InlineFileComponent
         className={className}
         format={this.__format}
+        setFormat={this.setFormat.bind(this)}
         node={this}
         nodeKey={this.getKey()}
         src={this.__src}

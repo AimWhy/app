@@ -25,9 +25,25 @@ module.exports = (env, argv) => {
       hot: true,
       static: './dist',
       port,
-      historyApiFallback: true,
+      historyApiFallback: {
+        disableDotRule: true,
+        rewrites: [
+          { from: /^\/locales\//, to: (context) => context.parsedUrl.pathname },
+          { from: /./, to: '/index.html' },
+        ],
+      },
       devMiddleware: {
         writeToDisk: argv.writeToDisk,
+      },
+      proxy: {
+        '/assets': {
+          target: 'https://assets.standardnotes.com',
+          changeOrigin: true,
+          secure: false,
+          pathRewrite: {
+            '^/assets': '',
+          },
+        },
       },
     },
   })

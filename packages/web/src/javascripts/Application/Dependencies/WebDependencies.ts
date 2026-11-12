@@ -7,6 +7,7 @@ import {
   IsGlobalSpellcheckEnabled,
   IsMobileDevice,
   IsNativeIOS,
+  IsAndroid,
   IsNativeMobileWeb,
   KeyboardService,
   PluginsService,
@@ -14,7 +15,6 @@ import {
   ThemeManager,
   ToastService,
   VaultDisplayService,
-  WebApplicationInterface,
 } from '@standardnotes/ui-services'
 import { DependencyContainer } from '@standardnotes/utils'
 import { Web_TYPES } from './Types'
@@ -39,6 +39,7 @@ import { ImportModalController } from '@/Components/ImportModal/ImportModalContr
 import { ApplicationEventObserver } from '@/Event/ApplicationEventObserver'
 import { SearchOptionsController } from '@/Controllers/SearchOptionsController'
 import { LinkingController } from '@/Controllers/LinkingController'
+import { LocalizationController } from '@/Controllers/Localization/LocalizationController'
 import { SyncStatusController } from '@/Controllers/SyncStatusController'
 import { ActionsMenuController } from '@/Controllers/ActionsMenuController'
 import { ItemGroupController } from '@/Components/NoteView/Controller/ItemGroupController'
@@ -50,9 +51,11 @@ import { LoadPurchaseFlowUrl } from '../UseCase/LoadPurchaseFlowUrl'
 import { GetPurchaseFlowUrl } from '../UseCase/GetPurchaseFlowUrl'
 import { OpenSubscriptionDashboard } from '../UseCase/OpenSubscriptionDashboard'
 import { HeadlessSuperConverter } from '@/Components/SuperEditor/Tools/HeadlessSuperConverter'
+import { WebApplication } from '../WebApplication'
+import { CommandService } from '../../Components/CommandPalette/CommandService'
 
 export class WebDependencies extends DependencyContainer {
-  constructor(private application: WebApplicationInterface) {
+  constructor(private application: WebApplication) {
     super()
 
     this.bind(Web_TYPES.SuperConverter, () => {
@@ -74,6 +77,10 @@ export class WebDependencies extends DependencyContainer {
 
     this.bind(Web_TYPES.IsNativeIOS, () => {
       return new IsNativeIOS(application.environment, application.platform)
+    })
+
+    this.bind(Web_TYPES.IsAndroid, () => {
+      return new IsAndroid(application.platform)
     })
 
     this.bind(Web_TYPES.OpenSubscriptionDashboard, () => {
@@ -123,6 +130,9 @@ export class WebDependencies extends DependencyContainer {
 
     this.bind(Web_TYPES.KeyboardService, () => {
       return new KeyboardService(application.platform, application.environment)
+    })
+    this.bind(Web_TYPES.CommandService, () => {
+      return new CommandService(this.get<KeyboardService>(Web_TYPES.KeyboardService), application.generateUuid)
     })
 
     this.bind(Web_TYPES.ArchiveManager, () => {
@@ -199,6 +209,7 @@ export class WebDependencies extends DependencyContainer {
       return new PaneController(
         application.preferences,
         this.get<KeyboardService>(Web_TYPES.KeyboardService),
+        application.commands,
         this.get<IsTabletOrMobileScreen>(Web_TYPES.IsTabletOrMobileScreen),
         this.get<PanesForLayout>(Web_TYPES.PanesForLayout),
         application.events,
@@ -233,7 +244,7 @@ export class WebDependencies extends DependencyContainer {
       return new NavigationController(
         this.get<FeaturesController>(Web_TYPES.FeaturesController),
         this.get<VaultDisplayService>(Web_TYPES.VaultDisplayService),
-        this.get<KeyboardService>(Web_TYPES.KeyboardService),
+        this.get<CommandService>(Web_TYPES.CommandService),
         this.get<PaneController>(Web_TYPES.PaneController),
         application.sync,
         application.mutator,
@@ -241,25 +252,16 @@ export class WebDependencies extends DependencyContainer {
         application.preferences,
         application.alerts,
         application.changeAndSaveItem,
+        application.recents,
         application.events,
       )
     })
 
     this.bind(Web_TYPES.NotesController, () => {
       return new NotesController(
-        this.get<ItemListController>(Web_TYPES.ItemListController),
-        this.get<NavigationController>(Web_TYPES.NavigationController),
-        this.get<ItemGroupController>(Web_TYPES.ItemGroupController),
-        this.get<KeyboardService>(Web_TYPES.KeyboardService),
-        application.preferences,
-        application.items,
-        application.mutator,
-        application.sync,
-        application.protections,
-        application.alerts,
+        application,
         this.get<IsGlobalSpellcheckEnabled>(Web_TYPES.IsGlobalSpellcheckEnabled),
         this.get<GetItemTags>(Web_TYPES.GetItemTags),
-        application.events,
       )
     })
 
@@ -304,12 +306,23 @@ export class WebDependencies extends DependencyContainer {
         application.options,
         this.get<IsNativeMobileWeb>(Web_TYPES.IsNativeMobileWeb),
         application.changeAndSaveItem,
+        application.recents,
         application.events,
       )
     })
 
     this.bind(Web_TYPES.NoAccountWarningController, () => {
       return new NoAccountWarningController(application.sessions, application.events)
+    })
+
+    this.bind(Web_TYPES.LocalizationController, () => {
+      return new LocalizationController(
+        this.get<FeaturesController>(Web_TYPES.FeaturesController),
+        application.identifier,
+        this.get<PreferencesController>(Web_TYPES.PreferencesController),
+        application.routeService,
+        application.events,
+      )
     })
 
     this.bind(Web_TYPES.AccountMenuController, () => {
@@ -334,6 +347,7 @@ export class WebDependencies extends DependencyContainer {
         application.mobileDevice,
         this.get<LoadPurchaseFlowUrl>(Web_TYPES.LoadPurchaseFlowUrl),
         this.get<IsNativeIOS>(Web_TYPES.IsNativeIOS),
+        this.get<IsAndroid>(Web_TYPES.IsAndroid),
         application.events,
       )
     })
@@ -374,6 +388,7 @@ export class WebDependencies extends DependencyContainer {
         application.platform,
         application.mobileDevice,
         this.get<IsNativeMobileWeb>(Web_TYPES.IsNativeMobileWeb),
+        application.recents,
         application.events,
       )
     })
@@ -381,7 +396,7 @@ export class WebDependencies extends DependencyContainer {
     this.bind(Web_TYPES.HistoryModalController, () => {
       return new HistoryModalController(
         this.get<NotesController>(Web_TYPES.NotesController),
-        this.get<KeyboardService>(Web_TYPES.KeyboardService),
+        this.get<CommandService>(Web_TYPES.CommandService),
         application.events,
       )
     })

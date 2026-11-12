@@ -3,6 +3,7 @@ import { classNames } from '@standardnotes/utils'
 import { KeyboardKey } from '@standardnotes/ui-services'
 import { observer } from 'mobx-react-lite'
 import { KeyboardEventHandler, MouseEventHandler, useEffect, useRef, useState } from 'react'
+import { c } from 'ttag'
 import { ContentType } from '@standardnotes/snjs'
 import Icon from '../Icon/Icon'
 import { ItemLink } from '@/Utils/Items/Search/ItemLink'
@@ -56,8 +57,10 @@ const LinkedItemBubble = ({
     setShowUnlinkButton(true)
   }
 
-  const onBlur = () => {
-    setShowUnlinkButton(false)
+  const onBlur: React.FocusEventHandler<HTMLButtonElement | HTMLAnchorElement> = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setShowUnlinkButton(false)
+    }
     setWasClicked(false)
   }
 
@@ -109,9 +112,9 @@ const LinkedItemBubble = ({
         ref={(el) => (ref.current = el as HTMLElement)}
         tabIndex={0}
         className={classNames(
-          'group cursor-pointer rounded align-middle [&>*]:align-middle',
+          'group inline-flex min-h-6 cursor-pointer items-center rounded align-middle',
           'bg-passive-4-opacity-variant outline-1 outline-info hover:bg-contrast focus:bg-contrast focus:outline',
-          'whitespace-pre-wrap text-left text-sm text-text hover:no-underline focus:no-underline lg:text-xs',
+          'text-left text-sm text-text hover:no-underline focus:no-underline lg:text-xs',
           'py-1 pl-1 pr-2',
           className,
         )}
@@ -121,12 +124,15 @@ const LinkedItemBubble = ({
         title={tagTitle ? tagTitle.longTitle : link.item.title}
         onKeyDown={onKeyDown}
       >
-        <Icon type={icon} className={classNames('mr-1 inline', iconClassName)} size="small" />
-        {tagTitle && <span className="text-passive-1">{tagTitle.titlePrefix}</span>}
-        {link.type === 'linked-by' && link.item.content_type !== ContentType.TYPES.Tag && (
-          <span className={!isBidirectional ? 'hidden group-focus:inline' : ''}>Linked By:</span>
-        )}
-        <span>{getItemTitleInContextOfLinkBubble(link.item)}</span>
+        <Icon type={icon} className={classNames('mr-1 flex-shrink-0', iconClassName)} size="small" />
+        <span className="whitespace-pre-wrap">
+          {tagTitle && <span className="text-passive-1">{tagTitle.titlePrefix}</span>}
+          {link.type === 'linked-by' && link.item.content_type !== ContentType.TYPES.Tag && (
+            <span className={!isBidirectional ? 'hidden group-focus:inline' : ''}>{c('B4.Notes.TagsLinkedItems.Label')
+              .t`Linked By:`}</span>
+          )}
+          {getItemTitleInContextOfLinkBubble(link.item)}
+        </span>
         {showUnlinkButton && !readonly && (
           <button
             ref={(el) => (unlinkButtonRef.current = el as HTMLElement)}
@@ -161,7 +167,8 @@ const LinkedItemBubble = ({
         {tagTitle && <span className="text-passive-1">{tagTitle.titlePrefix}</span>}
         <span className="flex items-center gap-1">
           {link.type === 'linked-by' && link.item.content_type !== ContentType.TYPES.Tag && (
-            <span className={!isBidirectional ? 'hidden group-focus:block' : ''}>Linked By:</span>
+            <span className={!isBidirectional ? 'hidden group-focus:block' : ''}>{c('B4.Notes.TagsLinkedItems.Label')
+              .t`Linked By:`}</span>
           )}
           {getItemTitleInContextOfLinkBubble(link.item)}
         </span>

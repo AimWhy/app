@@ -8,6 +8,8 @@ import HorizontalSeparator from '@/Components/Shared/HorizontalSeparator'
 import { ContentType } from '@standardnotes/snjs'
 import { Text, Title } from '@/Components/Preferences/PreferencesComponents/Content'
 import { PreferencesPremiumOverlay } from '@/Components/Preferences/PremiumOverlay'
+import { AppName, SuperName, jtString } from '@standardnotes/features'
+import { c } from 'ttag'
 
 const BrowsePlugins: FunctionComponent = () => {
   const application = useApplication()
@@ -31,16 +33,15 @@ const BrowsePlugins: FunctionComponent = () => {
   return (
     <div className="relative">
       <PreferencesSegment>
-        <Title>Browse Plugins</Title>
+        <Title>{c('B6.Preferences.Other.Title').t`Browse Plugins`}</Title>
         <Text className="text-neutral">
-          Plugins run in a secure sandbox and can only access data you allow it. Note types allow specialized editing
-          experiences, but in most cases, the <strong>built-in Super note type</strong> can encapsulate any
-          functionality found in plugins.
+          {c('B6.Preferences.Plugins.Info')
+            .jt`Plugins run in a secure sandbox and can only access data you allow it. Note types allow specialized editing experiences, but in most cases, the built-in ${SuperName} note type can encapsulate any functionality found in plugins.`}
         </Text>
 
         {!plugins && (
           <div className="mb-3 mt-5 flex h-full w-full items-center">
-            <span className="w-full font-bold">Loading...</span>
+            <span className="w-full font-bold">{c('B6.Preferences.Other.Info').t`Loading...`}</span>
           </div>
         )}
 
@@ -57,8 +58,10 @@ const BrowsePlugins: FunctionComponent = () => {
       </PreferencesSegment>
       <HorizontalSeparator />
       <Text className="mt-4 text-danger">
-        Plugins may not be actively maintained. Standard Notes cannot attest to the quality or user experience of these
-        plugins, and is not responsible for any data loss that may arise from their use.
+        {jtString(
+          c('B6.Preferences.Other.Error')
+            .jt`Plugins may not be actively maintained. ${AppName} cannot attest to the quality or user experience of these plugins, and is not responsible for any data loss that may arise from their use.`,
+        )}
       </Text>
 
       {!hasSubscription && <PreferencesPremiumOverlay />}

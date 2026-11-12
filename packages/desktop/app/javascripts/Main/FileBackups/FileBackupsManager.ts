@@ -17,6 +17,8 @@ import { FileReadOperation } from './FileReadOperation'
 import { Paths } from '../Types/Paths'
 import { MessageToWebApp } from '../../Shared/IpcMessages'
 import { FilesManagerInterface } from '../File/FilesManagerInterface'
+import { sanitizeFileName } from '@standardnotes/utils'
+import { AppName } from '../Strings'
 
 const TextBackupFileExtension = '.txt'
 
@@ -102,7 +104,7 @@ export class FilesBackupManager implements FileBackupsDevice {
       return savedLocation
     }
 
-    const LegacyTextBackupsDirectory = 'Standard Notes Backups'
+    const LegacyTextBackupsDirectory = `${AppName} Backups`
     const homeDir = Paths.homeDir
     if (homeDir) {
       return path.join(homeDir, LegacyTextBackupsDirectory)
@@ -316,7 +318,13 @@ export class FilesBackupManager implements FileBackupsDevice {
 
       const relativePath = forTag ?? ''
       const filenameWithSlashesEscaped = filename.replace(/\//g, '\u2215')
-      const fileAbsolutePath = path.join(absolutePath, relativePath, filenameWithSlashesEscaped)
+      const sanitizedFilename = sanitizeFileName(filenameWithSlashesEscaped)
+      const fileAbsolutePath = path.resolve(absolutePath, relativePath, sanitizedFilename)
+
+      if (!this.filesManager.isChildOfDir(path.resolve(absolutePath), fileAbsolutePath)) {
+        throw new Error(`Plaintext backup path escapes backup directory: ${forTag}`)
+      }
+
       await this.filesManager.writeFile(fileAbsolutePath, data)
 
       const existingRecord = findMappingRecord(forTag)

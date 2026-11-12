@@ -4,24 +4,34 @@ import {
   ApplicationEvent,
   FileDownloadProgress,
   FileItem,
+  FileStrings,
   fileProgressToHumanReadableString,
 } from '@standardnotes/snjs'
 import { useEffect, useMemo, useState } from 'react'
+import { c } from 'ttag'
 import Spinner from '@/Components/Spinner/Spinner'
 import FilePreviewError from './FilePreviewError'
 import { isFileTypePreviewable } from './isFilePreviewable'
 import PreviewComponent from './PreviewComponent'
 import Button from '../Button/Button'
 import { ProtectedIllustration } from '@standardnotes/icons'
-import { ImageZoomLevelProps } from './ImageZoomLevelProps'
+import { OptionalSuperEmbeddedImageProps } from './OptionalSuperEmbeddedImageProps'
 
 type Props = {
   application: WebApplication
   file: FileItem
   isEmbeddedInSuper?: boolean
-} & ImageZoomLevelProps
+} & OptionalSuperEmbeddedImageProps
 
-const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLevel, setImageZoomLevel }: Props) => {
+const FilePreview = ({
+  file,
+  application,
+  isEmbeddedInSuper = false,
+  imageZoomLevel,
+  setImageZoomLevel,
+  alignment,
+  changeAlignment,
+}: Props) => {
   const [isAuthorized, setIsAuthorized] = useState(application.isAuthorizedToRenderItem(file))
 
   const isFilePreviewable = useMemo(() => {
@@ -31,6 +41,7 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
   const [isDownloading, setIsDownloading] = useState(true)
   const [downloadProgress, setDownloadProgress] = useState<FileDownloadProgress | undefined>()
   const [downloadedBytes, setDownloadedBytes] = useState<Uint8Array>()
+  const [downloadErrorMessage, setDownloadErrorMessage] = useState<string | undefined>()
 
   useEffect(() => {
     setIsAuthorized(application.isAuthorizedToRenderItem(file))
@@ -66,6 +77,7 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
       try {
         const chunks: Uint8Array[] = []
         setDownloadProgress(undefined)
+        setDownloadErrorMessage(undefined)
         const error = await application.files.downloadFile(file, async (decryptedChunk, progress) => {
           chunks.push(decryptedChunk)
           if (progress) {
@@ -73,7 +85,9 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
           }
         })
 
-        if (!error) {
+        if (error) {
+          setDownloadErrorMessage(FileStrings.ValetTokenPreviewFailureMessage(error.tag) ?? error.text)
+        } else {
           const finalDecryptedBytes = concatenateUint8Arrays(chunks)
           setDownloadedBytes(finalDecryptedBytes)
         }
@@ -93,20 +107,24 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
     return (
       <div className="flex flex-grow flex-col items-center justify-center">
         <ProtectedIllustration className="mb-4 h-30 w-30" />
-        <div className="mb-2 text-base font-bold">This file is protected.</div>
+        <div className="mb-2 text-base font-bold">{c('B7.FilesSubscriptionHelp.Files.Info')
+          .t`This file is protected.`}</div>
         <p className="max-w-[35ch] text-center text-sm text-passive-0">
           {hasProtectionSources
-            ? 'Authenticate to view this file.'
-            : 'Add a passcode or create an account to require authentication to view this file.'}
+            ? c('B7.FilesSubscriptionHelp.Files.Info').t`Authenticate to view this file.`
+            : c('B7.FilesSubscriptionHelp.Files.Info')
+                .t`Add a passcode or create an account to require authentication to view this file.`}
         </p>
         <div className="mt-3 flex gap-3">
           {!hasProtectionSources && (
             <Button primary small onClick={() => application.showAccountMenu()}>
-              Open account menu
+              {c('B7.FilesSubscriptionHelp.Files.Action').t`Open account menu`}
             </Button>
           )}
           <Button primary onClick={() => application.protections.authorizeItemAccess(file)}>
-            {hasProtectionSources ? 'Authenticate' : 'View file'}
+            {hasProtectionSources
+              ? c('B7.FilesSubscriptionHelp.Files.Info').t`Authenticate`
+              : c('B7.FilesSubscriptionHelp.Files.Info').t`View file`}
           </Button>
         </div>
       </div>
@@ -126,7 +144,7 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
           {fileProgressToHumanReadableString(downloadProgress, file.name, { showPercent: false })}
         </span>
       ) : (
-        <span className="mt-3">Loading...</span>
+        <span className="mt-3">{c('B7.FilesSubscriptionHelp.Files.Info').t`Loading...`}</span>
       )}
     </div>
   ) : downloadedBytes ? (
@@ -137,6 +155,8 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
       isEmbeddedInSuper={isEmbeddedInSuper}
       imageZoomLevel={imageZoomLevel}
       setImageZoomLevel={setImageZoomLevel}
+      alignment={alignment}
+      changeAlignment={changeAlignment}
     />
   ) : (
     <FilePreviewError
@@ -144,8 +164,10 @@ const FilePreview = ({ file, application, isEmbeddedInSuper = false, imageZoomLe
       filesController={application.filesController}
       tryAgainCallback={() => {
         setDownloadedBytes(undefined)
+        setDownloadErrorMessage(undefined)
       }}
       isFilePreviewable={isFilePreviewable}
+      errorDetail={downloadErrorMessage}
     />
   )
 }

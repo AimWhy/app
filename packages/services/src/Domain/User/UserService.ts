@@ -10,6 +10,7 @@ import {
 import { KeyParamsOrigination, UserRequestType } from '@standardnotes/common'
 import { UuidGenerator } from '@standardnotes/utils'
 import { UserApiServiceInterface, UserRegistrationResponseBody } from '@standardnotes/api'
+import { c, msgid } from 'ttag'
 import * as Messages from '../Strings/Messages'
 import { InfoStrings } from '../Strings/InfoStrings'
 import { SyncServiceInterface } from '../Sync/SyncServiceInterface'
@@ -39,6 +40,10 @@ import { CredentialsChangeFunctionResponse } from './CredentialsChangeFunctionRe
 import { EncryptionProviderInterface } from '../Encryption/EncryptionProviderInterface'
 import { ReencryptTypeAItems } from '../Encryption/UseCase/TypeA/ReencryptTypeAItems'
 import { DecryptErroredPayloads } from '../Encryption/UseCase/DecryptErroredPayloads'
+
+const cleanedEmailString = (email: string) => {
+  return email.trim().toLowerCase()
+}
 
 export class UserService
   extends AbstractService<AccountEvent, AccountEventData>
@@ -233,21 +238,23 @@ export class UserService
     error: boolean
     message?: string
   }> {
-    if (
-      !(await this.protections.authorizeAction(ChallengeReason.DeleteAccount, {
-        fallBackToAccountPassword: true,
-        requireAccountPassword: true,
-        forcePrompt: false,
-      }))
-    ) {
+    const { success, challengeResponse } = await this.protections.authorizeAccountDeletion()
+
+    if (!success) {
       return {
         error: true,
-        message: Messages.INVALID_PASSWORD,
+        message: Messages.INVALID_PASSWORD(),
       }
     }
 
     const uuid = this.sessions.getSureUser().uuid
-    const response = await this.userApi.deleteAccount(uuid)
+    const password = challengeResponse?.getValueForType(ChallengeValidation.AccountPassword).value as string
+    const currentRootKey = await this.encryption.computeRootKey(
+      password,
+      this.encryption.getRootKeyParams() as SNRootKeyParams,
+    )
+    const serverPassword = currentRootKey.serverPassword
+    const response = await this.userApi.deleteAccount({ userUuid: uuid, serverPassword: serverPassword })
     if (isErrorResponse(response)) {
       return {
         error: true,
@@ -279,7 +286,7 @@ export class UserService
       }
 
       return result.data.success
-    } catch (error) {
+    } catch {
       return false
     }
   }
@@ -348,11 +355,13 @@ export class UserService
 
     const dirtyItems = this.items.getDirtyItems()
     if (dirtyItems.length > 0) {
-      const singular = dirtyItems.length === 1
+      const dirtyItemCount = dirtyItems.length
       const didConfirm = await this.alerts.confirm(
-        `There ${singular ? 'is' : 'are'} ${dirtyItems.length} ${
-          singular ? 'item' : 'items'
-        } with unsynced changes. If you sign out, these changes will be lost forever. Are you sure you want to sign out?`,
+        c('B1.Account.Session.Confirmation').ngettext(
+          msgid`There is ${dirtyItemCount} item with unsynced changes. If you sign out, these changes will be lost forever. Are you sure you want to sign out?`,
+          `There are ${dirtyItemCount} items with unsynced changes. If you sign out, these changes will be lost forever. Are you sure you want to sign out?`,
+          dirtyItemCount,
+        ),
       )
       if (didConfirm) {
         await performSignOut()
@@ -408,8 +417,8 @@ export class UserService
       return { canceled: true }
     }
     const dismissBlockingDialog = await this.alerts.blockingDialog(
-      Messages.DO_NOT_CLOSE_APPLICATION,
-      Messages.UPGRADING_ENCRYPTION,
+      Messages.DO_NOT_CLOSE_APPLICATION(),
+      Messages.UPGRADING_ENCRYPTION(),
     )
     try {
       let passcode: string | undefined
@@ -455,8 +464,8 @@ export class UserService
     }
 
     const dismissBlockingDialog = await this.alerts.blockingDialog(
-      Messages.DO_NOT_CLOSE_APPLICATION,
-      Messages.SETTING_PASSCODE,
+      Messages.DO_NOT_CLOSE_APPLICATION(),
+      Messages.SETTING_PASSCODE(),
     )
     try {
       await this.setPasscodeWithoutWarning(passcode, KeyParamsOrigination.PasscodeCreate)
@@ -472,8 +481,8 @@ export class UserService
     }
 
     const dismissBlockingDialog = await this.alerts.blockingDialog(
-      Messages.DO_NOT_CLOSE_APPLICATION,
-      Messages.REMOVING_PASSCODE,
+      Messages.DO_NOT_CLOSE_APPLICATION(),
+      Messages.REMOVING_PASSCODE(),
     )
     try {
       await this.removePasscodeWithoutWarning()
@@ -498,10 +507,10 @@ export class UserService
     }
 
     const dismissBlockingDialog = await this.alerts.blockingDialog(
-      Messages.DO_NOT_CLOSE_APPLICATION,
+      Messages.DO_NOT_CLOSE_APPLICATION(),
       origination === KeyParamsOrigination.ProtocolUpgrade
         ? Messages.ProtocolUpgradeStrings.UpgradingPasscode
-        : Messages.CHANGING_PASSCODE,
+        : Messages.CHANGING_PASSCODE(),
     )
     try {
       await this.removePasscodeWithoutWarning()
@@ -589,9 +598,11 @@ export class UserService
     const accountPasswordValidation = await this.encryption.validateAccountPassword(parameters.currentPassword)
     if (!accountPasswordValidation.valid) {
       return {
-        error: Error(Messages.INVALID_PASSWORD),
+        error: Error(Messages.INVALID_PASSWORD()),
       }
     }
+
+    const newEmail = parameters.newEmail ? cleanedEmailString(parameters.newEmail) : undefined
 
     const user = this.sessions.getUser() as User
     const currentEmail = user.email
@@ -599,7 +610,7 @@ export class UserService
       currentPassword: parameters.currentPassword,
       currentEmail,
       origination: parameters.origination,
-      newEmail: parameters.newEmail,
+      newEmail: newEmail,
       newPassword: parameters.newPassword,
     })
 
@@ -609,7 +620,7 @@ export class UserService
       currentServerPassword: currentRootKey.serverPassword as string,
       newRootKey: newRootKey,
       wrappingKey,
-      newEmail: parameters.newEmail,
+      newEmail: newEmail,
     })
 
     this.unlockSyncing()

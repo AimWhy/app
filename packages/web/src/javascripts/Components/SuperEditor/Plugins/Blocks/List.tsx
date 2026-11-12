@@ -2,23 +2,30 @@ import { LexicalEditor } from 'lexical'
 import { INSERT_UNORDERED_LIST_COMMAND, INSERT_CHECK_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND } from '@lexical/list'
 import { BlockPickerOption } from '../BlockPickerPlugin/BlockPickerOption'
 import { LexicalIconName } from '@/Components/Icon/LexicalIcons'
+import { c } from 'ttag'
 
 export const BulletedListBlock = {
-  name: 'Bulleted List',
+  get name() {
+    return c('B3.Notes.EditorToolbar.Label').t`Bulleted List`
+  },
   iconName: 'list-bulleted' as LexicalIconName,
   keywords: ['bulleted list', 'unordered list', 'ul'],
   onSelect: (editor: LexicalEditor) => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
 }
 
 export const ChecklistBlock = {
-  name: 'Check List',
+  get name() {
+    return c('B3.Notes.EditorToolbar.Label').t`Check List`
+  },
   iconName: 'list-check' as LexicalIconName,
   keywords: ['check list', 'todo list'],
   onSelect: (editor: LexicalEditor) => editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
 }
 
 export const NumberedListBlock = {
-  name: 'Numbered List',
+  get name() {
+    return c('B3.Notes.EditorToolbar.Label').t`Numbered List`
+  },
   iconName: 'list-numbered' as LexicalIconName,
   keywords: ['numbered list', 'ordered list', 'ol'],
   onSelect: (editor: LexicalEditor) => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),

@@ -19,6 +19,8 @@ const StyledTooltip = ({
   type = 'label',
   side,
   documentElement,
+  closeOnClick = true,
+  portal = true,
   ...props
 }: {
   children: ReactNode
@@ -30,6 +32,7 @@ const StyledTooltip = ({
   type?: TooltipStoreProps['type']
   side?: PopoverSide
   documentElement?: HTMLElement
+  closeOnClick?: boolean
 } & Partial<TooltipOptions>) => {
   const [forceOpen, setForceOpen] = useState<boolean | undefined>()
 
@@ -39,7 +42,6 @@ const StyledTooltip = ({
     hideTimeout: 0,
     skipTimeout: 0,
     open: forceOpen,
-    animated: true,
     type,
   })
 
@@ -69,7 +71,11 @@ const StyledTooltip = ({
   const clickProps = isMobile
     ? {}
     : {
-        onClick: () => tooltip.hide(),
+        onClick: () => {
+          if (closeOnClick) {
+            tooltip.hide()
+          }
+        },
       }
 
   useEffect(() => {
@@ -150,9 +156,11 @@ const StyledTooltip = ({
             return
           }
 
-          Object.assign(popoverElement.style, styles)
+          for (const [key, value] of Object.entries(styles)) {
+            popoverElement.style.setProperty(key, value)
+          }
 
-          if (!props.portal) {
+          if (!portal) {
             const adjustedStyles = getAdjustedStylesForNonPortalPopover(
               popoverElement,
               styles,

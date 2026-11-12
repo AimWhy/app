@@ -1,4 +1,4 @@
-import { STRING_NON_MATCHING_PASSWORDS } from '@/Constants/Strings'
+import { StringNonMatchingPasswords } from '@/Constants/Strings'
 import { observer } from 'mobx-react-lite'
 import {
   FormEventHandler,
@@ -18,6 +18,10 @@ import IconButton from '@/Components/Button/IconButton'
 import { useApplication } from '../ApplicationProvider'
 import { useCaptcha } from '@/Hooks/useCaptcha'
 import { isErrorResponse } from '@standardnotes/snjs'
+import MergeLocalDataCheckbox from './MergeLocalDataCheckbox'
+import ConfirmNoMergeDialog from './ConfirmNoMergeDialog'
+import { AppName, jtString } from '@standardnotes/features'
+import { c } from 'ttag'
 
 type Props = {
   setMenuPane: (pane: AccountMenuPane) => void
@@ -37,6 +41,7 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
 
   const [hvmToken, setHVMToken] = useState('')
   const [captchaURL, setCaptchaURL] = useState('')
+  const [showNoMergeConfirmation, setShowNoMergeConfirmation] = useState(false)
 
   const register = useCallback(() => {
     setIsRegistering(true)
@@ -118,15 +123,20 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
       }
 
       if (password !== confirmPassword) {
-        setError(STRING_NON_MATCHING_PASSWORDS)
+        setError(StringNonMatchingPasswords())
         setConfirmPassword('')
         passwordInputRef.current?.focus()
         return
       }
 
+      if (notesAndTagsCount > 0 && !shouldMergeLocal) {
+        setShowNoMergeConfirmation(true)
+        return
+      }
+
       checkIfCaptchaRequiredAndRegister()
     },
-    [checkIfCaptchaRequiredAndRegister, confirmPassword, password],
+    [checkIfCaptchaRequiredAndRegister, confirmPassword, password, notesAndTagsCount, shouldMergeLocal],
   )
 
   const handleKeyDown: KeyboardEventHandler = useCallback(
@@ -145,12 +155,26 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
     setMenuPane(AccountMenuPane.Register)
   }, [setMenuPane])
 
+  const closeNoMergeConfirmation = useCallback(() => {
+    setShowNoMergeConfirmation(false)
+  }, [])
+
+  const confirmRegisterWithoutMerge = useCallback(() => {
+    setShowNoMergeConfirmation(false)
+    checkIfCaptchaRequiredAndRegister()
+  }, [checkIfCaptchaRequiredAndRegister])
+
+  const noPasswordResetOption = (
+    <span className="text-danger">
+      {jtString(c('B1.Account.SignIn.Info').jt`${AppName} does not have a password reset option`)}
+    </span>
+  )
+
   const confirmPasswordForm = (
     <>
       <div className="mb-3 px-3 text-sm">
-        Because your notes are encrypted using your password,{' '}
-        <span className="text-danger">Standard Notes does not have a password reset option</span>. If you forget your
-        password, you will permanently lose access to your data.
+        {c('B1.Account.SignIn.Info')
+          .jt`Because your notes are encrypted using your password, ${noPasswordResetOption}. If you forget your password, you will permanently lose access to your data.`}
       </div>
       <form onSubmit={handleConfirmFormSubmit} className="mb-1 px-3">
         {!isRegistering && (
@@ -160,7 +184,7 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
             left={[<Icon type="password" className="text-neutral" />]}
             onChange={handlePasswordChange}
             onKeyDown={handleKeyDown}
-            placeholder="Confirm password"
+            placeholder={c('B1.Account.SignIn.Label').t`Confirm password`}
             ref={passwordInputRef}
             value={confirmPassword}
           />
@@ -170,24 +194,27 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
           primary
           fullWidth
           className="mb-3 mt-1"
-          label={isRegistering ? 'Creating account...' : 'Create account & sign in'}
+          label={
+            isRegistering
+              ? c('B1.Account.SignIn.Action').t`Creating account...`
+              : c('B1.Account.SignIn.Action').t`Create account & sign in`
+          }
           onClick={handleConfirmFormSubmit}
           disabled={isRegistering}
         />
         <Checkbox
           name="is-ephemeral"
-          label="Stay signed in"
+          label={c('B1.Account.SignIn.Option').t`Stay signed in`}
           checked={!isEphemeral}
           onChange={handleEphemeralChange}
           disabled={isRegistering}
         />
         {notesAndTagsCount > 0 ? (
-          <Checkbox
-            name="should-merge-local"
-            label={`Merge local data (${notesAndTagsCount} notes and tags)`}
+          <MergeLocalDataCheckbox
             checked={shouldMergeLocal}
             onChange={handleShouldMergeChange}
             disabled={isRegistering}
+            notesAndTagsCount={notesAndTagsCount}
           />
         ) : null}
       </form>
@@ -199,15 +226,22 @@ const ConfirmPassword: FunctionComponent<Props> = ({ setMenuPane, email, passwor
       <div className="mb-3 mt-1 flex items-center px-3">
         <IconButton
           icon="arrow-left"
-          title="Go back"
+          title={c('B1.Account.SignIn.Action').t`Go back`}
           className="mr-2 flex p-0 text-neutral"
           onClick={handleGoBack}
           focusable={true}
           disabled={isRegistering}
         />
-        <div className="text-base font-bold">{captchaURL ? 'Human verification' : 'Confirm password'}</div>
+        <div className="text-base font-bold">
+          {captchaURL
+            ? c('B1.Account.SignIn.Title').t`Human verification`
+            : c('B1.Account.SignIn.Title').t`Confirm password`}
+        </div>
       </div>
       {captchaURL ? <div className="p-[10px]">{captchaIframe}</div> : confirmPasswordForm}
+      {showNoMergeConfirmation && (
+        <ConfirmNoMergeDialog onClose={closeNoMergeConfirmation} onConfirm={confirmRegisterWithoutMerge} />
+      )}
     </>
   )
 }

@@ -5,13 +5,16 @@ import { EmailBackupFrequency } from '@standardnotes/settings'
 import { AbstractService, InternalEventBusInterface } from '@standardnotes/services'
 import { SettingsClientInterface } from './SettingsClientInterface'
 import { SettingName } from '@standardnotes/domain-core'
+import { c } from 'ttag'
 
 export class SettingsService extends AbstractService implements SettingsClientInterface {
   private provider!: SettingsGateway
-  private frequencyOptionsLabels = {
-    [EmailBackupFrequency.Disabled]: 'No email backups',
-    [EmailBackupFrequency.Daily]: 'Daily',
-    [EmailBackupFrequency.Weekly]: 'Weekly',
+  private get frequencyOptionsLabels(): Record<EmailBackupFrequency, string> {
+    return {
+      [EmailBackupFrequency.Disabled]: c('B6.Preferences.Backups.Info').t`No email backups`,
+      [EmailBackupFrequency.Daily]: c('B6.Preferences.Backups.Info').t`Daily`,
+      [EmailBackupFrequency.Weekly]: c('B6.Preferences.Backups.Info').t`Weekly`,
+    }
   }
 
   constructor(
@@ -30,8 +33,8 @@ export class SettingsService extends AbstractService implements SettingsClientIn
     return this.provider.listSettings()
   }
 
-  async getSetting(name: SettingName) {
-    return this.provider.getSetting(name)
+  async getSetting(name: SettingName, serverPassword?: string) {
+    return this.provider.getSetting(name, serverPassword)
   }
 
   async getSubscriptionSetting(name: SettingName) {
@@ -42,16 +45,29 @@ export class SettingsService extends AbstractService implements SettingsClientIn
     return this.provider.updateSubscriptionSetting(name, payload, sensitive)
   }
 
-  async updateSetting(name: SettingName, payload: string, sensitive = false) {
-    return this.provider.updateSetting(name, payload, sensitive)
+  async updateSetting(name: SettingName, payload: string, sensitive = false, totpToken?: string) {
+    return this.provider.updateSetting(name, payload, sensitive, totpToken)
   }
 
   async getDoesSensitiveSettingExist(name: SettingName) {
     return this.provider.getDoesSensitiveSettingExist(name)
   }
 
-  async deleteSetting(name: SettingName) {
-    return this.provider.deleteSetting(name)
+  async deleteSetting(name: SettingName, serverPassword?: string) {
+    return this.provider.deleteSetting(name, serverPassword)
+  }
+
+  async generateMfaSecret(): Promise<string> {
+    return this.provider.getMfaSecret()
+  }
+
+  async updateMfaSetting(secret: string, totpToken: string): Promise<void> {
+    return this.provider.updateSetting(
+      SettingName.create(SettingName.NAMES.MfaSecret).getValue(),
+      secret,
+      true,
+      totpToken,
+    )
   }
 
   getEmailBackupFrequencyOptionLabel(frequency: EmailBackupFrequency): string {

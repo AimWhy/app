@@ -27,18 +27,24 @@ export class UserApiService implements UserApiServiceInterface {
     this.operationsInProgress = new Map()
   }
 
-  async deleteAccount(userUuid: string): Promise<HttpResponse<UserDeletionResponseBody>> {
+  async deleteAccount(dto: {
+    userUuid: string
+    serverPassword: string
+  }): Promise<HttpResponse<UserDeletionResponseBody>> {
     this.lockOperation(UserApiOperations.DeletingAccount)
 
     try {
-      const response = await this.userServer.deleteAccount({
-        userUuid: userUuid,
-      })
+      const response = await this.userServer.deleteAccount(
+        {
+          userUuid: dto.userUuid,
+        },
+        { headers: [{ key: 'x-server-password', value: dto.serverPassword }] },
+      )
 
       this.unlockOperation(UserApiOperations.DeletingAccount)
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     }
   }
@@ -58,7 +64,7 @@ export class UserApiService implements UserApiServiceInterface {
       this.unlockOperation(UserApiOperations.SubmittingRequest)
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     }
   }
@@ -85,7 +91,7 @@ export class UserApiService implements UserApiServiceInterface {
       this.unlockOperation(UserApiOperations.Registering)
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericRegistrationFail)
     }
   }
@@ -102,7 +108,7 @@ export class UserApiService implements UserApiServiceInterface {
       this.unlockOperation(UserApiOperations.UpdatingUser)
 
       return response
-    } catch (error) {
+    } catch {
       throw new ApiCallError(ErrorMessage.GenericFail)
     }
   }

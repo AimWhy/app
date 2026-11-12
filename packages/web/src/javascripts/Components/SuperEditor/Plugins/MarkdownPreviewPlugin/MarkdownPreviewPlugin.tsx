@@ -1,9 +1,9 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { useEffect } from 'react'
 import { $createCodeNode } from '@lexical/code'
-import { $createTextNode, $getRoot, $nodesOfType, ParagraphNode } from 'lexical'
-import { $convertToMarkdownString } from '@lexical/markdown'
+import { $createTextNode, $getRoot } from 'lexical'
 import { MarkdownTransformers } from '../../MarkdownTransformers'
+import { $convertToMarkdownString } from '../../Lexical/Utils/MarkdownExport'
 
 type Props = {
   onMarkdown: (markdown: string) => void
@@ -15,12 +15,6 @@ export default function MarkdownPreviewPlugin({ onMarkdown }: Props): JSX.Elemen
   useEffect(() => {
     editor.update(() => {
       const root = $getRoot()
-      const paragraphs = $nodesOfType(ParagraphNode)
-      for (const paragraph of paragraphs) {
-        if (paragraph.isEmpty()) {
-          paragraph.remove()
-        }
-      }
       const markdown = $convertToMarkdownString(MarkdownTransformers)
       root.clear().append($createCodeNode('markdown').append($createTextNode(markdown)))
       root.selectEnd()

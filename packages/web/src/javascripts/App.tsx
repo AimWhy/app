@@ -42,7 +42,6 @@ import { ElementIds } from './Constants/ElementIDs'
 import { setDefaultMonospaceFont } from './setDefaultMonospaceFont'
 import { RouteParser, RouteType } from '@standardnotes/ui-services'
 import U2FAuthIframe from './Components/U2FAuthIframe/U2FAuthIframe'
-
 let keyCount = 0
 const getKey = () => {
   return keyCount++

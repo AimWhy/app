@@ -2,13 +2,13 @@ import { WebApplication } from '@/Application/WebApplication'
 import { getBase64FromBlob } from '@/Utils'
 import { FileItem, classNames } from '@standardnotes/snjs'
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef } from 'react'
+import { c } from 'ttag'
 import Button from '../Button/Button'
 import { createObjectURLWithRef } from './CreateObjectURLWithRef'
 import ImagePreview from './ImagePreview'
-import { ImageZoomLevelProps } from './ImageZoomLevelProps'
+import { OptionalSuperEmbeddedImageProps } from './OptionalSuperEmbeddedImageProps'
 import { PreviewableTextFileTypes, RequiresNativeFilePreview } from './isFilePreviewable'
 import TextPreview from './TextPreview'
-import { parseFileName, sanitizeFileName } from '@standardnotes/utils'
 import VideoPreview from './VideoPreview'
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
   file: FileItem
   bytes: Uint8Array
   isEmbeddedInSuper: boolean
-} & ImageZoomLevelProps
+} & OptionalSuperEmbeddedImageProps
 
 const PreviewComponent: FunctionComponent<Props> = ({
   application,
@@ -25,6 +25,8 @@ const PreviewComponent: FunctionComponent<Props> = ({
   isEmbeddedInSuper,
   imageZoomLevel,
   setImageZoomLevel,
+  alignment,
+  changeAlignment,
 }) => {
   const objectUrlRef = useRef<string>()
 
@@ -57,21 +59,17 @@ const PreviewComponent: FunctionComponent<Props> = ({
       }),
     )
 
-    const { name, ext } = parseFileName(file.name)
-    const sanitizedName = sanitizeFileName(name)
-    const filename = `${sanitizedName}.${ext}`
-
-    void application.mobileDevice.previewFile(fileBase64, filename)
+    void application.mobileDevice.previewFile(fileBase64, file.name)
   }, [application, bytes, file.mimeType, file.name, isNativeMobileWeb])
 
   if (isNativeMobileWeb && requiresNativePreview) {
     return (
       <div className="flex flex-grow flex-col items-center justify-center">
         <div className="max-w-[30ch] text-center text-base font-bold">
-          This file can only be previewed in an external app
+          {c('B7.FilesSubscriptionHelp.Files.Info').t`This file can only be previewed in an external app`}
         </div>
         <Button className="mt-3" primary onClick={openNativeFilePreview}>
-          Open file preview
+          {c('B7.FilesSubscriptionHelp.Files.Action').t`Open file preview`}
         </Button>
       </div>
     )
@@ -84,6 +82,8 @@ const PreviewComponent: FunctionComponent<Props> = ({
         isEmbeddedInSuper={isEmbeddedInSuper}
         imageZoomLevel={imageZoomLevel}
         setImageZoomLevel={setImageZoomLevel}
+        alignment={alignment}
+        changeAlignment={changeAlignment}
       />
     )
   }

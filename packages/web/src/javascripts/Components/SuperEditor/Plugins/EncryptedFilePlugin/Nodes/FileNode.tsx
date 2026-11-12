@@ -1,4 +1,12 @@
-import { DOMConversionMap, DOMExportOutput, EditorConfig, ElementFormatType, LexicalEditor, NodeKey } from 'lexical'
+import {
+  DOMConversionMap,
+  DOMExportOutput,
+  EditorConfig,
+  ElementFormatType,
+  LexicalEditor,
+  LexicalUpdateJSON,
+  NodeKey,
+} from 'lexical'
 import { DecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
 import { $createFileNode, convertToFileElement } from './FileUtils'
 import FileComponent from './FileComponent'
@@ -13,23 +21,28 @@ export class FileNode extends DecoratorBlockNode implements ItemNodeInterface {
     return 'snfile'
   }
 
+  constructor(id: string, format?: ElementFormatType, key?: NodeKey, zoomLevel?: number) {
+    super(format, key)
+    this.__id = id
+    this.__zoomLevel = zoomLevel || 100
+  }
+
   static clone(node: FileNode): FileNode {
     return new FileNode(node.__id, node.__format, node.__key, node.__zoomLevel)
   }
 
   static importJSON(serializedNode: SerializedFileNode): FileNode {
-    const node = $createFileNode(serializedNode.fileUuid)
-    node.setFormat(serializedNode.format)
-    node.setZoomLevel(serializedNode.zoomLevel)
-    return node
+    return $createFileNode(serializedNode.fileUuid).updateFromJSON(serializedNode)
+  }
+
+  updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedFileNode>): this {
+    return super.updateFromJSON(serializedNode).setZoomLevel(serializedNode.zoomLevel)
   }
 
   exportJSON(): SerializedFileNode {
     return {
       ...super.exportJSON(),
       fileUuid: this.getId(),
-      version: 1,
-      type: 'snfile',
       zoomLevel: this.__zoomLevel,
     }
   }
@@ -56,12 +69,6 @@ export class FileNode extends DecoratorBlockNode implements ItemNodeInterface {
     return { element }
   }
 
-  constructor(id: string, format?: ElementFormatType, key?: NodeKey, zoomLevel?: number) {
-    super(format, key)
-    this.__id = id
-    this.__zoomLevel = zoomLevel || 100
-  }
-
   getId(): string {
     return this.__id
   }
@@ -70,9 +77,10 @@ export class FileNode extends DecoratorBlockNode implements ItemNodeInterface {
     return `[File: ${this.__id}]`
   }
 
-  setZoomLevel(zoomLevel: number): void {
-    const writable = this.getWritable()
-    writable.__zoomLevel = zoomLevel
+  setZoomLevel(zoomLevel: number): this {
+    const self = this.getWritable()
+    self.__zoomLevel = zoomLevel
+    return self
   }
 
   decorate(_editor: LexicalEditor, config: EditorConfig): JSX.Element {
@@ -86,6 +94,7 @@ export class FileNode extends DecoratorBlockNode implements ItemNodeInterface {
       <FileComponent
         className={className}
         format={this.__format}
+        setFormat={this.setFormat.bind(this)}
         nodeKey={this.getKey()}
         fileUuid={this.__id}
         zoomLevel={this.__zoomLevel}

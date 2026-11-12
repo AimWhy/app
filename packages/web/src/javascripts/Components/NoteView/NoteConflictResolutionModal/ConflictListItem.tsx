@@ -1,4 +1,5 @@
 import { SNNote, classNames } from '@standardnotes/snjs'
+import { c } from 'ttag'
 import { MouseEventHandler } from 'react'
 import { FOCUSABLE_BUT_NOT_TABBABLE } from '@/Constants/Constants'
 import { useApplication } from '../../ApplicationProvider'
@@ -14,15 +15,17 @@ export const ConflictListItem = ({
   title,
   note,
   disabled,
+  isCurrentVersion,
 }: {
   isSelected: boolean
   disabled: boolean
   onClick: MouseEventHandler<HTMLButtonElement>
   title: string
   note: SNNote
+  isCurrentVersion: boolean
 }) => {
   const application = useApplication()
-  const { words, characters, paragraphs, serverUpdatedAt, dateCreated, format } = useNoteAttributes(application, note)
+  const { words, characters, paragraphs, serverUpdatedAt, format } = useNoteAttributes(application, note)
 
   return (
     <button
@@ -38,51 +41,56 @@ export const ConflictListItem = ({
       data-selected={isSelected}
       disabled={disabled}
     >
-      <div className="mb-1.5 flex items-center gap-2">
+      <div className="mb-1.5 flex flex-wrap items-center gap-2">
         <CheckIndicator checked={isSelected} />
         <div className="font-semibold">{title}</div>
+        {isCurrentVersion && (
+          <div className="rounded bg-info px-1 py-0.5 text-xs text-info-contrast">
+            {c('B3.Notes.NoteActions.Label').t`Current version`}
+          </div>
+        )}
       </div>
       <div className="w-full text-sm text-neutral lg:text-xs">
         <div className="mb-1.5 flex items-center gap-2">
-          <StyledTooltip gutter={8} label="Last modified" className="!z-modal">
+          <StyledTooltip gutter={8} label={c('B3.Notes.NoteActions.Label').t`Last modified`} className="!z-modal">
             <div className="flex-shrink-0">
               <Icon type="restore" size="medium" />
             </div>
           </StyledTooltip>
-          <VisuallyHidden>Last modified</VisuallyHidden> {serverUpdatedAt}
-        </div>
-        <div className="mb-1.5 flex items-center gap-2">
-          <StyledTooltip gutter={8} label="Created" className="!z-modal">
-            <div className="flex-shrink-0">
-              <Icon type="pencil-filled" size="medium" />
-            </div>
-          </StyledTooltip>
-          <VisuallyHidden>Created</VisuallyHidden> {dateCreated}
+          <VisuallyHidden>{c('B3.Notes.NoteActions.Label').t`Last modified`}</VisuallyHidden> {serverUpdatedAt}
         </div>
         <div className="mb-1.5 flex items-center gap-2 overflow-hidden">
-          <StyledTooltip gutter={8} label="Note ID" className="!z-modal">
+          <StyledTooltip gutter={8} label={c('B3.Notes.NoteActions.Label').t`Note ID`} className="!z-modal">
             <div className="flex-shrink-0">
               <Icon type="info" size="medium" />
             </div>
           </StyledTooltip>
-          <VisuallyHidden>Note ID</VisuallyHidden>
+          <VisuallyHidden>{c('B3.Notes.NoteActions.Label').t`Note ID`}</VisuallyHidden>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">{note.uuid}</div>
         </div>
         {typeof words === 'number' && (format === 'txt' || format === 'md') ? (
           <div className="flex items-center gap-2">
-            <StyledTooltip gutter={8} label={`${words} words`} className="!z-modal">
+            <StyledTooltip gutter={8} label={c('B3.Notes.NoteActions.Info').jt`${words} words`} className="!z-modal">
               <div className="flex items-center gap-1">
                 <Icon type="line-width" size="medium" />
                 {words}
               </div>
             </StyledTooltip>
-            <StyledTooltip gutter={8} label={`${characters} characters`} className="!z-modal">
+            <StyledTooltip
+              gutter={8}
+              label={c('B3.Notes.NoteActions.Info').jt`${characters} characters`}
+              className="!z-modal"
+            >
               <div className="flex items-center gap-1">
                 <Icon type="bold" size="small" />
                 <span>{characters}</span>
               </div>
             </StyledTooltip>
-            <StyledTooltip gutter={8} label={`${paragraphs} paragraphs`} className="!z-modal">
+            <StyledTooltip
+              gutter={8}
+              label={c('B3.Notes.NoteActions.Info').jt`${paragraphs} paragraphs`}
+              className="!z-modal"
+            >
               <div className="flex items-center gap-1">
                 <Icon type="paragraph" size="medium" />
                 <span>{paragraphs}</span>

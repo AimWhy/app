@@ -1,5 +1,6 @@
 import { ChallengeService } from './../Challenge/ChallengeService'
 import { SNLog } from '@Lib/Log'
+import { c } from 'ttag'
 import {
   DecryptedItem,
   DecryptedItemInterface,
@@ -34,6 +35,7 @@ import {
 import { ContentType } from '@standardnotes/domain-core'
 import { isValidProtectionSessionLength } from './isValidProtectionSessionLength'
 import { UnprotectedAccessSecondsDuration } from './UnprotectedAccessSecondsDuration'
+import { ChallengeResponse } from '../Challenge'
 
 /**
  * Enforces certain actions to require extra authentication,
@@ -246,11 +248,11 @@ export class ProtectionService
     })
   }
 
-  async authorizeMfaDisable(): Promise<boolean> {
-    return this.authorizeAction(ChallengeReason.DisableMfa, {
+  async authorizeMfaDisable(): Promise<{ success: boolean; challengeResponse?: ChallengeResponse }> {
+    return this.authorizeActionWithChallengeResponse(ChallengeReason.DisableMfa, {
       fallBackToAccountPassword: true,
       requireAccountPassword: true,
-      forcePrompt: false,
+      forcePrompt: true,
     })
   }
 
@@ -278,6 +280,14 @@ export class ProtectionService
     })
   }
 
+  async authorizeAccountDeletion(): Promise<{ success: boolean; challengeResponse?: ChallengeResponse }> {
+    return this.authorizeActionWithChallengeResponse(ChallengeReason.DeleteAccount, {
+      fallBackToAccountPassword: true,
+      requireAccountPassword: true,
+      forcePrompt: true,
+    })
+  }
+
   async authorizeAction(
     reason: ChallengeReason,
     dto: { fallBackToAccountPassword: boolean; requireAccountPassword: boolean; forcePrompt: boolean },
@@ -285,15 +295,22 @@ export class ProtectionService
     return this.validateOrRenewSession(reason, dto)
   }
 
+  async authorizeActionWithChallengeResponse(
+    reason: ChallengeReason,
+    dto: { fallBackToAccountPassword: boolean; requireAccountPassword: boolean; forcePrompt: boolean },
+  ): Promise<{ success: boolean; challengeResponse?: ChallengeResponse }> {
+    return this.validateOrRenewSessionWithChallengeResponse(reason, dto)
+  }
+
   getMobilePasscodeTimingOptions(): TimingDisplayOption[] {
     return [
       {
-        title: 'Immediately',
+        title: c('B5.SecuritySync.Autolock.Label').t`Immediately`,
         key: MobileUnlockTiming.Immediately,
         selected: this.mobilePasscodeTiming === MobileUnlockTiming.Immediately,
       },
       {
-        title: 'On Quit',
+        title: c('B5.SecuritySync.Autolock.Label').t`On Quit`,
         key: MobileUnlockTiming.OnQuit,
         selected: this.mobilePasscodeTiming === MobileUnlockTiming.OnQuit,
       },
@@ -303,12 +320,12 @@ export class ProtectionService
   getMobileBiometricsTimingOptions(): TimingDisplayOption[] {
     return [
       {
-        title: 'Immediately',
+        title: c('B5.SecuritySync.Autolock.Label').t`Immediately`,
         key: MobileUnlockTiming.Immediately,
         selected: this.mobileBiometricsTiming === MobileUnlockTiming.Immediately,
       },
       {
-        title: 'On Quit',
+        title: c('B5.SecuritySync.Autolock.Label').t`On Quit`,
         key: MobileUnlockTiming.OnQuit,
         selected: this.mobileBiometricsTiming === MobileUnlockTiming.OnQuit,
       },
@@ -353,8 +370,20 @@ export class ProtectionService
     reason: ChallengeReason,
     { fallBackToAccountPassword = true, requireAccountPassword = false, forcePrompt = false } = {},
   ): Promise<boolean> {
+    const response = await this.validateOrRenewSessionWithChallengeResponse(reason, {
+      fallBackToAccountPassword,
+      requireAccountPassword,
+      forcePrompt,
+    })
+    return response.success
+  }
+
+  private async validateOrRenewSessionWithChallengeResponse(
+    reason: ChallengeReason,
+    { fallBackToAccountPassword = true, requireAccountPassword = false, forcePrompt = false } = {},
+  ): Promise<{ success: boolean; challengeResponse?: ChallengeResponse }> {
     if (this.getSessionExpiryDate() > new Date() && !forcePrompt) {
-      return true
+      return { success: true }
     }
 
     const prompts: ChallengePrompt[] = []
@@ -378,9 +407,10 @@ export class ProtectionService
       if (fallBackToAccountPassword && this.encryption.hasAccount()) {
         prompts.push(new ChallengePrompt(ChallengeValidation.AccountPassword))
       } else {
-        return true
+        return { success: true }
       }
     }
+
     const lastSessionLength = this.getLastSessionLength()
     const chosenSessionLength = isValidProtectionSessionLength(lastSessionLength)
       ? lastSessionLength
@@ -407,9 +437,9 @@ export class ProtectionService
       } else {
         this.setSessionLength(length as UnprotectedAccessSecondsDuration)
       }
-      return true
+      return { success: true, challengeResponse: response }
     } else {
-      return false
+      return { success: false }
     }
   }
 

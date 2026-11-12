@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { sanitize } from 'dompurify'
-import { find, isArray, mergeWith, remove, uniq, uniqWith } from 'lodash'
+import { escape, find, isArray, mergeWith, remove, uniq, uniqWith } from 'lodash'
 import { AnyRecord } from '@standardnotes/common'
 
 const collator = typeof Intl !== 'undefined' ? new Intl.Collator('en', { numeric: true }) : undefined
@@ -369,7 +369,7 @@ export function jsonParseEmbeddedKeys(object: AnyRecord) {
     let value
     try {
       value = JSON.parse(object[key] as string)
-    } catch (error) {
+    } catch {
       value = object[key]
     }
     result[key] = value
@@ -496,7 +496,7 @@ export function isValidUrl(url: string): boolean {
   try {
     new URL(url)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -612,27 +612,67 @@ export function sanitizeHtmlString(html: string): string {
   return sanitize(html)
 }
 
-let sharedDateFormatter: unknown
-export function dateToLocalizedString(date: Date): string {
-  if (typeof Intl !== 'undefined' && Intl.DateTimeFormat && typeof navigator !== 'undefined') {
-    if (!sharedDateFormatter) {
-      const locale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language
-      sharedDateFormatter = new Intl.DateTimeFormat(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        weekday: 'long',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    }
-    return (sharedDateFormatter as Intl.DateTimeFormat).format(date)
-  } else {
-    // IE < 11, Safari <= 9.0.
-    // In English, this generates the string most similar to
-    // the toLocaleDateString() result above.
-    return date.toDateString() + ' ' + date.toLocaleTimeString()
+export function escapeHtmlString(html: string): string {
+  return escape(html)
+}
+
+const itemDateFormatOptions: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: '2-digit',
+  weekday: 'long',
+  hour: '2-digit',
+  minute: '2-digit',
+}
+
+let sharedItemDateFormattingLocale: string | undefined
+
+export function setSharedItemDateFormattingLocale(locale: string | undefined): void {
+  sharedItemDateFormattingLocale = locale
+}
+
+function getBrowserDateFormattingLocale(): string {
+  if (typeof navigator === 'undefined') {
+    return 'en-US'
   }
+
+  if (navigator.languages && navigator.languages.length > 0) {
+    return navigator.languages[0]
+  }
+
+  return navigator.language || 'en-US'
+}
+
+function resolveItemDateFormattingLocale(explicitLocale?: string): string {
+  if (explicitLocale) {
+    return explicitLocale
+  }
+
+  if (sharedItemDateFormattingLocale) {
+    return sharedItemDateFormattingLocale
+  }
+
+  return getBrowserDateFormattingLocale()
+}
+
+const itemDateFormatters = new Map<string, Intl.DateTimeFormat>()
+
+function getItemDateFormatter(locale: string): Intl.DateTimeFormat {
+  let formatter = itemDateFormatters.get(locale)
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, itemDateFormatOptions)
+    itemDateFormatters.set(locale, formatter)
+  }
+  return formatter
+}
+
+export function dateToLocalizedString(date: Date, locale?: string): string {
+  if (typeof Intl !== 'undefined' && typeof Intl.DateTimeFormat === 'function') {
+    return getItemDateFormatter(resolveItemDateFormattingLocale(locale)).format(date)
+  }
+
+  // IE < 11, Safari <= 9.0.
+  return date.toDateString() + ' ' + date.toLocaleTimeString()
 }
 
 export function nonSecureRandomIdentifier(): string {
@@ -694,4 +734,18 @@ export function spaceSeparatedStrings(...strings: string[]): string {
 
 export function pluralize(count: number, singular: string, plural: string): string {
   return count === 1 ? singular : plural
+}
+
+export function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      if (reader.result && typeof reader.result === 'string') {
+        resolve(reader.result)
+      } else {
+        reject()
+      }
+    }
+    reader.readAsDataURL(blob)
+  })
 }

@@ -13,6 +13,7 @@ import ItemSelectionDropdown from '../ItemSelectionDropdown/ItemSelectionDropdow
 import { ContentType, SNTag } from '@standardnotes/snjs'
 import Button from '../Button/Button'
 import { ClassicFileReader } from '@standardnotes/filepicker'
+import { c } from 'ttag'
 
 const ImportModal = ({ importModalController }: { importModalController: ImportModalController }) => {
   const application = useApplication()
@@ -41,21 +42,31 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
   const modalActions: ModalAction[] = useMemo(
     () => [
       {
-        label: 'Import',
+        label: c('B1.Account.ImportExport.Action').t`Import`,
         type: 'primary',
         onClick: parseAndImport,
         hidden: !isReadyToImport,
         mobileSlot: 'right',
-        disabled: !isReadyToImport || (!shouldCreateTag && !existingTagForImports),
+        disabled: !isReadyToImport || (addImportsToTag && !shouldCreateTag && !existingTagForImports),
       },
       {
-        label: importSuccessOrError ? 'Close' : 'Cancel',
+        label: importSuccessOrError
+          ? c('B1.Account.ImportExport.Action').t`Close`
+          : c('B1.Account.ImportExport.Action').t`Cancel`,
         type: 'cancel',
         onClick: close,
         mobileSlot: 'left',
       },
     ],
-    [close, existingTagForImports, importSuccessOrError, isReadyToImport, parseAndImport, shouldCreateTag],
+    [
+      addImportsToTag,
+      close,
+      existingTagForImports,
+      importSuccessOrError,
+      isReadyToImport,
+      parseAndImport,
+      shouldCreateTag,
+    ],
   )
 
   const selectFiles = useCallback(
@@ -69,7 +80,12 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
 
   return (
     <ModalOverlay isOpen={isVisible} close={close}>
-      <Modal title="Import" close={close} actions={modalActions} className="flex flex-col">
+      <Modal
+        title={c('B1.Account.ImportExport.Title').t`Import`}
+        close={close}
+        actions={modalActions}
+        className="flex flex-col"
+      >
         <div className="min-h-0 flex-grow overflow-y-auto px-4 py-4">
           {!files.length && <ImportModalInitialPage setFiles={setFiles} selectFiles={selectFiles} />}
           {files.length > 0 && (
@@ -93,7 +109,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
                   }}
                   small
                 >
-                  Add files
+                  {c('B1.Account.ImportExport.Action').t`Add files`}
                 </Button>
               )}
             </>
@@ -102,7 +118,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
         {files.length > 0 && (
           <div className="flex flex-col gap-3 border-t border-border px-4 py-4 md:gap-2 md:py-3">
             <Switch className="flex items-center gap-2" checked={addImportsToTag} onChange={setAddImportsToTag}>
-              <span className="text-sm">Add all imported notes to tag</span>
+              <span className="text-sm">{c('B1.Account.ImportExport.Label').t`Add all imported notes to tag`}</span>
             </Switch>
             {addImportsToTag && (
               <>
@@ -116,7 +132,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
                       setShouldCreateTag(true)
                     }}
                   />
-                  Create new tag
+                  {c('B1.Account.ImportExport.Label').t`Create new tag`}
                 </label>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
@@ -130,7 +146,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
                           setShouldCreateTag(false)
                         }}
                       />
-                      Add to existing tag
+                      {c('B1.Account.ImportExport.Label').t`Add to existing tag`}
                     </label>
                     {existingTagForImports && (
                       <LinkedItemBubble
@@ -148,7 +164,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
                     <div className="ml-8 md:ml-6">
                       <ItemSelectionDropdown
                         onSelection={(tag) => setExistingTagForImports(tag as SNTag)}
-                        placeholder="Select tag to add imported notes to..."
+                        placeholder={c('B1.Account.ImportExport.Placeholder').t`Select tag to add imported notes to...`}
                         contentTypes={[ContentType.TYPES.Tag]}
                       />
                     </div>

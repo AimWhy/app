@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite'
+import { c } from 'ttag'
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ChangeEditorMenu from './ChangeEditorMenu'
 import Popover from '../Popover/Popover'
@@ -55,14 +56,15 @@ const ChangeEditorButton: FunctionComponent<Props> = ({ noteViewController, onCl
   }, [isOpen, onClickPreprocessing, onClick])
 
   useEffect(() => {
-    return application.keyboardService.addCommandHandler({
-      command: CHANGE_EDITOR_COMMAND,
-      category: 'Current note',
-      description: 'Change note type',
-      onKeyDown: () => {
+    return application.commands.addWithShortcut(
+      CHANGE_EDITOR_COMMAND,
+      'Current note',
+      c('B4.Notes.EditingUI.Action').t`Change note type`,
+      () => {
         void toggleMenu()
       },
-    })
+      'notes',
+    )
   }, [application, toggleMenu])
 
   const shortcut = useMemo(
@@ -70,17 +72,19 @@ const ChangeEditorButton: FunctionComponent<Props> = ({ noteViewController, onCl
     [application],
   )
 
+  const shortcutLabel = shortcut && keyboardStringForShortcut(shortcut)
+
   return (
     <div ref={containerRef}>
       <RoundIconButton
-        label={`Change note type (${shortcut && keyboardStringForShortcut(shortcut)})`}
+        label={c('B4.Notes.EditingUI.Label').jt`Change note type (${shortcutLabel})` as unknown as string}
         onClick={toggleMenu}
         ref={buttonRef}
         icon={selectedEditorIcon}
         iconClassName={`text-accessory-tint-${selectedEditorIconTint}`}
       />
       <Popover
-        title="Change note type"
+        title={c('B4.Notes.EditingUI.Title').t`Change note type`}
         togglePopover={toggleMenu}
         disableClickOutside={isClickOutsideDisabled}
         anchorElement={buttonRef}

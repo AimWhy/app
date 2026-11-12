@@ -1,9 +1,11 @@
 import { LinkingController } from '@/Controllers/LinkingController'
 import { observer } from 'mobx-react-lite'
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import RoundIconButton from '../Button/RoundIconButton'
 import Popover from '../Popover/Popover'
 import LinkedItemsPanel from './LinkedItemsPanel'
+import { useApplication } from '../ApplicationProvider'
+import { c } from 'ttag'
 
 type Props = {
   linkingController: LinkingController
@@ -12,6 +14,7 @@ type Props = {
 }
 
 const LinkedItemsButton = ({ linkingController, onClick, onClickPreprocessing }: Props) => {
+  const application = useApplication()
   const { activeItem, isLinkingPanelOpen, setIsLinkingPanelOpen } = linkingController
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -26,15 +29,29 @@ const LinkedItemsButton = ({ linkingController, onClick, onClickPreprocessing }:
     }
   }, [isLinkingPanelOpen, onClick, onClickPreprocessing, setIsLinkingPanelOpen])
 
+  useEffect(() =>
+    application.commands.add(
+      'open-linked-items-panel',
+      c('B4.Notes.TagsLinkedItems.Action').t`Open linked items panel`,
+      toggleMenu,
+      'link',
+    ),
+  )
+
   if (!activeItem) {
     return null
   }
 
   return (
     <>
-      <RoundIconButton label="Linked items panel" onClick={toggleMenu} ref={buttonRef} icon="link" />
+      <RoundIconButton
+        label={c('B4.Notes.TagsLinkedItems.Label').t`Linked items panel`}
+        onClick={toggleMenu}
+        ref={buttonRef}
+        icon="link"
+      />
       <Popover
-        title="Linked items"
+        title={c('B4.Notes.TagsLinkedItems.Title').t`Linked items`}
         togglePopover={toggleMenu}
         anchorElement={buttonRef}
         open={isLinkingPanelOpen}

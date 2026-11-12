@@ -7,26 +7,31 @@ import Bullet from './Bullet'
 import { downloadSecretKey } from './download-secret-key'
 import { TwoFactorActivation } from './TwoFactorActivation'
 import Icon from '@/Components/Icon/Icon'
+import { c } from 'ttag'
 
 type Props = {
   activation: TwoFactorActivation
 }
 
 const SaveSecretKey: FunctionComponent<Props> = ({ activation: act }) => {
+  const safeStorageLink = (
+    <a
+      target="_blank"
+      rel="noreferrer noopener"
+      className="underline hover:no-underline"
+      href="https://standardnotes.com/help/21/where-should-i-store-my-two-factor-authentication-secret-key"
+    >
+      {c('B6.Preferences.Security.Info').t`somewhere safe`}
+    </a>
+  )
+
   return (
     <div className="h-33 flex flex-row items-center px-4 py-4">
       <div className="flex flex-grow flex-col">
         <div className="flex flex-row flex-wrap items-center gap-1">
           <Bullet />
           <div className="text-sm">
-            <b>Save your secret key</b>{' '}
-            <a
-              target="_blank"
-              href="https://standardnotes.com/help/21/where-should-i-store-my-two-factor-authentication-secret-key"
-            >
-              somewhere safe
-            </a>
-            :
+            {c('B6.Preferences.Security.Info').jt`Save your secret key ${safeStorageLink}:`}
           </div>
           <DecoratedInput
             disabled={true}
@@ -34,7 +39,7 @@ const SaveSecretKey: FunctionComponent<Props> = ({ activation: act }) => {
               <CopyButton copyValue={act.secretKey} />,
               <IconButton
                 focusable={false}
-                title="Download"
+                title={c('B6.Preferences.Security.Title').t`Download`}
                 icon="download"
                 className="p-0"
                 onClick={() => {
@@ -51,7 +56,8 @@ const SaveSecretKey: FunctionComponent<Props> = ({ activation: act }) => {
           <Bullet />
           <div className="min-w-1" />
           <div className="text-sm">
-            You can use this key to generate codes if you lose access to your authenticator app.
+            {c('B6.Preferences.Security.Info')
+              .t`You can use this key to generate codes if you lose access to your authenticator app.`}
             <br />
             <a
               target="_blank"
@@ -59,7 +65,7 @@ const SaveSecretKey: FunctionComponent<Props> = ({ activation: act }) => {
               className="underline hover:no-underline"
               href="https://standardnotes.com/help/22/what-happens-if-i-lose-my-2fa-device-and-my-secret-key"
             >
-              Learn more
+              {c('B6.Preferences.Security.Action').t`Learn more`}
               <Icon className="ml-1 inline" type="open-in" size="small" />
             </a>
           </div>

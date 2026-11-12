@@ -6,12 +6,13 @@ import { FunctionComponent, useEffect, useState } from 'react'
 import PreferencesGroup from '@/Components/Preferences/PreferencesComponents/PreferencesGroup'
 import PreferencesSegment from '@/Components/Preferences/PreferencesComponents/PreferencesSegment'
 import { useApplication } from '@/Components/ApplicationProvider'
-import { SubscriptionManagerEvent, Subscription } from '@standardnotes/snjs'
+import { SubscriptionManagerEvent, Subscription as SubscriptionType } from '@standardnotes/snjs'
+import { c } from 'ttag'
 
 const Subscription: FunctionComponent = () => {
   const application = useApplication()
 
-  const [onlineSubscription, setOnlineSubscription] = useState<Subscription | undefined>(
+  const [onlineSubscription, setOnlineSubscription] = useState<SubscriptionType | undefined>(
     application.subscriptionController.onlineSubscription,
   )
 
@@ -32,7 +33,7 @@ const Subscription: FunctionComponent = () => {
       <PreferencesSegment>
         <div className="flex flex-row items-center">
           <div className="flex flex-grow flex-col">
-            <Title>Subscription</Title>
+            <Title>{c('B6.Preferences.Subscription.Info').t`Subscription`}</Title>
             {onlineSubscription ? <SubscriptionInformation /> : <NoSubscription application={application} />}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { AppleIAPProductId } from './../Subscription/AppleIAPProductId'
 import { DeviceInterface } from './DeviceInterface'
 import { AppleIAPReceipt } from '../Subscription/AppleIAPReceipt'
 import { ApplicationEvent } from '../Event/ApplicationEvent'
+import { NativeLocalizationState } from './NativeLocalizationState'
 
 import type { Notification } from '../../../../mobile/node_modules/@notifee/react-native/dist/index'
 
@@ -24,6 +25,7 @@ export interface MobileDeviceInterface extends DeviceInterface {
   handleThemeSchemeChange(isDark: boolean, bgColor: string): void
   shareBase64AsFile(base64: string, filename: string): Promise<void>
   downloadBase64AsFile(base64: string, filename: string, saveInTempLocation?: boolean): Promise<string | undefined>
+  getNativeThemeCSS(identifier: string): Promise<string | undefined>
   previewFile(base64: string, filename: string): Promise<boolean>
   exitApp(confirm?: boolean): void
 
@@ -40,4 +42,6 @@ export interface MobileDeviceInterface extends DeviceInterface {
   canDisplayNotifications(): Promise<boolean>
   displayNotification(options: Notification): Promise<string>
   cancelNotification(notificationId: string): Promise<void>
+
+  syncMobileLocalization(state: NativeLocalizationState): Promise<void>
 }
